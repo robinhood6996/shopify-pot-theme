@@ -1,0 +1,66 @@
+<style>
+  #shopify-section-{{ section.id }} .pq {
+    background: var(--ink); color: var(--cream);
+    padding: 120px 40px;
+    text-align: center; position: relative; overflow: hidden;
+  }
+  #shopify-section-{{ section.id }} .pq::before, #shopify-section-{{ section.id }} .pq::after {
+    position: absolute;
+    font-family: var(--font-heading); font-style: italic; font-weight: 300;
+    color: var(--clay); opacity: 0.3;
+    font-size: 240px; line-height: 1; pointer-events: none;
+  }
+  #shopify-section-{{ section.id }} .pq::before { content: '"'; top: 30px; left: 60px; }
+  #shopify-section-{{ section.id }} .pq::after { content: '"'; bottom: -50px; right: 60px; }
+  #shopify-section-{{ section.id }} .pq-inner { max-width: 920px; margin: 0 auto; position: relative; z-index: 2; }
+  #shopify-section-{{ section.id }} blockquote {
+    font-family: var(--font-heading); font-style: italic; font-weight: 300;
+    font-size: clamp(28px, 4vw, 46px); line-height: 1.25;
+    margin-bottom: 36px;
+  }
+  #shopify-section-{{ section.id }} blockquote em { color: var(--clay); font-style: italic; }
+  #shopify-section-{{ section.id }} .pq-attr {
+    display: inline-flex; align-items: center; gap: 16px; text-align: left;
+  }
+  #shopify-section-{{ section.id }} .pq-avatar {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #C68B5C, #5C2A14);
+    border: 1px solid rgba(244, 237, 224, 0.2);
+  }
+  #shopify-section-{{ section.id }} .pq-attr .name {
+    font-family: var(--font-heading); font-size: 17px; font-weight: 400;
+  }
+  #shopify-section-{{ section.id }} .pq-attr .role {
+    font-size: 12px; color: var(--bone);
+    text-transform: uppercase; letter-spacing: 0.12em; margin-top: 2px;
+  }
+  @media (max-width: 1024px) {
+    #shopify-section-{{ section.id }} .pq { padding: 80px 24px; }
+    #shopify-section-{{ section.id }} .pq::before, #shopify-section-{{ section.id }} .pq::after { font-size: 140px; }
+  }
+</style>
+
+<section class="pq">
+  <div class="pq-inner">
+    <blockquote>"{{ section.settings.quote }}"</blockquote>
+    <div class="pq-attr">
+      <div class="pq-avatar"></div>
+      <div>
+        <div class="name">{{ section.settings.author_name }}</div>
+        <div class="role">{{ section.settings.author_role }}</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Pull quote",
+  "settings": [
+    { "type": "textarea", "id": "quote", "label": "Quote (use <em> for italic emphasis)" },
+    { "type": "text", "id": "author_name", "label": "Author name" },
+    { "type": "text", "id": "author_role", "label": "Author role" }
+  ],
+  "presets": [{ "name": "Pull quote", "category": "Text" }]
+}
+{% endschema %}

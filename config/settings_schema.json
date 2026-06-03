@@ -1,0 +1,224 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Kiln Clay",
+    "theme_version": "1.0.0",
+    "theme_author": "Kiln & Clay",
+    "theme_documentation_url": "https://kilnandclay.co.uk",
+    "theme_support_url": "https://kilnandclay.co.uk/pages/contact"
+  },
+
+  {
+    "name": "Brand",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo image (optional — leave blank to use the wordmark)"
+      },
+      {
+        "type": "range",
+        "id": "logo_width",
+        "min": 80,
+        "max": 240,
+        "step": 8,
+        "unit": "px",
+        "label": "Logo width",
+        "default": 160
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon (32×32 PNG)"
+      }
+    ]
+  },
+
+  {
+    "name": "Colours",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Surface"
+      },
+      { "type": "color", "id": "colour_paper",     "label": "Paper (page background)", "default": "#FBF7EE" },
+      { "type": "color", "id": "colour_cream",     "label": "Cream (subtle fills)",     "default": "#F4EDE0" },
+      { "type": "color", "id": "colour_cream_deep","label": "Cream Deep (mailer)",      "default": "#EBE2D1" },
+
+      { "type": "header", "content": "Type" },
+      { "type": "color", "id": "colour_ink",       "label": "Ink (primary text)",       "default": "#1A140E" },
+      { "type": "color", "id": "colour_ink_soft",  "label": "Ink Soft (secondary)",     "default": "#4A3F33" },
+      { "type": "color", "id": "colour_muted",     "label": "Muted (tertiary)",         "default": "#847566" },
+
+      { "type": "header", "content": "Lines" },
+      { "type": "color", "id": "colour_line",      "label": "Line (borders)",           "default": "#DCD0BC" },
+      { "type": "color", "id": "colour_line_soft", "label": "Line Soft (subtle rules)", "default": "#ECE3D2" },
+
+      { "type": "header", "content": "Accent" },
+      { "type": "color", "id": "colour_clay",      "label": "Clay (primary accent)",    "default": "#B25A38" },
+      { "type": "color", "id": "colour_clay_deep", "label": "Clay Deep (hover)",        "default": "#8E4426" }
+    ]
+  },
+
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "font_picker",
+        "id": "heading_font",
+        "label": "Heading / display font",
+        "default": "fraunces_n4",
+        "info": "Used for headlines, the wordmark, and italic emphasis."
+      },
+      {
+        "type": "font_picker",
+        "id": "body_font",
+        "label": "Body font",
+        "default": "dm_sans_n4",
+        "info": "Used for paragraph and UI text."
+      },
+      {
+        "type": "font_picker",
+        "id": "accent_font",
+        "label": "Handwritten accent font",
+        "default": "caveat_n4",
+        "info": "Used for script flourishes (mailer, sign-offs)."
+      },
+      {
+        "type": "select",
+        "id": "headline_emphasis",
+        "label": "Italic emphasis colour in headlines",
+        "options": [
+          { "value": "clay", "label": "Clay (recommended)" },
+          { "value": "ink",  "label": "Ink (more reserved)" }
+        ],
+        "default": "clay"
+      }
+    ]
+  },
+
+  {
+    "name": "Announcement bar",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_announcement",
+        "label": "Show announcement bar",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "announcement_1",
+        "label": "Message 1",
+        "default": "Free UK delivery over £50"
+      },
+      {
+        "type": "text",
+        "id": "announcement_2",
+        "label": "Message 2",
+        "default": "Made in Britain"
+      },
+      {
+        "type": "text",
+        "id": "announcement_3",
+        "label": "Message 3",
+        "default": "30-day returns"
+      }
+    ]
+  },
+
+  {
+    "name": "Cart & shipping",
+    "settings": [
+      {
+        "type": "number",
+        "id": "free_shipping_threshold",
+        "label": "Free shipping threshold (in store currency)",
+        "default": 50
+      },
+      {
+        "type": "checkbox",
+        "id": "show_free_shipping_bar",
+        "label": "Show free-shipping progress bar in cart",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "express_payment",
+        "label": "Express checkout button",
+        "options": [
+          { "value": "paypal",     "label": "PayPal" },
+          { "value": "shop_pay",   "label": "Shop Pay" },
+          { "value": "apple_pay",  "label": "Apple Pay" },
+          { "value": "all",        "label": "All available" },
+          { "value": "none",       "label": "None" }
+        ],
+        "default": "paypal"
+      }
+    ]
+  },
+
+  {
+    "name": "Newsletter (mailer)",
+    "settings": [
+      {
+        "type": "text",
+        "id": "newsletter_script_tag",
+        "label": "Caveat script tag",
+        "default": "a quiet letter,"
+      },
+      {
+        "type": "richtext",
+        "id": "newsletter_heading",
+        "label": "Headline (allow <em> for italic emphasis)",
+        "default": "<p>Plant care, <em>quietly</em>,<br>once a fortnight.</p>"
+      },
+      {
+        "type": "textarea",
+        "id": "newsletter_body",
+        "label": "Body copy",
+        "default": "New pieces, restocks, seasonal repotting reminders, and the occasional pot-of-the-month — straight to your inbox."
+      },
+      {
+        "type": "text",
+        "id": "newsletter_signoff",
+        "label": "Caveat signoff",
+        "default": "— Margaret & the K&C team"
+      }
+    ]
+  },
+
+  {
+    "name": "Social",
+    "settings": [
+      { "type": "text", "id": "social_instagram",  "label": "Instagram URL" },
+      { "type": "text", "id": "social_pinterest",  "label": "Pinterest URL" },
+      { "type": "text", "id": "social_substack",   "label": "Substack URL" },
+      { "type": "text", "id": "social_trustpilot", "label": "Trustpilot URL" }
+    ]
+  },
+
+  {
+    "name": "Footer",
+    "settings": [
+      {
+        "type": "richtext",
+        "id": "footer_brand_text",
+        "label": "Brand description",
+        "default": "<p>A small, considered range of plant pots, made by hand in British studios. Founded 2026.</p>"
+      },
+      {
+        "type": "text",
+        "id": "footer_legal",
+        "label": "Legal line",
+        "default": "© 2026 Kiln & Clay Ltd. Registered in England & Wales."
+      },
+      {
+        "type": "text",
+        "id": "footer_vat",
+        "label": "VAT number",
+        "default": "VAT GB 000 0000 00"
+      }
+    ]
+  }
+]

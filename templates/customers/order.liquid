@@ -1,0 +1,401 @@
+<style>
+  .order-page {
+    max-width: 1100px; margin: 0 auto;
+    padding: 60px 32px 100px;
+  }
+  .order-back {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em;
+    color: var(--muted); text-decoration: none;
+    margin-bottom: 28px;
+    transition: color 0.15s;
+  }
+  .order-back:hover { color: var(--clay); }
+  .order-back svg { width: 14px; height: 14px; }
+
+  .order-hero {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    flex-wrap: wrap; gap: 24px;
+    padding-bottom: 32px; border-bottom: 1px solid var(--line-soft);
+    margin-bottom: 48px;
+  }
+  .order-hero .eb {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.22em;
+    color: var(--muted); margin-bottom: 14px;
+  }
+  .order-hero h1 {
+    font-family: var(--font-heading); font-weight: 400;
+    font-size: clamp(38px, 5vw, 56px); line-height: 1;
+    letter-spacing: -0.01em;
+  }
+  .order-hero h1 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  .order-hero .meta {
+    font-size: 13px; color: var(--ink-soft);
+    display: flex; gap: 18px; flex-wrap: wrap;
+    margin-top: 14px;
+  }
+  .order-hero .meta span::after {
+    content: '·'; margin-left: 18px; color: var(--line);
+  }
+  .order-hero .meta span:last-child::after { content: ''; margin: 0; }
+
+  .order-hero-status {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 16px;
+    background: var(--cream); border: 1px solid var(--line-soft);
+    font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.16em;
+    color: var(--success);
+  }
+  .order-hero-status .dot {
+    width: 7px; height: 7px; border-radius: 50%; background: currentColor;
+  }
+  .order-hero-status.unfulfilled { color: var(--clay); }
+  .order-hero-status.cancelled { color: var(--error); }
+
+  .order-tracker {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    margin-bottom: 56px; position: relative;
+  }
+  .order-tracker::before {
+    content: ''; position: absolute;
+    top: 14px; left: 12.5%; right: 12.5%;
+    height: 1px; background: var(--line);
+  }
+  .tracker-step { text-align: center; position: relative; }
+  .tracker-step .pip {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--paper); border: 1px solid var(--line);
+    margin: 0 auto 14px; position: relative; z-index: 2;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted);
+  }
+  .tracker-step .pip svg { width: 14px; height: 14px; }
+  .tracker-step.done .pip {
+    background: var(--ink); border-color: var(--ink); color: var(--cream);
+  }
+  .tracker-step.active .pip {
+    background: var(--clay); border-color: var(--clay); color: var(--cream);
+  }
+  .tracker-step .lab {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em;
+    color: var(--ink-soft); margin-bottom: 4px;
+  }
+  .tracker-step.done .lab, .tracker-step.active .lab { color: var(--ink); font-weight: 500; }
+  .tracker-step .sub {
+    font-size: 11.5px; color: var(--muted);
+    font-family: var(--font-heading); font-style: italic;
+  }
+
+  .order-grid {
+    display: grid; grid-template-columns: 1fr 340px; gap: 48px;
+    align-items: start;
+  }
+
+  .order-block { margin-bottom: 40px; }
+  .order-block h2 {
+    font-family: var(--font-heading); font-weight: 400;
+    font-size: 22px; line-height: 1;
+    margin-bottom: 18px; padding-bottom: 12px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .order-block h2 em { font-style: italic; font-weight: 300; color: var(--clay); }
+
+  .line-row {
+    display: grid; grid-template-columns: 80px 1fr auto;
+    gap: 18px; align-items: flex-start;
+    padding: 18px 0; border-bottom: 1px solid var(--line-soft);
+  }
+  .line-row:last-child { border-bottom: none; }
+  .line-row .img {
+    width: 80px; height: 80px;
+    background: var(--cream); overflow: hidden;
+  }
+  .line-row .img img { width: 100%; height: 100%; object-fit: cover; }
+  .line-row .name {
+    font-family: var(--font-heading); font-weight: 400;
+    font-size: 16.5px; line-height: 1.25; margin-bottom: 4px;
+  }
+  .line-row .name a { color: var(--ink); text-decoration: none; }
+  .line-row .name a:hover { color: var(--clay); }
+  .line-row .opts {
+    font-size: 12px; color: var(--ink-soft); margin-bottom: 6px;
+  }
+  .line-row .qty {
+    font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.14em;
+    color: var(--muted);
+  }
+  .line-row .price {
+    font-family: var(--font-heading); font-style: italic; font-weight: 300;
+    font-size: 17px; text-align: right;
+  }
+  .line-row .unit-price {
+    font-size: 11.5px; color: var(--muted); margin-top: 4px;
+  }
+
+  .addr-card {
+    padding: 22px; background: var(--paper);
+    border: 1px solid var(--line-soft);
+    font-size: 13.5px; line-height: 1.7; color: var(--ink-soft);
+  }
+  .addr-card strong {
+    display: block; font-family: var(--font-heading); font-weight: 400;
+    font-size: 15.5px; color: var(--ink); margin-bottom: 8px;
+  }
+
+  .summary-card {
+    position: sticky; top: 110px;
+    padding: 28px 24px;
+    background: var(--cream); border: 1px solid var(--line-soft);
+  }
+  .summary-row {
+    display: flex; justify-content: space-between;
+    padding: 12px 0;
+    font-size: 13.5px; color: var(--ink-soft);
+  }
+  .summary-row + .summary-row { border-top: 1px solid var(--line-soft); }
+  .summary-total {
+    margin-top: 12px; padding-top: 18px;
+    border-top: 1px solid var(--ink) !important;
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .summary-total .lab {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.16em;
+    color: var(--ink);
+  }
+  .summary-total .val {
+    font-family: var(--font-heading); font-style: italic; font-weight: 300;
+    font-size: 28px; color: var(--ink);
+  }
+  .summary-actions { margin-top: 22px; display: flex; flex-direction: column; gap: 8px; }
+  .summary-actions a {
+    display: block; text-align: center; padding: 12px;
+    font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.16em;
+    text-decoration: none; transition: opacity 0.15s;
+  }
+  .summary-actions .primary {
+    background: var(--ink); color: var(--cream);
+  }
+  .summary-actions .ghost {
+    background: var(--paper); color: var(--ink); border: 1px solid var(--line);
+  }
+  .summary-actions a:hover { opacity: 0.85; }
+
+  .tracking-card {
+    margin-bottom: 32px;
+    padding: 22px 24px;
+    background: var(--paper); border: 1px solid var(--clay);
+    display: flex; align-items: center; justify-content: space-between; gap: 18px;
+    flex-wrap: wrap;
+  }
+  .tracking-card .body { font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; }
+  .tracking-card .body strong {
+    display: block; color: var(--ink); font-family: var(--font-heading);
+    font-weight: 400; font-size: 16px; margin-bottom: 4px;
+  }
+  .tracking-card a {
+    background: var(--clay); color: var(--cream); padding: 11px 18px;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em;
+    text-decoration: none;
+  }
+
+  @media (max-width: 900px) {
+    .order-grid { grid-template-columns: 1fr; gap: 32px; }
+    .summary-card { position: static; }
+    .order-tracker { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+    .order-tracker::before { display: none; }
+  }
+</style>
+
+<div class="order-page">
+
+  <a href="{{ routes.account_url }}" class="order-back">
+    <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"/></svg>
+    Back to account
+  </a>
+
+  <header class="order-hero">
+    <div>
+      <div class="eb">Order</div>
+      <h1>Order <em>{{ order.name }}</em></h1>
+      <div class="meta">
+        <span>Placed {{ order.created_at | date: '%-d %B %Y' }}</span>
+        <span>{{ order.line_items_subtotal_price | money }} subtotal</span>
+        <span>{{ order.line_items.size }} {% if order.line_items.size == 1 %}item{% else %}items{% endif %}</span>
+      </div>
+    </div>
+    <div class="order-hero-status {% if order.cancelled %}cancelled{% elsif order.fulfillment_status == 'fulfilled' %}{% else %}unfulfilled{% endif %}">
+      <span class="dot"></span>
+      {%- if order.cancelled -%}
+        Cancelled
+      {%- elsif order.fulfillment_status == 'fulfilled' -%}
+        Delivered
+      {%- elsif order.fulfillment_status == 'partial' -%}
+        Part-shipped
+      {%- else -%}
+        In the kiln
+      {%- endif -%}
+    </div>
+  </header>
+
+  {%- comment -%} ─── ORDER TRACKER ─── {%- endcomment -%}
+  {%- assign step_status = 'placed' -%}
+  {%- if order.cancelled -%}{%- assign step_status = 'cancelled' -%}
+  {%- elsif order.fulfillment_status == 'fulfilled' -%}{%- assign step_status = 'delivered' -%}
+  {%- elsif order.fulfillments.size > 0 -%}{%- assign step_status = 'shipped' -%}
+  {%- elsif order.financial_status == 'paid' -%}{%- assign step_status = 'kiln' -%}
+  {%- endif -%}
+
+  {%- unless order.cancelled -%}
+  <div class="order-tracker">
+    <div class="tracker-step done">
+      <div class="pip"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg></div>
+      <div class="lab">Order placed</div>
+      <div class="sub">{{ order.created_at | date: '%-d %b' }}</div>
+    </div>
+    <div class="tracker-step {% if step_status == 'kiln' %}active{% elsif step_status == 'shipped' or step_status == 'delivered' %}done{% endif %}">
+      <div class="pip">
+        {%- if step_status == 'shipped' or step_status == 'delivered' -%}
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg>
+        {%- else -%}
+          <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/></svg>
+        {%- endif -%}
+      </div>
+      <div class="lab">In the studio</div>
+      <div class="sub">Wrapping by hand</div>
+    </div>
+    <div class="tracker-step {% if step_status == 'shipped' %}active{% elsif step_status == 'delivered' %}done{% endif %}">
+      <div class="pip">
+        {%- if step_status == 'delivered' -%}
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg>
+        {%- else -%}
+          <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M3 17h2l1-5h11l1 5h2v2H3v-2Zm3-7 2-6h8l2 6"/></svg>
+        {%- endif -%}
+      </div>
+      <div class="lab">On its way</div>
+      <div class="sub">Royal Mail Tracked</div>
+    </div>
+    <div class="tracker-step {% if step_status == 'delivered' %}done{% endif %}">
+      <div class="pip">
+        <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M3 9 12 4l9 5v11H3V9Z"/><path d="M9 20v-6h6v6"/></svg>
+      </div>
+      <div class="lab">Delivered</div>
+      <div class="sub">Quietly, to your door</div>
+    </div>
+  </div>
+  {%- endunless -%}
+
+  <div class="order-grid">
+    <div>
+      {%- comment -%} ─── TRACKING ─── {%- endcomment -%}
+      {%- if order.fulfillments.size > 0 -%}
+        {%- for f in order.fulfillments -%}
+          {%- if f.tracking_url -%}
+            <div class="tracking-card">
+              <div class="body">
+                <strong>Tracking — {{ f.tracking_company | default: 'Royal Mail' }}</strong>
+                {{ f.tracking_number }} · Shipped {{ f.created_at | date: '%-d %b' }}
+              </div>
+              <a href="{{ f.tracking_url }}" target="_blank" rel="noopener">Track parcel →</a>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+
+      {%- comment -%} ─── LINE ITEMS ─── {%- endcomment -%}
+      <div class="order-block">
+        <h2>What you <em>ordered</em></h2>
+        {%- for item in order.line_items -%}
+          <div class="line-row">
+            <div class="img">
+              {%- if item.image -%}
+                <img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.title }}" width="200" height="{{ 200 | divided_by: item.image.aspect_ratio | round }}" loading="lazy">
+              {%- endif -%}
+            </div>
+            <div>
+              <div class="name">
+                {%- if item.product.handle -%}
+                  <a href="{{ item.product.url }}">{{ item.product.title }}</a>
+                {%- else -%}
+                  {{ item.title }}
+                {%- endif -%}
+              </div>
+              {%- unless item.variant.title contains 'Default' -%}
+                <div class="opts">{{ item.variant.title }}</div>
+              {%- endunless -%}
+              <div class="qty">Qty {{ item.quantity }}</div>
+            </div>
+            <div>
+              <div class="price">{{ item.final_line_price | money }}</div>
+              {%- if item.quantity > 1 -%}
+                <div class="unit-price">{{ item.final_price | money }} each</div>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      {%- comment -%} ─── ADDRESSES ─── {%- endcomment -%}
+      <div class="order-block">
+        <h2>Shipping <em>address</em></h2>
+        {%- if order.shipping_address -%}
+          <div class="addr-card">
+            <strong>{{ order.shipping_address.first_name }} {{ order.shipping_address.last_name }}</strong>
+            {{ order.shipping_address.address1 }}<br>
+            {%- if order.shipping_address.address2 != blank -%}{{ order.shipping_address.address2 }}<br>{%- endif -%}
+            {{ order.shipping_address.city }}, {{ order.shipping_address.zip }}<br>
+            {{ order.shipping_address.country }}
+            {%- if order.shipping_address.phone != blank -%}<br>{{ order.shipping_address.phone }}{%- endif -%}
+          </div>
+        {%- else -%}
+          <div class="addr-card">No shipping address on file.</div>
+        {%- endif -%}
+      </div>
+
+      <div class="order-block">
+        <h2>Billing <em>address</em></h2>
+        {%- if order.billing_address -%}
+          <div class="addr-card">
+            <strong>{{ order.billing_address.first_name }} {{ order.billing_address.last_name }}</strong>
+            {{ order.billing_address.address1 }}<br>
+            {%- if order.billing_address.address2 != blank -%}{{ order.billing_address.address2 }}<br>{%- endif -%}
+            {{ order.billing_address.city }}, {{ order.billing_address.zip }}<br>
+            {{ order.billing_address.country }}
+          </div>
+        {%- else -%}
+          <div class="addr-card">Same as shipping address.</div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- comment -%} ─── SUMMARY ─── {%- endcomment -%}
+    <div class="summary-card">
+      <div class="summary-row">
+        <span>Subtotal</span><span>{{ order.line_items_subtotal_price | money }}</span>
+      </div>
+      {%- if order.cart_level_discount_applications.size > 0 -%}
+        {%- for d in order.cart_level_discount_applications -%}
+          <div class="summary-row">
+            <span>{{ d.title }}</span><span>−{{ d.total_allocated_amount | money }}</span>
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+      <div class="summary-row">
+        <span>Shipping</span><span>{{ order.shipping_price | money }}</span>
+      </div>
+      {%- if order.tax_price > 0 -%}
+        <div class="summary-row">
+          <span>Tax</span><span>{{ order.tax_price | money }}</span>
+        </div>
+      {%- endif -%}
+      <div class="summary-row summary-total">
+        <span class="lab">Total</span>
+        <span class="val">{{ order.total_price | money }}</span>
+      </div>
+
+      <div class="summary-actions">
+        <a href="mailto:chat@kilnandclay.co.uk?subject=Order {{ order.name }}" class="ghost">Help with this order →</a>
+        <a href="{{ routes.account_url }}" class="primary">Back to account →</a>
+      </div>
+    </div>
+  </div>
+</div>

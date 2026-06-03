@@ -1,0 +1,132 @@
+<style>
+  #shopify-section-{{ section.id }} .founder {
+    max-width: 1400px; margin: 0 auto;
+    padding: 120px 40px;
+    display: grid; grid-template-columns: 1fr 1.3fr;
+    gap: 80px; align-items: center;
+  }
+  #shopify-section-{{ section.id }} .founder-img {
+    aspect-ratio: 4 / 5;
+    background:
+      radial-gradient(ellipse at 60% 35%, rgba(255, 220, 190, 0.5), transparent 60%),
+      linear-gradient(180deg, #C68B5C 0%, #8E4426 60%, #5C2A14 100%);
+    border-radius: 2px;
+    position: relative; overflow: hidden;
+    cursor: pointer;
+  }
+  #shopify-section-{{ section.id }} .founder-img img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+  #shopify-section-{{ section.id }} .credit {
+    position: absolute; top: 24px; right: 24px;
+    color: var(--cream); font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    opacity: 0.7; z-index: 4;
+  }
+  #shopify-section-{{ section.id }} .video-poster {
+    position: absolute; inset: 0; z-index: 3;
+    display: flex; align-items: flex-end;
+    padding: 28px;
+  }
+  #shopify-section-{{ section.id }} .play-btn {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 76px; height: 76px;
+    border-radius: 50%;
+    background: rgba(251, 247, 238, 0.96);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    transition: transform 0.3s, background 0.2s;
+  }
+  #shopify-section-{{ section.id }} .founder-img:hover .play-btn { transform: translate(-50%, -50%) scale(1.06); background: var(--paper); }
+  #shopify-section-{{ section.id }} .play-btn svg { width: 22px; height: 22px; color: var(--ink); margin-left: 4px; }
+
+  #shopify-section-{{ section.id }} .video-meta {
+    color: var(--cream); position: relative; z-index: 4;
+    display: flex; align-items: flex-end; justify-content: space-between;
+    width: 100%;
+  }
+  #shopify-section-{{ section.id }} .vm-l .eb { color: rgba(244, 237, 224, 0.6); font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em; margin-bottom: 6px; display: block; }
+  #shopify-section-{{ section.id }} .vm-l .ttl { font-family: var(--font-heading); font-style: italic; font-weight: 300; font-size: 22px; line-height: 1.1; }
+  #shopify-section-{{ section.id }} .vm-r {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em;
+    color: rgba(244, 237, 224, 0.7);
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid rgba(244, 237, 224, 0.25);
+    padding: 6px 10px;
+    background: rgba(0,0,0,0.2);
+  }
+
+  #shopify-section-{{ section.id }} .founder-text .eb { color: var(--clay); font-size: 11px; text-transform: uppercase; letter-spacing: 0.22em; font-weight: 500; margin-bottom: 16px; }
+  #shopify-section-{{ section.id }} .founder-text h2 {
+    font-family: var(--font-heading); font-weight: 400;
+    font-size: clamp(36px, 5vw, 60px); line-height: 1.05; letter-spacing: -0.02em;
+    margin-bottom: 30px;
+  }
+  #shopify-section-{{ section.id }} .founder-text h2 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  #shopify-section-{{ section.id }} .founder-text p {
+    font-size: 16px; line-height: 1.7;
+    color: var(--ink-soft); margin-bottom: 18px; max-width: 540px;
+    white-space: pre-line;
+  }
+  #shopify-section-{{ section.id }} .founder-text strong { color: var(--ink); font-weight: 500; }
+  @media (max-width: 1024px) {
+    #shopify-section-{{ section.id }} .founder { grid-template-columns: 1fr; gap: 50px; padding: 80px 24px; }
+    #shopify-section-{{ section.id }} .play-btn { width: 60px; height: 60px; }
+  }
+</style>
+
+<section class="founder">
+  <div class="founder-img" role="button" aria-label="{{ section.settings.video_title | escape }}">
+    {%- if section.settings.image != blank -%}
+      <img src="{{ section.settings.image | image_url: width: 1000 }}" alt="{{ section.settings.video_title | escape }}" width="1000" height="{{ 1000 | divided_by: section.settings.image.aspect_ratio | round }}" loading="lazy">
+    {%- endif -%}
+    {%- if section.settings.credit != blank -%}
+      <div class="credit">{{ section.settings.credit }}</div>
+    {%- endif -%}
+    <div class="video-poster">
+      <div class="play-btn">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M7 4v16l13-8L7 4z"/></svg>
+      </div>
+      <div class="video-meta">
+        <div class="vm-l">
+          <span class="eb">{{ section.settings.video_eyebrow }}</span>
+          <div class="ttl">{{ section.settings.video_title }}</div>
+        </div>
+        <div class="vm-r">
+          <svg width="11" height="11" fill="currentColor" viewBox="0 0 24 24"><path d="M7 4v16l13-8L7 4z"/></svg>
+          {{ section.settings.video_duration }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="founder-text">
+    {%- if section.settings.eyebrow != blank -%}
+      <div class="eb">{{ section.settings.eyebrow }}</div>
+    {%- endif -%}
+    <h2 class="display">{{ section.settings.heading | replace: '<p>', '' | replace: '</p>', '' }}</h2>
+    {%- if section.settings.body != blank -%}
+      <p>{{ section.settings.body }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "About: founder card",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Founder image" },
+    { "type": "text", "id": "credit", "label": "Photo credit" },
+
+    { "type": "header", "content": "Video poster overlay" },
+    { "type": "text", "id": "video_eyebrow", "label": "Eyebrow" },
+    { "type": "text", "id": "video_title", "label": "Title" },
+    { "type": "text", "id": "video_duration", "label": "Duration" },
+
+    { "type": "header", "content": "Text" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "richtext", "id": "heading", "label": "Heading" },
+    { "type": "textarea", "id": "body", "label": "Body (line breaks preserved)" }
+  ],
+  "presets": [{ "name": "About: founder card", "category": "About" }]
+}
+{% endschema %}

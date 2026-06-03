@@ -1,0 +1,52 @@
+{%- if section.settings.show -%}
+  <div class="announce">
+    {%- assign sep = section.settings.message_1 | append: '|;|' | append: section.settings.message_2 | append: '|;|' | append: section.settings.message_3 -%}
+    {%- assign messages = sep | split: '|;|' -%}
+    {%- assign first = true -%}
+    {%- for m in messages -%}
+      {%- assign trimmed = m | strip -%}
+      {%- if trimmed != blank -%}
+        {%- unless first %} <span>·</span> {% endunless -%}
+        {{ trimmed }}
+        {%- assign first = false -%}
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show",
+      "label": "Show announcement bar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "message_1",
+      "label": "Message 1",
+      "default": "Free UK delivery over £50"
+    },
+    {
+      "type": "text",
+      "id": "message_2",
+      "label": "Message 2",
+      "default": "Made in Britain"
+    },
+    {
+      "type": "text",
+      "id": "message_3",
+      "label": "Message 3",
+      "default": "30-day returns"
+    }
+  ],
+  "default": {
+    "settings": {
+      "show": true
+    }
+  }
+}
+{% endschema %}

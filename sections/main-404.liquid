@@ -1,0 +1,117 @@
+<style>
+  .err-404 {
+    max-width: 1100px; margin: 0 auto;
+    padding: 70px 40px 80px;
+    display: grid; grid-template-columns: 1fr 1.1fr;
+    gap: 80px; align-items: center; position: relative;
+  }
+  .err-404 .watermark {
+    position: absolute; top: 30px; right: 40px;
+    font-family: var(--font-heading); font-style: italic; font-weight: 300;
+    color: var(--cream-deep); font-size: 220px; line-height: 1;
+    opacity: 0.7; z-index: 0; pointer-events: none;
+  }
+  .err-404 .text { position: relative; z-index: 2; }
+  .err-404 .text .eyebrow { color: var(--clay); margin-bottom: 24px; display: flex; align-items: center; gap: 14px; }
+  .err-404 .text .eyebrow::before { content: ''; width: 32px; height: 1px; background: var(--clay); }
+  .err-404 h1 {
+    font-family: var(--font-heading); font-weight: 400;
+    font-size: clamp(48px, 6vw, 78px); line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 22px;
+  }
+  .err-404 h1 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  .err-404 .lede {
+    font-family: var(--font-heading); font-style: italic; font-weight: 300;
+    font-size: 22px; line-height: 1.45; color: var(--ink-soft); margin-bottom: 18px; max-width: 460px;
+  }
+  .err-404 .text p { color: var(--ink-soft); font-size: 15px; line-height: 1.7; margin-bottom: 30px; max-width: 440px; }
+  .err-404 form {
+    display: flex; align-items: center;
+    border: 1px solid var(--ink); background: var(--paper);
+    margin-bottom: 28px; max-width: 460px;
+  }
+  .err-404 form svg { width: 16px; height: 16px; margin-left: 16px; color: var(--muted); flex-shrink: 0; }
+  .err-404 form input {
+    flex: 1; background: none; border: none; padding: 14px;
+    font-family: var(--font-heading); font-style: italic; font-weight: 300;
+    font-size: 17px; color: var(--ink); outline: none;
+  }
+  .err-404 form button {
+    background: var(--ink); color: var(--cream); border: none; cursor: pointer;
+    padding: 14px 20px; font-family: inherit; font-size: 12px;
+    text-transform: uppercase; letter-spacing: 0.14em; font-weight: 500;
+  }
+  .err-404 form button:hover { background: var(--clay-deep); }
+  .err-404 .quick { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+  .err-404 .quick a { color: var(--ink); border-bottom: 1px solid var(--line); padding-bottom: 1px; }
+  .err-404 .quick a:hover { color: var(--clay); border-color: var(--clay); }
+  .err-404 .pot {
+    position: relative; z-index: 2; aspect-ratio: 4 / 5;
+    background: linear-gradient(160deg, #C68B5C 0%, #A06840 60%, #7E4D2C 100%);
+    border-radius: 2px; overflow: hidden;
+    box-shadow: 30px 30px 80px rgba(178, 90, 56, 0.18);
+  }
+  .err-404 .pot::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle at 30% 25%, rgba(255, 240, 220, 0.25), transparent 55%);
+  }
+  .err-404 .pot-svg { position: absolute; left: 50%; bottom: 6%; transform: translateX(-50%); width: 70%; z-index: 2; }
+  .err-404 .pot-tag { position: absolute; top: 28px; left: 28px; color: var(--cream); z-index: 3; }
+  .err-404 .pot-tag .num { font-family: var(--font-heading); font-style: italic; font-weight: 300; font-size: 56px; line-height: 1; opacity: 0.85; }
+  .err-404 .pot-tag .lab { font-size: 11px; text-transform: uppercase; letter-spacing: 0.18em; margin-top: 8px; opacity: 0.7; }
+  @media (max-width: 1024px) {
+    .err-404 { grid-template-columns: 1fr; gap: 50px; padding: 40px 24px 50px; }
+    .err-404 .watermark { display: none; }
+    .err-404 .pot { max-width: 360px; margin: 0 auto; }
+  }
+</style>
+
+<section class="err-404">
+  <div class="watermark" aria-hidden="true">404</div>
+
+  <div class="text">
+    <div class="eyebrow">Page Not Found · 404</div>
+    <h1>{{ section.settings.heading | default: "This one's" }} <em>{{ section.settings.heading_italic | default: 'cracked' }}</em>.</h1>
+    <p class="lede">{{ section.settings.lede | default: "The page you tried to reach has gone the way of a £4 garden-centre pot in a January frost." }}</p>
+    <p>{{ section.settings.body | default: "It might have moved, been renamed, or never quite existed. The shop is still here — try the search below, or pick one of the doors on the right." }}</p>
+
+    <form action="{{ routes.search_url }}" method="get" role="search">
+      <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" name="q" placeholder="{{ 'general.search.placeholder' | t | default: 'Search the shop or journal…' }}" aria-label="{{ 'general.search.search' | t | default: 'Search' }}">
+      <button type="submit">{{ 'general.search.search' | t | default: 'Search' }}</button>
+    </form>
+
+    <div class="quick">
+      <span>Or jump to:</span>
+      <a href="{{ routes.collections_url }}">Shop all pots</a>
+      <a href="/pages/about">Our story</a>
+      <a href="/pages/contact">Contact us</a>
+    </div>
+  </div>
+
+  <div class="pot" role="img" aria-label="A cracked plant pot illustration">
+    <div class="pot-tag" aria-hidden="true">
+      <div class="num">404</div>
+      <div class="lab">Page Not Found</div>
+    </div>
+    <svg class="pot-svg" viewBox="0 0 240 320" fill="none" aria-hidden="true">
+      <ellipse cx="120" cy="305" rx="100" ry="14" fill="rgba(0,0,0,0.32)"/>
+      <path d="M44 105 L34 295 Q34 305 46 305 L194 305 Q206 305 206 295 L196 105 Z" fill="#C97B5E" stroke="#5C2A14" stroke-width="1"/>
+      <ellipse cx="120" cy="105" rx="78" ry="16" fill="#8E4426"/>
+      <ellipse cx="120" cy="105" rx="72" ry="11" fill="#2D1408"/>
+      <path d="M88 110 L82 145 L92 180 L84 215 L96 250 L88 285" stroke="#3A1A0E" stroke-width="0.9" fill="none" opacity="0.85" stroke-linecap="round"/>
+      <path d="M82 145 L70 165 L76 180" stroke="#3A1A0E" stroke-width="0.6" fill="none" opacity="0.6"/>
+    </svg>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "404 page",
+  "settings": [
+    { "type": "text",     "id": "heading",        "label": "Heading",         "default": "This one's" },
+    { "type": "text",     "id": "heading_italic",  "label": "Italic word",     "default": "cracked" },
+    { "type": "textarea", "id": "lede",            "label": "Sub-heading",     "default": "The page you tried to reach has gone the way of a £4 garden-centre pot in a January frost." },
+    { "type": "textarea", "id": "body",            "label": "Body text",       "default": "It might have moved, been renamed, or never quite existed. The shop is still here." }
+  ]
+}
+{% endschema %}

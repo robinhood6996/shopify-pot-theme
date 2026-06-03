@@ -1,0 +1,307 @@
+<style>
+  .acct-page {
+    max-width: 1280px; margin: 0 auto;
+    padding: 60px 32px 100px;
+  }
+  .acct-hero {
+    margin-bottom: 48px;
+    padding-bottom: 36px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .acct-hero .eb {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.22em;
+    color: var(--muted); margin-bottom: 18px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .acct-hero .eb::before { content: ''; width: 32px; height: 1px; background: var(--clay); }
+  .acct-hero h1 {
+    font-family: var(--font-heading); font-weight: 400;
+    font-size: clamp(36px, 5vw, 56px); line-height: 1;
+    letter-spacing: -0.01em; margin-bottom: 14px;
+  }
+  .acct-hero h1 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  .acct-hero .lede {
+    font-family: var(--font-heading); font-style: italic; font-weight: 300;
+    font-size: 19px; line-height: 1.4;
+    color: var(--ink-soft); max-width: 640px;
+  }
+
+  .acct-grid {
+    display: grid; grid-template-columns: 280px 1fr; gap: 48px;
+    align-items: start;
+  }
+
+  .acct-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+    margin-bottom: 56px;
+  }
+  .acct-stat {
+    padding: 24px;
+    background: var(--cream);
+    border: 1px solid var(--line-soft);
+  }
+  .acct-stat .lab {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em;
+    color: var(--muted); margin-bottom: 12px;
+  }
+  .acct-stat .val {
+    font-family: var(--font-heading); font-weight: 400;
+    font-size: 38px; line-height: 1; margin-bottom: 6px;
+  }
+  .acct-stat .val em { font-style: italic; font-weight: 300; color: var(--clay); }
+  .acct-stat .sub { font-size: 12.5px; color: var(--ink-soft); }
+
+  .acct-section { margin-bottom: 56px; scroll-margin-top: 110px; }
+  .acct-section-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 24px;
+    padding-bottom: 14px; border-bottom: 1px solid var(--line-soft);
+  }
+  .acct-section-head h2 {
+    font-family: var(--font-heading); font-weight: 400;
+    font-size: 28px; line-height: 1;
+  }
+  .acct-section-head h2 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  .acct-section-head a {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em;
+    color: var(--clay); text-decoration: none;
+    border-bottom: 1px solid transparent; padding-bottom: 1px;
+    transition: border-color 0.2s;
+  }
+  .acct-section-head a:hover { border-color: var(--clay); }
+
+  .order-row {
+    display: grid; grid-template-columns: 1fr auto auto auto;
+    align-items: center; gap: 24px;
+    padding: 20px 24px;
+    background: var(--paper);
+    border: 1px solid var(--line-soft);
+    margin-bottom: 12px;
+    transition: border-color 0.15s;
+  }
+  .order-row:hover { border-color: var(--line); }
+  .order-row .num {
+    font-family: var(--font-heading); font-weight: 400; font-size: 18px;
+    margin-bottom: 4px;
+  }
+  .order-row .meta {
+    font-size: 12.5px; color: var(--ink-soft);
+    display: flex; gap: 14px; flex-wrap: wrap;
+  }
+  .order-row .meta span::after {
+    content: '·'; margin-left: 14px; color: var(--line);
+  }
+  .order-row .meta span:last-child::after { content: ''; margin: 0; }
+  .order-row .total {
+    font-family: var(--font-heading); font-style: italic; font-weight: 300;
+    font-size: 22px;
+  }
+  .order-row .status {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 12px; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.14em;
+    background: var(--cream); border: 1px solid var(--line-soft);
+  }
+  .order-row .status.fulfilled { color: var(--success); }
+  .order-row .status.unfulfilled { color: var(--clay); }
+  .order-row .status .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: currentColor; display: inline-block;
+  }
+  .order-row .view {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em;
+    color: var(--ink); text-decoration: none;
+    border-bottom: 1px solid var(--ink); padding-bottom: 1px;
+  }
+
+  .empty-state {
+    padding: 48px 32px; text-align: center;
+    background: var(--cream); border: 1px solid var(--line-soft);
+  }
+  .empty-state svg { width: 48px; height: 48px; color: var(--muted); margin-bottom: 14px; }
+  .empty-state h3 {
+    font-family: var(--font-heading); font-weight: 400; font-size: 22px;
+    margin-bottom: 8px;
+  }
+  .empty-state h3 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  .empty-state p { font-size: 14px; color: var(--ink-soft); margin-bottom: 20px; }
+  .empty-state a {
+    display: inline-block;
+    background: var(--ink); color: var(--cream);
+    padding: 12px 24px;
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.16em;
+    text-decoration: none;
+  }
+
+  .addr-mini {
+    padding: 22px 24px;
+    background: var(--paper);
+    border: 1px solid var(--line-soft);
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 24px;
+  }
+  .addr-mini .body { font-size: 13.5px; line-height: 1.7; color: var(--ink-soft); }
+  .addr-mini .body strong {
+    display: block; font-family: var(--font-heading); font-weight: 400;
+    font-size: 17px; color: var(--ink); margin-bottom: 6px;
+  }
+  .addr-mini .pill {
+    font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.16em;
+    background: var(--cream); padding: 4px 10px; color: var(--ink-soft);
+    margin-left: 8px;
+  }
+
+  .profile-card {
+    padding: 28px;
+    background: var(--paper); border: 1px solid var(--line-soft);
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;
+  }
+  .profile-row { font-size: 13.5px; }
+  .profile-row .lab {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em;
+    color: var(--muted); margin-bottom: 8px;
+  }
+  .profile-row .val { color: var(--ink); }
+
+  @media (max-width: 900px) {
+    .acct-grid { grid-template-columns: 1fr; gap: 32px; }
+    .acct-stats { grid-template-columns: 1fr; }
+    .order-row { grid-template-columns: 1fr; gap: 8px; }
+    .order-row .status, .order-row .total, .order-row .view { justify-self: start; }
+    .profile-card { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="acct-page">
+
+  <header class="acct-hero">
+    <div class="eb">Your account</div>
+    <h1>Hello, <em>{{ customer.first_name | default: 'friend' }}</em>.</h1>
+    <p class="lede">Welcome back. Your orders, addresses, and details are all here — quietly waiting.</p>
+  </header>
+
+  <div class="acct-grid">
+
+    {% render 'customer-sidebar', active: 'dashboard' %}
+
+    <div>
+
+      {%- comment -%} ─── STATS ─── {%- endcomment -%}
+      <div class="acct-stats">
+        <div class="acct-stat">
+          <div class="lab">Orders</div>
+          <div class="val">{{ customer.orders_count | default: 0 }}</div>
+          <div class="sub">{% if customer.orders_count == 1 %}One quiet shipment{% else %}Across all time{% endif %}</div>
+        </div>
+        <div class="acct-stat">
+          <div class="lab">Total spent</div>
+          <div class="val"><em>{{ customer.total_spent | money_without_trailing_zeros | default: '£0' }}</em></div>
+          <div class="sub">Lifetime, with Kiln &amp; Clay</div>
+        </div>
+        <div class="acct-stat">
+          <div class="lab">Addresses</div>
+          <div class="val">{{ customer.addresses_count | default: 0 }}</div>
+          <div class="sub">{% if customer.default_address %}{{ customer.default_address.city }}, default{% else %}None saved yet{% endif %}</div>
+        </div>
+      </div>
+
+      {%- comment -%} ─── RECENT ORDERS ─── {%- endcomment -%}
+      <section class="acct-section" id="orders">
+        <div class="acct-section-head">
+          <h2>Recent <em>orders</em></h2>
+          {%- if customer.orders.size > 5 -%}
+            <a href="{{ routes.account_url }}#orders">View all →</a>
+          {%- endif -%}
+        </div>
+
+        {%- if customer.orders.size > 0 -%}
+          {%- for order in customer.orders limit: 5 -%}
+            <div class="order-row">
+              <div>
+                <div class="num">{{ order.name }}</div>
+                <div class="meta">
+                  <span>{{ order.created_at | date: '%-d %b %Y' }}</span>
+                  <span>{{ order.line_items.size }} {% if order.line_items.size == 1 %}item{% else %}items{% endif %}</span>
+                </div>
+              </div>
+              <div class="status {{ order.fulfillment_status | default: 'unfulfilled' }}">
+                <span class="dot"></span>
+                {%- case order.fulfillment_status -%}
+                  {%- when 'fulfilled' -%}Delivered
+                  {%- when 'partial' -%}Part-shipped
+                  {%- else -%}In the kiln
+                {%- endcase -%}
+              </div>
+              <div class="total">{{ order.total_price | money }}</div>
+              <a href="{{ order.customer_url }}" class="view">View →</a>
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          <div class="empty-state">
+            <svg fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 24 24"><path d="M4 7h16l-1.5 12H5.5L4 7Zm4 0V5a4 4 0 0 1 8 0v2"/></svg>
+            <h3>No orders <em>yet</em>.</h3>
+            <p>When you place your first order, it'll show up here with tracking and dispatch notes.</p>
+            <a href="{{ routes.all_products_collection_url }}">Browse the shop →</a>
+          </div>
+        {%- endif -%}
+      </section>
+
+      {%- comment -%} ─── DEFAULT ADDRESS ─── {%- endcomment -%}
+      <section class="acct-section" id="addresses">
+        <div class="acct-section-head">
+          <h2>Default <em>address</em></h2>
+          <a href="{{ routes.account_addresses_url }}">Manage all →</a>
+        </div>
+
+        {%- if customer.default_address -%}
+          <div class="addr-mini">
+            <div class="body">
+              <strong>
+                {{ customer.default_address.first_name }} {{ customer.default_address.last_name }}
+                <span class="pill">Default</span>
+              </strong>
+              {{ customer.default_address.address1 }}<br>
+              {%- if customer.default_address.address2 != blank -%}{{ customer.default_address.address2 }}<br>{%- endif -%}
+              {{ customer.default_address.city }}, {{ customer.default_address.zip }}<br>
+              {{ customer.default_address.country }}
+              {%- if customer.default_address.phone != blank -%}<br>{{ customer.default_address.phone }}{%- endif -%}
+            </div>
+          </div>
+        {%- else -%}
+          <div class="empty-state">
+            <svg fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 24 24"><path d="M12 22s8-7.6 8-13a8 8 0 1 0-16 0c0 5.4 8 13 8 13Z"/><circle cx="12" cy="9" r="3"/></svg>
+            <h3>No saved <em>addresses</em>.</h3>
+            <p>Save an address to make checkout faster next time.</p>
+            <a href="{{ routes.account_addresses_url }}">Add address →</a>
+          </div>
+        {%- endif -%}
+      </section>
+
+      {%- comment -%} ─── PROFILE ─── {%- endcomment -%}
+      <section class="acct-section" id="profile">
+        <div class="acct-section-head">
+          <h2>Your <em>profile</em></h2>
+          <a href="mailto:chat@kilnandclay.co.uk?subject=Update my details">Need a change? →</a>
+        </div>
+        <div class="profile-card">
+          <div class="profile-row">
+            <div class="lab">Name</div>
+            <div class="val">{{ customer.name | default: 'Not set' }}</div>
+          </div>
+          <div class="profile-row">
+            <div class="lab">Email</div>
+            <div class="val">{{ customer.email }}</div>
+          </div>
+          <div class="profile-row">
+            <div class="lab">Slow List</div>
+            <div class="val">{% if customer.accepts_marketing %}Subscribed{% else %}Not subscribed{% endif %}</div>
+          </div>
+          <div class="profile-row">
+            <div class="lab">Member since</div>
+            <div class="val">{{ customer.created_at | date: '%B %Y' }}</div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>

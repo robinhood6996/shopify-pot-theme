@@ -1,0 +1,144 @@
+<style>
+  #shopify-section-{{ section.id }} .makers {
+    max-width: 1400px; margin: 0 auto;
+    padding: 120px 40px;
+  }
+  #shopify-section-{{ section.id }} .makers-head { margin-bottom: 70px; max-width: 760px; }
+  #shopify-section-{{ section.id }} .makers-head .eb { color: var(--clay); margin-bottom: 18px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.22em; font-weight: 500; }
+  #shopify-section-{{ section.id }} .makers-head h2 {
+    font-family: var(--font-heading); font-weight: 400;
+    font-size: clamp(40px, 6vw, 80px); line-height: 1.05; letter-spacing: -0.02em;
+    margin-bottom: 24px;
+  }
+  #shopify-section-{{ section.id }} .makers-head h2 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  #shopify-section-{{ section.id }} .makers-head p {
+    font-size: 17px; color: var(--ink-soft); line-height: 1.7; max-width: 620px;
+  }
+  #shopify-section-{{ section.id }} .makers-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;
+  }
+  #shopify-section-{{ section.id }} .maker { display: flex; flex-direction: column; }
+  #shopify-section-{{ section.id }} .maker-img {
+    aspect-ratio: 4 / 5; margin-bottom: 24px;
+    overflow: hidden; position: relative;
+  }
+  #shopify-section-{{ section.id }} .maker-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
+  #shopify-section-{{ section.id }} .maker:hover .maker-img img { transform: scale(1.04); }
+  #shopify-section-{{ section.id }} .maker-img-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 35%, rgba(255, 230, 200, 0.4), transparent 65%),
+      linear-gradient(180deg, #C97B5E 0%, #8E4426 50%, #4A2614 100%);
+    transition: transform 0.6s;
+  }
+  #shopify-section-{{ section.id }} .maker:nth-child(2) .maker-img-bg { background: radial-gradient(ellipse at 50% 35%, rgba(220, 230, 200, 0.4), transparent 65%), linear-gradient(180deg, #9CA396 0%, #5F6A55 60%, #2D3326 100%); }
+  #shopify-section-{{ section.id }} .maker:nth-child(3) .maker-img-bg { background: radial-gradient(ellipse at 50% 35%, rgba(220, 220, 220, 0.3), transparent 60%), linear-gradient(180deg, #4A4138 0%, #2A211A 60%, #0E0A06 100%); }
+  #shopify-section-{{ section.id }} .maker-num {
+    position: absolute; top: 22px; left: 22px;
+    color: var(--cream); font-family: var(--font-heading);
+    font-style: italic; font-size: 14px; font-weight: 300;
+    z-index: 2;
+  }
+  #shopify-section-{{ section.id }} .maker-handle {
+    position: absolute; bottom: 22px; left: 22px;
+    color: var(--cream); z-index: 2;
+  }
+  #shopify-section-{{ section.id }} .maker-handle .name {
+    font-family: var(--font-heading); font-size: 24px; font-weight: 400; line-height: 1.1;
+  }
+  #shopify-section-{{ section.id }} .maker-handle .place {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em;
+    margin-top: 6px; opacity: 0.8;
+  }
+  #shopify-section-{{ section.id }} .maker-info { padding: 0 4px; }
+  #shopify-section-{{ section.id }} .maker-info .role {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em;
+    color: var(--clay); font-weight: 500; margin-bottom: 12px;
+  }
+  #shopify-section-{{ section.id }} .maker-info p {
+    font-size: 14.5px; line-height: 1.65;
+    color: var(--ink-soft); margin-bottom: 14px;
+  }
+  #shopify-section-{{ section.id }} .maker-info p strong { color: var(--ink); font-weight: 500; }
+  #shopify-section-{{ section.id }} .specialty {
+    margin-top: 14px; padding-top: 14px;
+    border-top: 1px solid var(--line-soft);
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  #shopify-section-{{ section.id }} .specialty .key {
+    font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);
+  }
+  #shopify-section-{{ section.id }} .specialty .val {
+    color: var(--ink); font-family: var(--font-heading);
+    font-style: italic; font-weight: 300; font-size: 16px;
+  }
+  @media (max-width: 1024px) {
+    #shopify-section-{{ section.id }} .makers { padding: 80px 24px; }
+    #shopify-section-{{ section.id }} .makers-grid { grid-template-columns: 1fr; gap: 50px; }
+  }
+</style>
+
+<section class="makers">
+  <div class="makers-head">
+    {%- if section.settings.eyebrow != blank -%}<div class="eb">{{ section.settings.eyebrow }}</div>{%- endif -%}
+    <h2 class="display">{{ section.settings.heading | replace: '<p>', '' | replace: '</p>', '' }}</h2>
+    {%- if section.settings.body != blank -%}<p>{{ section.settings.body }}</p>{%- endif -%}
+  </div>
+
+  <div class="makers-grid">
+    {%- for block in section.blocks -%}
+      <div class="maker" {{ block.shopify_attributes }}>
+        <div class="maker-img">
+          {%- if block.settings.image != blank -%}
+            <img src="{{ block.settings.image | image_url: width: 800 }}" alt="{{ block.settings.name }}" width="800" height="{{ 800 | divided_by: block.settings.image.aspect_ratio | round }}" loading="lazy">
+          {%- else -%}
+            <div class="maker-img-bg"></div>
+          {%- endif -%}
+          <div class="maker-num">{{ block.settings.num }}</div>
+          <div class="maker-handle">
+            <div class="name">{{ block.settings.name }}</div>
+            <div class="place">{{ block.settings.place }}</div>
+          </div>
+        </div>
+        <div class="maker-info">
+          <div class="role">{{ block.settings.role }}</div>
+          <p>{{ block.settings.body }}</p>
+          {%- if block.settings.signature != blank -%}
+            <div class="specialty">
+              <span class="key">Signature</span>
+              <span class="val">{{ block.settings.signature }}</span>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Makers",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Our makers" },
+    { "type": "richtext", "id": "heading", "label": "Heading" },
+    { "type": "textarea", "id": "body", "label": "Body" }
+  ],
+  "blocks": [
+    {
+      "type": "maker",
+      "name": "Maker",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image (optional — gradient fallback)" },
+        { "type": "text", "id": "num", "label": "Studio number", "default": "Studio · 01" },
+        { "type": "text", "id": "name", "label": "Maker name" },
+        { "type": "text", "id": "place", "label": "Studio + location" },
+        { "type": "text", "id": "role", "label": "Role line (uppercase)" },
+        { "type": "textarea", "id": "body", "label": "Body" },
+        { "type": "text", "id": "signature", "label": "Signature finish" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Makers", "category": "About" }]
+}
+{% endschema %}

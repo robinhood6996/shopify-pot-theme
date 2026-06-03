@@ -1,0 +1,75 @@
+<style>
+  #shopify-section-{{ section.id }} .featured-collection {
+    max-width: 1400px; margin: 0 auto;
+    padding: 100px 40px;
+  }
+  #shopify-section-{{ section.id }} .section-head {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 60px; flex-wrap: wrap; gap: 24px;
+  }
+  #shopify-section-{{ section.id }} .section-head h2 {
+    font-family: var(--font-heading); font-weight: 400;
+    font-size: clamp(36px, 5vw, 60px);
+    line-height: 1.05; letter-spacing: -0.02em;
+  }
+  #shopify-section-{{ section.id }} .section-head h2 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  #shopify-section-{{ section.id }} .products-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px 24px;
+  }
+  #shopify-section-{{ section.id }} .empty {
+    text-align: center; padding: 60px 0;
+    color: var(--muted); font-family: var(--font-heading); font-style: italic;
+    font-size: 18px;
+  }
+
+  @media (max-width: 1024px) {
+    #shopify-section-{{ section.id }} .featured-collection { padding: 60px 24px; }
+    #shopify-section-{{ section.id }} .products-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    #shopify-section-{{ section.id }} .products-grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<section class="featured-collection">
+  <div class="section-head">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="display">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    {%- if section.settings.view_all_label != blank -%}
+      <a href="{{ section.settings.view_all_link | default: routes.collections_url }}" class="btn btn-ghost">{{ section.settings.view_all_label }}</a>
+    {%- endif -%}
+  </div>
+
+  <div class="products-grid">
+    {%- assign coll = section.settings.collection -%}
+    {%- if coll != blank and coll.products.size > 0 -%}
+      {%- for product in coll.products limit: section.settings.products_to_show -%}
+        {% render 'product-card', product: product, show_quick_add: true %}
+      {%- endfor -%}
+    {%- else -%}
+      <div class="empty" style="grid-column: 1 / -1;">
+        Pick a collection in the section settings to populate this grid — or add products in your Shopify admin.
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured collection",
+  "settings": [
+    { "type": "richtext", "id": "heading", "label": "Heading", "default": "<p>Just in this <em>week</em></p>" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 2, "max": 8, "step": 1, "default": 4
+    },
+    { "type": "text", "id": "view_all_label", "label": "View-all label", "default": "View all new arrivals" },
+    { "type": "url",  "id": "view_all_link",  "label": "View-all link" }
+  ],
+  "presets": [{ "name": "Featured collection", "category": "Collection" }]
+}
+{% endschema %}

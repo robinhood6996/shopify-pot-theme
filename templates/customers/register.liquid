@@ -1,0 +1,148 @@
+{% render 'customer-shell-styles' %}
+
+<style>
+  .pw-meter {
+    margin-top: 10px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .pw-meter-bar {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;
+  }
+  .pw-meter-bar span {
+    height: 3px; background: var(--line-soft); border-radius: 2px;
+    transition: background 0.25s;
+  }
+  .pw-meter-bar[data-strength="1"] span:nth-child(-n+1) { background: var(--error); }
+  .pw-meter-bar[data-strength="2"] span:nth-child(-n+2) { background: #C68B5C; }
+  .pw-meter-bar[data-strength="3"] span:nth-child(-n+3) { background: var(--clay); }
+  .pw-meter-bar[data-strength="4"] span { background: var(--success); }
+  .pw-meter-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em;
+    color: var(--muted);
+  }
+  .pw-meter-label strong { color: var(--ink-soft); font-weight: 500; }
+</style>
+
+<div class="acct-shell">
+  {% render 'customer-brand-pane',
+    eyebrow: 'Joining the Slow List',
+    heading: 'A small <em>account</em>,<br>for a small <em>house</em>.',
+    lede: "It takes thirty seconds. We'll never sell your details, and you can leave the list whenever you like."
+  %}
+
+  <main class="form-pane">
+    <div class="form-inner">
+
+      <div class="tab-toggle register" id="tab-toggle" role="tablist">
+        <span class="indicator"></span>
+        <a href="{{ routes.account_login_url }}">Sign in</a>
+        <a href="{{ routes.account_register_url }}" class="active">Create account</a>
+      </div>
+
+      <h2 class="pane-title">Make a <em>home</em> here.</h2>
+      <p class="pane-sub">An account keeps your wishlist, addresses, and order history in one quiet place.</p>
+
+      {% form 'create_customer', novalidate: 'novalidate' %}
+        {%- if form.errors -%}
+          <div class="form-errors">
+            <ul>
+              {%- for f in form.errors -%}
+                <li>{{ form.errors.messages[f] }}</li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+
+        {%- if form.posted_successfully? -%}
+          <div class="form-success-msg">
+            Welcome. Check your inbox for a confirmation email.
+          </div>
+        {%- endif -%}
+
+        <div class="field-row">
+          <div class="field">
+            <div class="field-label-row"><span>First name</span></div>
+            <input type="text" class="field-input" name="customer[first_name]" value="{{ form.first_name }}" required autocomplete="given-name">
+          </div>
+          <div class="field">
+            <div class="field-label-row">
+              <span>Last name</span>
+              <span class="opt">optional</span>
+            </div>
+            <input type="text" class="field-input" name="customer[last_name]" value="{{ form.last_name }}" autocomplete="family-name">
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-label-row"><span>Email</span></div>
+          <input type="email" class="field-input" name="customer[email]" value="{{ form.email }}" placeholder="your@email.co.uk" required autocomplete="email">
+        </div>
+
+        <div class="field">
+          <div class="field-label-row"><span>Password</span></div>
+          <div class="field-pw">
+            <input type="password" class="field-input" name="customer[password]" placeholder="At least 8 characters" required minlength="8" autocomplete="new-password" id="register-pw">
+            <button type="button" class="toggle-pw" data-pw="register-pw" aria-label="Show password">
+              <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <div class="pw-meter">
+            <div class="pw-meter-bar" data-strength="0" id="pw-meter-bar">
+              <span></span><span></span><span></span><span></span>
+            </div>
+            <div class="pw-meter-label">Strength: <strong id="pw-meter-label">enter a password</strong></div>
+          </div>
+        </div>
+
+        <label class="field-check">
+          <input type="checkbox" name="customer[accepts_marketing]" value="1" checked>
+          <span>Add me to <strong>The Slow List</strong> — a fortnightly note from the studio. New makers, restock alerts, and the odd open-studio invitation. No more than two emails a month.</span>
+        </label>
+
+        <label class="field-check">
+          <input type="checkbox" required>
+          <span>I've read the <a href="/policies/privacy-policy">privacy notice</a> and agree to the <a href="/policies/terms-of-service">terms</a>.</span>
+        </label>
+
+        <button type="submit" class="submit-btn">Create account <span class="arrow">→</span></button>
+
+        <div class="form-foot">
+          Already have an account? <a href="{{ routes.account_login_url }}">Sign in →</a>
+        </div>
+      {% endform %}
+
+    </div>
+  </main>
+</div>
+
+<script>
+  // Show/hide password
+  document.querySelectorAll('.toggle-pw').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.pw;
+      const input = document.getElementById(id);
+      if (!input) return;
+      input.type = input.type === 'password' ? 'text' : 'password';
+    });
+  });
+
+  // Password strength meter
+  const pw = document.getElementById('register-pw');
+  const bar = document.getElementById('pw-meter-bar');
+  const label = document.getElementById('pw-meter-label');
+  const labels = ['enter a password', 'too short', 'getting there', 'good', 'strong'];
+
+  if (pw) {
+    pw.addEventListener('input', () => {
+      const v = pw.value;
+      let score = 0;
+      if (v.length >= 8) score++;
+      if (v.length >= 12) score++;
+      if (/[A-Z]/.test(v) && /[a-z]/.test(v)) score++;
+      if (/\d/.test(v) && /[^A-Za-z0-9]/.test(v)) score++;
+      if (v.length === 0) score = 0;
+      bar.dataset.strength = score;
+      label.textContent = labels[score];
+    });
+  }
+</script>

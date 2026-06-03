@@ -1,0 +1,225 @@
+{%- liquid
+  assign hero_image = section.settings.hero_image
+  assign feat_product = section.settings.featured_product
+-%}
+
+<style>
+  #shopify-section-{{ section.id }} .hero {
+    max-width: 1400px; margin: 0 auto;
+    padding: 60px 40px 40px;
+    display: grid; grid-template-columns: 1.1fr 1fr;
+    gap: 80px; align-items: center; position: relative;
+  }
+  #shopify-section-{{ section.id }} .hero-text { position: relative; z-index: 2; }
+  #shopify-section-{{ section.id }} .hero-eyebrow {
+    margin-bottom: 32px; display: flex; align-items: center; gap: 14px;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.22em; font-weight: 500;
+    color: var(--muted);
+  }
+  #shopify-section-{{ section.id }} .hero-eyebrow::before { content: ''; width: 32px; height: 1px; background: var(--clay); }
+  #shopify-section-{{ section.id }} .hero h1 {
+    font-family: var(--font-heading); font-weight: 400;
+    font-size: clamp(48px, 7vw, 96px);
+    line-height: 1.05; letter-spacing: -0.02em;
+    margin-bottom: 28px;
+  }
+  #shopify-section-{{ section.id }} .hero h1 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  #shopify-section-{{ section.id }} .hero p.lede {
+    font-size: 17px; line-height: 1.65; color: var(--ink-soft);
+    max-width: 460px; margin-bottom: 40px;
+  }
+  #shopify-section-{{ section.id }} .btn-row { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+
+  /* Hero pot visual */
+  #shopify-section-{{ section.id }} .hero-visual { position: relative; height: 640px; }
+  #shopify-section-{{ section.id }} .hero-pot {
+    position: absolute; top: 0; right: 0; width: 88%; height: 100%;
+    background: linear-gradient(135deg, #C68B5C 0%, #A06840 50%, #7E4D2C 100%);
+    border-radius: 4px; overflow: hidden;
+    box-shadow: 30px 30px 80px rgba(178, 90, 56, 0.18);
+  }
+  #shopify-section-{{ section.id }} .hero-pot::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 30% 20%, rgba(255, 240, 220, 0.25), transparent 50%),
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.18 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  #shopify-section-{{ section.id }} .hero-pot img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover;
+  }
+  #shopify-section-{{ section.id }} .hero-pot-label {
+    position: absolute; bottom: 28px; left: 28px;
+    color: var(--cream); z-index: 2;
+  }
+  #shopify-section-{{ section.id }} .hero-pot-label .name { font-family: var(--font-heading); font-style: italic; font-size: 22px; font-weight: 300; }
+  #shopify-section-{{ section.id }} .hero-pot-label .price { font-size: 12px; letter-spacing: 0.15em; opacity: 0.85; margin-top: 4px; }
+
+  #shopify-section-{{ section.id }} .hero-tag {
+    position: absolute; background: var(--paper); padding: 18px 22px;
+    border: 1px solid var(--line); z-index: 3;
+  }
+  #shopify-section-{{ section.id }} .hero-tag-1 { top: 60px; left: -30px; transform: rotate(-3deg); }
+  #shopify-section-{{ section.id }} .hero-tag-2 { bottom: 80px; right: -40px; transform: rotate(2deg); }
+  #shopify-section-{{ section.id }} .hero-tag .num { font-family: var(--font-heading); font-size: 28px; font-weight: 400; color: var(--clay); line-height: 1; }
+  #shopify-section-{{ section.id }} .hero-tag .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted); margin-top: 4px; }
+
+  /* Value props strip */
+  #shopify-section-{{ section.id }} .hero-props {
+    max-width: 1400px; margin: 0 auto;
+    padding: 28px 40px 40px;
+    border-top: 1px solid var(--line);
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+  }
+  #shopify-section-{{ section.id }} .hero-prop {
+    display: flex; align-items: flex-start; gap: 14px;
+  }
+  #shopify-section-{{ section.id }} .hero-prop svg {
+    width: 22px; height: 22px; color: var(--clay); flex-shrink: 0; margin-top: 2px;
+  }
+  #shopify-section-{{ section.id }} .hero-prop .pt {
+    font-family: var(--font-heading); font-size: 16px; font-weight: 400; line-height: 1.2; margin-bottom: 4px;
+  }
+  #shopify-section-{{ section.id }} .hero-prop .ps {
+    font-size: 12px; color: var(--muted); letter-spacing: 0.04em; line-height: 1.4;
+  }
+
+  @media (max-width: 1024px) {
+    #shopify-section-{{ section.id }} .hero { grid-template-columns: 1fr; gap: 60px; padding: 40px 24px; }
+    #shopify-section-{{ section.id }} .hero-visual { height: 480px; }
+    #shopify-section-{{ section.id }} .hero-props { grid-template-columns: repeat(2, 1fr); gap: 24px; padding: 24px 24px 40px; }
+  }
+  @media (max-width: 600px) {
+    #shopify-section-{{ section.id }} .hero h1 { font-size: 48px; }
+  }
+</style>
+
+<section class="hero">
+  <div class="hero-text">
+    {%- if section.settings.eyebrow != blank -%}
+      <div class="hero-eyebrow">{{ section.settings.eyebrow }}</div>
+    {%- endif -%}
+
+    {%- if section.settings.heading != blank -%}
+      <h1 class="display">{{ section.settings.heading | replace: '<p>', '' | replace: '</p>', '' }}</h1>
+    {%- endif -%}
+
+    {%- if section.settings.body != blank -%}
+      <p class="lede">{{ section.settings.body }}</p>
+    {%- endif -%}
+
+    <div class="btn-row">
+      {%- if section.settings.primary_cta_label != blank -%}
+        <a href="{{ section.settings.primary_cta_link | default: routes.collections_url }}" class="btn btn-primary">
+          {{ section.settings.primary_cta_label }}
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+        </a>
+      {%- endif -%}
+      {%- if section.settings.secondary_cta_label != blank -%}
+        <a href="{{ section.settings.secondary_cta_link | default: '#' }}" class="btn btn-ghost">{{ section.settings.secondary_cta_label }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="hero-tag hero-tag-1">
+      <div class="num">{{ section.settings.tag_1_num | default: '02' }}</div>
+      <div class="label">{{ section.settings.tag_1_label | default: 'Drainage Holes' }}</div>
+    </div>
+
+    <div class="hero-pot">
+      {%- if hero_image != blank -%}
+        <img src="{{ hero_image | image_url: width: 1200 }}" alt="{{ hero_image.alt | default: section.settings.heading | strip_html | escape }}" width="1200" height="{{ 1200 | divided_by: hero_image.aspect_ratio | round }}" loading="eager">
+      {%- elsif feat_product and feat_product.featured_media -%}
+        <img src="{{ feat_product.featured_media | image_url: width: 1200 }}" alt="{{ feat_product.title | escape }}" width="1200" height="{{ 1200 | divided_by: feat_product.featured_media.aspect_ratio | round }}" loading="eager">
+      {%- endif -%}
+      {%- if feat_product != blank -%}
+        <div class="hero-pot-label">
+          <div class="name">{{ feat_product.title }}</div>
+          <div class="price">{{ feat_product.price | money }} · {{ feat_product.metafields.custom.size | default: '22cm' }}</div>
+        </div>
+      {%- else -%}
+        <div class="hero-pot-label">
+          <div class="name">{{ section.settings.feat_name | default: 'The Erin Pot' }}</div>
+          <div class="price">{{ section.settings.feat_meta | default: '£42 · 22cm' }}</div>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="hero-tag hero-tag-2">
+      <div class="num">{{ section.settings.tag_2_num | default: '£42' }}</div>
+      <div class="label">{{ section.settings.tag_2_label | default: '22cm Stoneware' }}</div>
+    </div>
+  </div>
+</section>
+
+{%- if section.settings.value_prop_1_title != blank -%}
+<div class="hero-props">
+  <div class="hero-prop">
+    <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M3 6h18l-2 14H5L3 6Z"/><path d="M8 6V4a4 4 0 0 1 8 0v2"/></svg>
+    <div>
+      <div class="pt">{{ section.settings.value_prop_1_title }}</div>
+      <div class="ps">{{ section.settings.value_prop_1_body }}</div>
+    </div>
+  </div>
+  <div class="hero-prop">
+    <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M12 2 4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4Z"/></svg>
+    <div>
+      <div class="pt">{{ section.settings.value_prop_2_title }}</div>
+      <div class="ps">{{ section.settings.value_prop_2_body }}</div>
+    </div>
+  </div>
+  <div class="hero-prop">
+    <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg>
+    <div>
+      <div class="pt">{{ section.settings.value_prop_3_title }}</div>
+      <div class="ps">{{ section.settings.value_prop_3_body }}</div>
+    </div>
+  </div>
+  <div class="hero-prop">
+    <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+    <div>
+      <div class="pt">{{ section.settings.value_prop_4_title }}</div>
+      <div class="ps">{{ section.settings.value_prop_4_body }}</div>
+    </div>
+  </div>
+</div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    { "type": "header", "content": "Copy" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "New Spring Collection · 2026" },
+    { "type": "richtext", "id": "heading", "label": "Headline (use <em> for italic emphasis)", "default": "<p>Pots that<br>let plants <em>breathe.</em></p>" },
+    { "type": "textarea", "id": "body", "label": "Body" },
+
+    { "type": "header", "content": "Buttons" },
+    { "type": "text", "id": "primary_cta_label", "label": "Primary button", "default": "Shop the collection" },
+    { "type": "url",  "id": "primary_cta_link",  "label": "Primary link" },
+    { "type": "text", "id": "secondary_cta_label", "label": "Secondary button", "default": "Read our story" },
+    { "type": "url",  "id": "secondary_cta_link",  "label": "Secondary link" },
+
+    { "type": "header", "content": "Visual" },
+    { "type": "image_picker", "id": "hero_image", "label": "Hero image (optional)" },
+    { "type": "product",      "id": "featured_product", "label": "Featured product (used for label)" },
+    { "type": "text", "id": "tag_1_num", "label": "Tag 1 number", "default": "02" },
+    { "type": "text", "id": "tag_1_label", "label": "Tag 1 label", "default": "Drainage Holes" },
+    { "type": "text", "id": "tag_2_num", "label": "Tag 2 number", "default": "£42" },
+    { "type": "text", "id": "tag_2_label", "label": "Tag 2 label", "default": "22cm Stoneware" },
+
+    { "type": "header", "content": "Value props" },
+    { "type": "text", "id": "value_prop_1_title", "label": "Prop 1 title", "default": "Free UK delivery" },
+    { "type": "text", "id": "value_prop_1_body",  "label": "Prop 1 body",  "default": "On orders over £50" },
+    { "type": "text", "id": "value_prop_2_title", "label": "Prop 2 title", "default": "Frost-proof guarantee" },
+    { "type": "text", "id": "value_prop_2_body",  "label": "Prop 2 body",  "default": "Survives a British winter" },
+    { "type": "text", "id": "value_prop_3_title", "label": "Prop 3 title", "default": "Hand-thrown in Britain" },
+    { "type": "text", "id": "value_prop_3_body",  "label": "Prop 3 body",  "default": "Three studios in Stoke-on-Trent" },
+    { "type": "text", "id": "value_prop_4_title", "label": "Prop 4 title", "default": "30-day returns" },
+    { "type": "text", "id": "value_prop_4_body",  "label": "Prop 4 body",  "default": "Plant-care advice for life" }
+  ],
+  "presets": [{ "name": "Hero", "category": "Image" }]
+}
+{% endschema %}

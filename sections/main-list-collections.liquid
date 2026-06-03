@@ -1,0 +1,113 @@
+<style>
+  .lc-hero { max-width: 1400px; margin: 0 auto; padding: 60px 40px 40px; text-align: center; }
+  .lc-hero .eyebrow { color: var(--clay); margin-bottom: 22px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.22em; font-weight: 500; }
+  .lc-hero h1 { font-family: var(--font-heading); font-weight: 400; font-size: clamp(48px, 7vw, 96px); line-height: 0.95; letter-spacing: -0.02em; margin-bottom: 24px; }
+  .lc-hero h1 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  .lc-hero p { font-family: var(--font-heading); font-style: italic; font-weight: 300; font-size: 19px; line-height: 1.5; color: var(--ink-soft); max-width: 640px; margin: 0 auto; }
+
+  .anchor-nav { position: sticky; top: 78px; z-index: 50; background: var(--paper); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-top: 30px; }
+  .anchor-inner { max-width: 1400px; margin: 0 auto; padding: 18px 40px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .anchor-list { display: flex; gap: 4px; flex-wrap: wrap; list-style: none; }
+  .anchor-list a { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; font-size: 12.5px; color: var(--ink-soft); border-radius: 100px; text-decoration: none; transition: all 0.2s; }
+  .anchor-list a:hover { background: var(--cream); color: var(--ink); }
+  .anchor-list a.active { background: var(--ink); color: var(--cream); }
+  .anchor-list .ct { font-family: var(--font-heading); font-style: italic; font-weight: 300; font-size: 13px; opacity: 0.7; }
+
+  .lc-section { max-width: 1400px; margin: 0 auto; padding: 80px 40px 30px; }
+  .lc-section-h { display: flex; justify-content: space-between; align-items: end; flex-wrap: wrap; gap: 20px; margin-bottom: 40px; }
+  .lc-section-h .lhs { max-width: 640px; }
+  .lc-section-h .eb { color: var(--clay); margin-bottom: 14px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.22em; font-weight: 500; }
+  .lc-section-h h2 { font-family: var(--font-heading); font-weight: 400; font-size: clamp(32px, 4vw, 50px); line-height: 1.1; letter-spacing: -0.02em; }
+  .lc-section-h h2 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  .lc-section-h p { color: var(--ink-soft); font-size: 15px; margin-top: 12px; max-width: 560px; }
+
+  .lc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+  .lc-card { aspect-ratio: 5 / 4; border-radius: 2px; overflow: hidden; position: relative; cursor: pointer; color: var(--cream); text-decoration: none; transition: transform 0.4s; }
+  .lc-card:hover { transform: translateY(-4px); }
+  .lc-card:hover .lc-bg { transform: scale(1.05); }
+  .lc-bg { position: absolute; inset: 0; transition: transform 0.5s; }
+  .lc-bg img { width: 100%; height: 100%; object-fit: cover; }
+  .lc-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.55), transparent 55%); }
+  .lc-content { position: absolute; bottom: 22px; left: 22px; right: 22px; z-index: 2; }
+  .lc-content .num { font-family: var(--font-heading); font-style: italic; font-weight: 300; font-size: 13px; opacity: 0.7; margin-bottom: 6px; }
+  .lc-content .name { font-family: var(--font-heading); font-size: 22px; font-weight: 400; line-height: 1.15; }
+  .lc-content .ct { font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; opacity: 0.8; margin-top: 6px; }
+
+  .lc-card:nth-child(6n+1) .lc-bg:not(:has(img)) { background: linear-gradient(140deg, #c97b5e, #6f3a23); }
+  .lc-card:nth-child(6n+2) .lc-bg:not(:has(img)) { background: linear-gradient(140deg, #5f6a55, #2d3326); }
+  .lc-card:nth-child(6n+3) .lc-bg:not(:has(img)) { background: linear-gradient(140deg, #bfb29c, #8a7e66); }
+  .lc-card:nth-child(6n+4) .lc-bg:not(:has(img)) { background: linear-gradient(140deg, #2d2620, #0e0a06); }
+  .lc-card:nth-child(6n+5) .lc-bg:not(:has(img)) { background: linear-gradient(140deg, #c68b5c, #7e4d2c); }
+  .lc-card:nth-child(6n+6) .lc-bg:not(:has(img)) { background: linear-gradient(140deg, #e5dcc8, #bfb29c); }
+  .lc-card:nth-child(6n+6) .lc-content { color: var(--ink); }
+  .lc-card:nth-child(6n+6) .lc-bg::after { background: linear-gradient(to top, rgba(0,0,0,0.1), transparent 55%); }
+
+  @media (max-width: 1024px) { .lc-hero { padding: 40px 24px 30px; } .anchor-inner { padding: 16px 24px; } .lc-section { padding: 60px 24px 20px; } .lc-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .lc-grid { grid-template-columns: 1fr; } }
+</style>
+
+<nav class="breadcrumb">
+  <a href="{{ routes.root_url }}">Home</a><span class="sep">/</span>
+  <span class="current">All collections</span>
+</nav>
+
+<section class="lc-hero">
+  <div class="eyebrow">All Collections</div>
+  <h1 class="display">Browse the <em>{{ section.settings.heading_italic | default: 'shop' }}</em>.</h1>
+  <p>{{ section.settings.subtext | default: 'Every collection in the shop, organised by material, by use, and by the seasonal edits that thread them together.' }}</p>
+</section>
+
+<nav class="anchor-nav" aria-label="Jump to section">
+  <div class="anchor-inner">
+    <ul class="anchor-list" role="list">
+      <li>
+        <a href="#all" class="active">All <span class="ct">{{ collections.size }}</span></a>
+      </li>
+    </ul>
+    <div style="font-size: 12.5px; color: var(--muted); letter-spacing: 0.04em;">
+      <strong style="color: var(--ink); font-weight: 500;">{{ collections.size }} collections</strong>
+    </div>
+  </div>
+</nav>
+
+<section class="lc-section" id="all">
+  <div class="lc-section-h">
+    <div class="lhs">
+      <div class="eb">Browse all</div>
+      <h2>Every <em>collection</em>, every grouping.</h2>
+      <p>From material-led ranges to seasonal edits — pick a starting point that matches how you shop.</p>
+    </div>
+  </div>
+
+  <div class="lc-grid">
+    {%- for c in collections -%}
+      {%- unless c.handle == 'frontpage' -%}
+        <a href="{{ c.url }}" class="lc-card">
+          <div class="lc-bg">
+            {%- if c.image -%}
+              <img src="{{ c.image | image_url: width: 800 }}" alt="{{ c.title | escape }}" width="800" height="{{ 800 | divided_by: c.image.aspect_ratio | round }}" loading="lazy">
+            {%- endif -%}
+          </div>
+          <div class="lc-content">
+            <div class="num">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</div>
+            <div class="name">{{ c.title }}</div>
+            <div class="ct">
+              {{ c.products_count }} {% if c.products_count == 1 %}piece{% else %}pieces{% endif %}
+              {%- if c.products.first.price > 0 %} · From {{ c.products.first.price | money_without_trailing_zeros }}{%- endif -%}
+            </div>
+          </div>
+        </a>
+      {%- endunless -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collections list",
+  "settings": [
+    { "type": "text",     "id": "heading_italic", "label": "Hero heading italic word", "default": "shop" },
+    { "type": "textarea", "id": "subtext",         "label": "Hero subtext", "default": "Every collection in the shop, organised by material, by use, and by the seasonal edits that thread them together." }
+  ]
+}
+{% endschema %}

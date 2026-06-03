@@ -1,0 +1,130 @@
+<style>
+  #shopify-section-{{ section.id }} .editorial { background: var(--ink); color: var(--cream); }
+  #shopify-section-{{ section.id }} .editorial-inner {
+    max-width: 1400px; margin: 0 auto;
+    padding: 120px 40px;
+    display: grid; grid-template-columns: 1fr 1.1fr;
+    gap: 80px; align-items: center;
+  }
+  #shopify-section-{{ section.id }} .editorial-image {
+    aspect-ratio: 4 / 5;
+    background:
+      radial-gradient(ellipse at 70% 30%, rgba(178, 90, 56, 0.4), transparent 60%),
+      linear-gradient(180deg, #2A211A, #1A140E);
+    position: relative; overflow: hidden;
+  }
+  #shopify-section-{{ section.id }} .editorial-image img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+  #shopify-section-{{ section.id }} .editorial-text .eyebrow {
+    color: var(--clay); margin-bottom: 24px;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.22em; font-weight: 500;
+  }
+  #shopify-section-{{ section.id }} .editorial-text h2 {
+    font-family: var(--font-heading); font-weight: 400;
+    font-size: clamp(40px, 5.5vw, 72px); line-height: 1.05; letter-spacing: -0.02em;
+    margin-bottom: 30px;
+  }
+  #shopify-section-{{ section.id }} .editorial-text h2 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  #shopify-section-{{ section.id }} .editorial-text p {
+    color: var(--bone); font-size: 17px; line-height: 1.7;
+    margin-bottom: 24px; max-width: 520px;
+    white-space: pre-line;
+  }
+  #shopify-section-{{ section.id }} .editorial-text .btn-ghost {
+    color: var(--cream); border-color: var(--cream); margin-top: 16px;
+  }
+  #shopify-section-{{ section.id }} .editorial-text .btn-ghost:hover { color: var(--clay); border-color: var(--clay); }
+  #shopify-section-{{ section.id }} .editorial-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 30px; margin-top: 50px; padding-top: 40px;
+    border-top: 1px solid rgba(244, 237, 224, 0.15);
+  }
+  #shopify-section-{{ section.id }} .stat .num {
+    font-family: var(--font-heading); font-style: italic;
+    font-size: 44px; font-weight: 300; color: var(--clay); line-height: 1;
+  }
+  #shopify-section-{{ section.id }} .stat .label {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em;
+    margin-top: 8px; color: var(--bone);
+  }
+
+  @media (max-width: 1024px) {
+    #shopify-section-{{ section.id }} .editorial-inner { grid-template-columns: 1fr; gap: 50px; padding: 80px 24px; }
+    #shopify-section-{{ section.id }} .editorial-stats { grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  }
+  @media (max-width: 600px) {
+    #shopify-section-{{ section.id }} .editorial-stats { grid-template-columns: 1fr; }
+  }
+</style>
+
+<section class="editorial">
+  <div class="editorial-inner">
+    <div class="editorial-image">
+      {%- if section.settings.image != blank -%}
+        <img src="{{ section.settings.image | image_url: width: 800 }}" alt="{{ section.settings.image.alt | default: section.settings.heading | strip_html }}" width="800" height="{{ 800 | divided_by: section.settings.image.aspect_ratio | round }}" loading="lazy">
+      {%- endif -%}
+    </div>
+    <div class="editorial-text">
+      {%- if section.settings.eyebrow != blank -%}
+        <div class="eyebrow">{{ section.settings.eyebrow }}</div>
+      {%- endif -%}
+
+      {%- if section.settings.heading != blank -%}
+        <h2 class="display">{{ section.settings.heading | replace: '<p>', '' | replace: '</p>', '' }}</h2>
+      {%- endif -%}
+
+      {%- if section.settings.body != blank -%}
+        <p>{{ section.settings.body }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.cta_label != blank -%}
+        <a href="{{ section.settings.cta_link | default: '#' }}" class="btn btn-ghost">{{ section.settings.cta_label }}</a>
+      {%- endif -%}
+
+      <div class="editorial-stats">
+        {%- if section.settings.stat_1_value != blank -%}
+          <div class="stat">
+            <div class="num">{{ section.settings.stat_1_value }}</div>
+            <div class="label">{{ section.settings.stat_1_label }}</div>
+          </div>
+        {%- endif -%}
+        {%- if section.settings.stat_2_value != blank -%}
+          <div class="stat">
+            <div class="num">{{ section.settings.stat_2_value }}</div>
+            <div class="label">{{ section.settings.stat_2_label }}</div>
+          </div>
+        {%- endif -%}
+        {%- if section.settings.stat_3_value != blank -%}
+          <div class="stat">
+            <div class="num">{{ section.settings.stat_3_value }}</div>
+            <div class="label">{{ section.settings.stat_3_label }}</div>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Editorial block",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Made in Britain" },
+    { "type": "richtext", "id": "heading", "label": "Heading", "default": "<p>Slow craft, in a <em>noisy</em> industry.</p>" },
+    { "type": "textarea", "id": "body", "label": "Body (line breaks preserved)" },
+    { "type": "text", "id": "cta_label", "label": "Button label", "default": "Inside the studio →" },
+    { "type": "url",  "id": "cta_link",  "label": "Button link" },
+
+    { "type": "header", "content": "Stats" },
+    { "type": "text", "id": "stat_1_value", "label": "Stat 1 value", "default": "3" },
+    { "type": "text", "id": "stat_1_label", "label": "Stat 1 label", "default": "UK Studios" },
+    { "type": "text", "id": "stat_2_value", "label": "Stat 2 value", "default": "94" },
+    { "type": "text", "id": "stat_2_label", "label": "Stat 2 label", "default": "Pieces in Range" },
+    { "type": "text", "id": "stat_3_value", "label": "Stat 3 value", "default": "100%" },
+    { "type": "text", "id": "stat_3_label", "label": "Stat 3 label", "default": "Hand-Finished" }
+  ],
+  "presets": [{ "name": "Editorial block", "category": "Text" }]
+}
+{% endschema %}

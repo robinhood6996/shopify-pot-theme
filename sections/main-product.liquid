@@ -1,0 +1,508 @@
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign feat_media = current_variant.featured_media | default: product.featured_media
+  assign maker = product.metafields.custom.maker
+  assign studio = product.metafields.custom.studio
+  assign material = product.metafields.custom.material | default: product.type
+  assign size = product.metafields.custom.size
+-%}
+
+<style>
+  #shopify-section-{{ section.id }} .pdp {
+    max-width: 1400px; margin: 0 auto;
+    padding: 30px 40px 80px;
+    display: grid; grid-template-columns: 60px 1fr 420px;
+    gap: 30px;
+  }
+  #shopify-section-{{ section.id }} .thumbs {
+    position: sticky; top: 100px; align-self: start;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  #shopify-section-{{ section.id }} .thumb {
+    width: 60px; height: 60px;
+    border: 1px solid transparent; cursor: pointer;
+    border-radius: 2px; overflow: hidden;
+    transition: border-color 0.2s;
+    background: var(--cream);
+  }
+  #shopify-section-{{ section.id }} .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  #shopify-section-{{ section.id }} .thumb.active { border-color: var(--ink); }
+  #shopify-section-{{ section.id }} .thumb:hover { border-color: var(--ink-soft); }
+
+  #shopify-section-{{ section.id }} .gallery { display: flex; flex-direction: column; gap: 12px; }
+  #shopify-section-{{ section.id }} .gallery-main {
+    aspect-ratio: 4 / 5;
+    background: linear-gradient(160deg, #E5C9A8 0%, #C68B5C 50%, #8E4426 100%);
+    border-radius: 2px; position: relative; overflow: hidden;
+  }
+  #shopify-section-{{ section.id }} .gallery-main img {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  }
+
+  #shopify-section-{{ section.id }} .info {
+    position: sticky; top: 100px; align-self: start; padding-left: 20px;
+  }
+  #shopify-section-{{ section.id }} .info .eyebrow-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 14px;
+  }
+  #shopify-section-{{ section.id }} .stock-badge {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--success); font-weight: 500;
+    display: flex; align-items: center; gap: 6px;
+  }
+  #shopify-section-{{ section.id }} .stock-badge::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--success); display: inline-block;
+  }
+  #shopify-section-{{ section.id }} .info h1 {
+    font-family: var(--font-heading); font-weight: 400;
+    font-size: clamp(40px, 5vw, 56px);
+    margin-bottom: 14px; line-height: 1; letter-spacing: -0.02em;
+  }
+  #shopify-section-{{ section.id }} .info h1 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  #shopify-section-{{ section.id }} .tagline {
+    font-family: var(--font-heading); font-style: italic; font-weight: 300;
+    font-size: 18px; color: var(--ink-soft); line-height: 1.4;
+    margin-bottom: 20px; max-width: 360px;
+  }
+
+  /* Maker pill */
+  #shopify-section-{{ section.id }} .maker-pill {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 5px 14px 5px 5px;
+    background: var(--cream); border-radius: 100px;
+    font-size: 12px; color: var(--ink-soft);
+    margin-bottom: 24px;
+  }
+  #shopify-section-{{ section.id }} .maker-pill .avatar {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: linear-gradient(135deg, #B25A38, #5C2A14);
+    flex-shrink: 0;
+    box-shadow: inset 0 -2px 4px rgba(0,0,0,0.18);
+  }
+  #shopify-section-{{ section.id }} .maker-pill strong {
+    color: var(--ink); font-weight: 400;
+    font-family: var(--font-heading); font-size: 14px;
+    margin-right: 4px;
+  }
+  #shopify-section-{{ section.id }} .maker-pill .sep { color: var(--line); margin: 0 4px; }
+  #shopify-section-{{ section.id }} .maker-pill .studio { color: var(--muted); }
+
+  #shopify-section-{{ section.id }} .price-row {
+    display: flex; align-items: baseline; gap: 14px;
+    margin-bottom: 20px;
+  }
+  #shopify-section-{{ section.id }} .price {
+    font-family: var(--font-heading); font-size: 36px; font-weight: 400;
+  }
+  #shopify-section-{{ section.id }} .price-meta {
+    font-size: 12px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.1em;
+  }
+
+  /* Why-this-pot row */
+  #shopify-section-{{ section.id }} .why-row {
+    display: flex; flex-direction: column; gap: 11px;
+    margin-bottom: 30px;
+    padding: 20px 0;
+    border-top: 1px dashed var(--line);
+    border-bottom: 1px dashed var(--line);
+  }
+  #shopify-section-{{ section.id }} .why-row .why {
+    display: flex; align-items: center; gap: 12px;
+    font-family: var(--font-heading); font-style: italic; font-weight: 300;
+    font-size: 16px; color: var(--ink); line-height: 1.3;
+  }
+  #shopify-section-{{ section.id }} .why-row .why::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--clay); flex-shrink: 0;
+  }
+
+  /* Variants */
+  #shopify-section-{{ section.id }} .variant { margin-bottom: 24px; }
+  #shopify-section-{{ section.id }} .variant-label {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px;
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 500;
+  }
+  #shopify-section-{{ section.id }} .variant-label .selected {
+    font-family: var(--font-heading); font-style: italic; font-weight: 300;
+    text-transform: none; letter-spacing: 0;
+    font-size: 14px; color: var(--clay);
+  }
+  #shopify-section-{{ section.id }} .option-pills {
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  #shopify-section-{{ section.id }} .option-pill {
+    border: 1px solid var(--line); background: transparent;
+    padding: 10px 16px;
+    font-family: inherit; font-size: 13px; color: var(--ink);
+    cursor: pointer; transition: all 0.15s;
+    border-radius: 2px;
+  }
+  #shopify-section-{{ section.id }} .option-pill:hover { border-color: var(--ink); }
+  #shopify-section-{{ section.id }} .option-pill input { display: none; }
+  #shopify-section-{{ section.id }} .option-pill input:checked + span,
+  #shopify-section-{{ section.id }} .option-pill.active {
+    background: var(--ink); color: var(--cream); border-color: var(--ink);
+  }
+  #shopify-section-{{ section.id }} .option-pill.unavailable {
+    opacity: 0.35; cursor: not-allowed; text-decoration: line-through;
+  }
+  #shopify-section-{{ section.id }} .option-pill.has-input {
+    padding: 0;
+  }
+  #shopify-section-{{ section.id }} .option-pill.has-input span {
+    display: block; padding: 10px 16px;
+  }
+
+  /* Buy row */
+  #shopify-section-{{ section.id }} .buy-row {
+    display: grid; grid-template-columns: 100px 1fr;
+    gap: 10px; margin-bottom: 14px;
+  }
+  #shopify-section-{{ section.id }} .qty {
+    display: flex; border: 1px solid var(--ink);
+    align-items: center; justify-content: space-between;
+  }
+  #shopify-section-{{ section.id }} .qty button {
+    background: none; border: none;
+    font-family: var(--font-heading); font-size: 18px;
+    cursor: pointer; width: 32px; color: var(--ink);
+  }
+  #shopify-section-{{ section.id }} .qty input {
+    width: 36px; text-align: center;
+    border: none; background: none;
+    font-family: var(--font-heading); font-size: 16px; color: var(--ink);
+  }
+  #shopify-section-{{ section.id }} .btn-buy {
+    background: var(--ink); color: var(--cream);
+    border: none; cursor: pointer;
+    font-family: inherit; font-size: 13px;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    font-weight: 500; padding: 18px;
+    transition: background 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+  }
+  #shopify-section-{{ section.id }} .btn-buy:hover { background: var(--clay-deep); }
+  #shopify-section-{{ section.id }} .btn-buy:disabled { background: var(--ink-soft); cursor: not-allowed; opacity: 0.6; }
+  #shopify-section-{{ section.id }} .btn-buy .arrow { font-family: var(--font-heading); font-style: italic; font-weight: 300; font-size: 16px; }
+
+  /* Trust + accordion */
+  #shopify-section-{{ section.id }} .trust-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 14px; padding: 24px 0;
+    border-top: 1px solid var(--line-soft);
+    border-bottom: 1px solid var(--line-soft);
+    margin: 30px 0 6px;
+  }
+  #shopify-section-{{ section.id }} .trust-item {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 12.5px;
+  }
+  #shopify-section-{{ section.id }} .trust-item svg {
+    width: 22px; height: 22px; color: var(--clay); flex-shrink: 0;
+  }
+  #shopify-section-{{ section.id }} .trust-item strong { font-weight: 500; display: block; }
+  #shopify-section-{{ section.id }} .trust-item span { color: var(--muted); font-size: 11.5px; }
+
+  #shopify-section-{{ section.id }} details.acc {
+    border-bottom: 1px solid var(--line-soft);
+    padding: 18px 0;
+  }
+  #shopify-section-{{ section.id }} details.acc summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 500;
+  }
+  #shopify-section-{{ section.id }} details.acc summary::-webkit-details-marker { display: none; }
+  #shopify-section-{{ section.id }} details.acc summary .plus {
+    font-family: var(--font-heading); font-style: italic;
+    font-size: 22px; font-weight: 300;
+    transition: transform 0.3s;
+  }
+  #shopify-section-{{ section.id }} details.acc[open] summary .plus { transform: rotate(45deg); }
+  #shopify-section-{{ section.id }} details.acc .body {
+    padding-top: 14px;
+    color: var(--ink-soft); font-size: 14px; line-height: 1.7;
+  }
+  #shopify-section-{{ section.id }} details.acc .body ul { list-style: none; padding-left: 0; }
+  #shopify-section-{{ section.id }} details.acc .body li {
+    padding: 6px 0;
+    border-bottom: 1px solid var(--line-soft);
+    display: flex; justify-content: space-between;
+    font-size: 13.5px;
+  }
+  #shopify-section-{{ section.id }} details.acc .body li:last-child { border-bottom: none; }
+  #shopify-section-{{ section.id }} details.acc .body li .key { color: var(--muted); }
+
+  @media (max-width: 1024px) {
+    #shopify-section-{{ section.id }} .pdp { grid-template-columns: 1fr; padding: 24px 24px 60px; gap: 30px; }
+    #shopify-section-{{ section.id }} .thumbs {
+      position: static; flex-direction: row; overflow-x: auto;
+    }
+    #shopify-section-{{ section.id }} .info { position: static; padding-left: 0; }
+  }
+  @media (max-width: 600px) {
+    #shopify-section-{{ section.id }} .info h1 { font-size: 40px; }
+    #shopify-section-{{ section.id }} .price { font-size: 28px; }
+  }
+</style>
+
+<nav class="breadcrumb">
+  <a href="{{ routes.root_url }}">Home</a><span class="sep">/</span>
+  {%- if collection -%}
+    <a href="{{ collection.url }}">{{ collection.title }}</a><span class="sep">/</span>
+  {%- else -%}
+    <a href="{{ routes.collections_url }}">Plant pots</a><span class="sep">/</span>
+  {%- endif -%}
+  <span class="current">{{ product.title }}</span>
+</nav>
+
+<section class="pdp">
+
+  <!-- THUMBNAILS -->
+  <aside class="thumbs">
+    {%- for media in product.media limit: 6 -%}
+      <button class="thumb{% if forloop.first %} active{% endif %}" data-thumb="{{ forloop.index0 }}">
+        <img src="{{ media | image_url: width: 120 }}" alt="{{ media.alt | default: product.title | escape }}" width="120" height="{{ 120 | divided_by: media.preview_image.aspect_ratio | round }}" loading="lazy">
+      </button>
+    {%- endfor -%}
+  </aside>
+
+  <!-- GALLERY -->
+  <div class="gallery">
+    <div class="gallery-main" id="gallery-main">
+      {%- if feat_media -%}
+        <img src="{{ feat_media | image_url: width: 1400 }}"
+             alt="{{ feat_media.alt | default: product.title | escape }}"
+             id="gallery-main-img"
+             width="1400"
+             height="{{ 1400 | divided_by: feat_media.preview_image.aspect_ratio | round }}"
+             loading="eager">
+      {%- endif -%}
+    </div>
+  </div>
+
+  <!-- INFO -->
+  <div class="info">
+    <div class="eyebrow-row">
+      <span class="eyebrow">{{ material }}{%- if section.settings.show_batch -%} · Batch of {{ product.metafields.custom.batch_size | default: 24 }}{%- endif -%}</span>
+      {%- if product.available -%}
+        <span class="stock-badge">{{ 'products.product.in_stock' | t | default: 'In Stock' }}</span>
+      {%- else -%}
+        <span class="stock-badge" style="color: var(--error);">{{ 'products.product.sold_out' | t | default: 'Sold Out' }}</span>
+      {%- endif -%}
+    </div>
+
+    <h1 class="display">{{ product.title | replace: 'The ', 'The <em>' | append: '</em>' }}</h1>
+
+    {%- if product.metafields.custom.tagline != blank -%}
+      <p class="tagline">{{ product.metafields.custom.tagline }}</p>
+    {%- endif -%}
+
+    {%- if maker != blank -%}
+      <a href="{{ product.metafields.custom.maker_url | default: '#' }}" class="maker-pill">
+        <span class="avatar"></span>
+        <span>Made by <strong>{{ maker }}</strong>{%- if studio %}<span class="sep">·</span><span class="studio">{{ studio }}</span>{% endif -%}</span>
+      </a>
+    {%- endif -%}
+
+    <div class="price-row">
+      <span class="price">{{ current_variant.price | money }}</span>
+      <span class="price-meta">{{ 'products.product.include_taxes' | t | default: 'Inc. VAT' }}</span>
+    </div>
+
+    {%- comment -%} "Why this pot" — uses product metafield list, falls back to defaults {%- endcomment -%}
+    {%- assign whys = product.metafields.custom.why_this_pot.value -%}
+    {%- if whys -%}
+      <div class="why-row">
+        {%- for line in whys limit: 3 -%}
+          <div class="why">{{ line }}</div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    <!-- VARIANTS -->
+    {% form 'product', product, id: 'product-form', class: 'product-form' %}
+      <input type="hidden" name="id" value="{{ current_variant.id }}" id="variant-id-input">
+
+      {%- unless product.has_only_default_variant -%}
+        {%- for option in product.options_with_values -%}
+          <div class="variant">
+            <div class="variant-label">
+              <span>{{ option.name }}</span>
+              <span class="selected">{{ option.selected_value }}</span>
+            </div>
+            <div class="option-pills">
+              {%- for value in option.values -%}
+                <label class="option-pill has-input{% if option.selected_value == value %} active{% endif %}">
+                  <input type="radio" name="options[{{ option.name | escape }}]" value="{{ value | escape }}"{% if option.selected_value == value %} checked{% endif %}>
+                  <span>{{ value }}</span>
+                </label>
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      {%- endunless -%}
+
+      <div class="buy-row">
+        <div class="qty qty-stepper">
+          <button type="button" data-step="-1">−</button>
+          <input type="text" name="quantity" value="1" readonly>
+          <button type="button" data-step="1">+</button>
+        </div>
+        <button type="submit" class="btn-buy"{% unless current_variant.available %} disabled{% endunless %}>
+          {%- if current_variant.available -%}
+            {{ 'products.product.add_to_cart' | t | default: 'Add to basket' }}
+          {%- else -%}
+            {{ 'products.product.sold_out' | t | default: 'Sold Out' }}
+          {%- endif -%}
+          <span class="arrow">→</span>
+        </button>
+      </div>
+
+      {%- comment -%} Shopify dynamic checkout buttons (Apple Pay / Shop Pay / etc.) {%- endcomment -%}
+      {%- if section.settings.show_dynamic_checkout -%}
+        <div style="margin-top: 8px;">
+          {{ form | payment_button }}
+        </div>
+      {%- endif -%}
+    {% endform %}
+
+    <!-- TRUST GRID -->
+    <div class="trust-grid">
+      <div class="trust-item">
+        <svg fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 24 24"><path d="M3 7h13l3 4v6h-2a2 2 0 0 1-4 0H7a2 2 0 0 1-4 0V7Z"/><circle cx="9" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
+        <div><strong>Free UK shipping</strong><span>Over £{{ settings.free_shipping_threshold }} · 2–3 days</span></div>
+      </div>
+      <div class="trust-item">
+        <svg fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+        <div><strong>30-day returns</strong><span>Free if unopened</span></div>
+      </div>
+      <div class="trust-item">
+        <svg fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 24 24"><path d="M12 22s-8-4.5-8-12V5l8-3 8 3v5c0 7.5-8 12-8 12Z"/><path d="m9 12 2 2 4-4"/></svg>
+        <div><strong>1-year guarantee</strong><span>On every piece</span></div>
+      </div>
+      <div class="trust-item">
+        <svg fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>
+        <div><strong>Order by 2pm</strong><span>For next-day delivery</span></div>
+      </div>
+    </div>
+
+    <!-- ACCORDIONS -->
+    <details class="acc" open>
+      <summary>The details <span class="plus">+</span></summary>
+      <div class="body">
+        <ul>
+          {%- if material           %}<li><span class="key">Material</span><span>{{ material }}</span></li>{%- endif -%}
+          {%- if size               %}<li><span class="key">Size</span><span>{{ size }}</span></li>{%- endif -%}
+          {%- if product.metafields.custom.diameter %}<li><span class="key">Diameter</span><span>{{ product.metafields.custom.diameter }}</span></li>{%- endif -%}
+          {%- if product.metafields.custom.height   %}<li><span class="key">Height</span><span>{{ product.metafields.custom.height }}</span></li>{%- endif -%}
+          {%- if product.metafields.custom.weight   %}<li><span class="key">Weight</span><span>{{ product.metafields.custom.weight }}</span></li>{%- endif -%}
+          {%- if product.metafields.custom.drainage %}<li><span class="key">Drainage hole</span><span>{{ product.metafields.custom.drainage }}</span></li>{%- endif -%}
+          {%- if product.metafields.custom.indoor_outdoor %}<li><span class="key">Indoor / Outdoor</span><span>{{ product.metafields.custom.indoor_outdoor }}</span></li>{%- endif -%}
+          {%- if product.metafields.custom.frost_proof   %}<li><span class="key">Frost-proof</span><span>{{ product.metafields.custom.frost_proof }}</span></li>{%- endif -%}
+          {%- if product.metafields.custom.made_in       %}<li><span class="key">Made in</span><span>{{ product.metafields.custom.made_in }}</span></li>{%- endif -%}
+        </ul>
+      </div>
+    </details>
+
+    {%- if product.metafields.custom.care != blank -%}
+      <details class="acc">
+        <summary>Care <span class="plus">+</span></summary>
+        <div class="body">{{ product.metafields.custom.care }}</div>
+      </details>
+    {%- endif -%}
+
+    <details class="acc">
+      <summary>Delivery &amp; returns <span class="plus">+</span></summary>
+      <div class="body">
+        <p><strong>Free standard UK delivery</strong> on orders over £{{ settings.free_shipping_threshold }}. Standard 2–3 working days.</p>
+        <p style="margin-top: 10px;"><strong>Returns within 30 days.</strong> Free if unopened. Damaged in transit? Send us a photo at <a href="mailto:chat@kilnandclay.co.uk">chat@kilnandclay.co.uk</a>.</p>
+      </div>
+    </details>
+
+    {%- if product.description != blank -%}
+      <details class="acc">
+        <summary>Full description <span class="plus">+</span></summary>
+        <div class="body">{{ product.description }}</div>
+      </details>
+    {%- endif -%}
+
+  </div>
+</section>
+
+<script>
+(function () {
+  // Variant select via radios → updates form and submits dynamic price
+  const form = document.getElementById('product-form');
+  if (!form) return;
+  form.querySelectorAll('input[type="radio"][name^="options"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      // Update the matching variant id by reading all selected option values
+      const formData = new FormData(form);
+      const selected = [];
+      form.querySelectorAll('input[type="radio"][name^="options"]:checked').forEach(r => {
+        selected.push(r.value);
+      });
+      // Find variant
+      const variants = {{ product.variants | json }};
+      const match = variants.find(v => v.options.every((opt, i) => opt === selected[i]));
+      if (match) {
+        document.getElementById('variant-id-input').value = match.id;
+        // Update price + selected label + buy button availability
+        const priceEl = document.querySelector('.price');
+        if (priceEl && match.price !== undefined) {
+          priceEl.textContent = window.KC.formatMoney(match.price);
+        }
+        // Update selected label per option
+        form.querySelectorAll('.variant').forEach((variantEl, i) => {
+          const lab = variantEl.querySelector('.selected');
+          if (lab) lab.textContent = selected[i];
+          variantEl.querySelectorAll('.option-pill').forEach(pill => {
+            const input = pill.querySelector('input');
+            pill.classList.toggle('active', input && input.checked);
+          });
+        });
+        const buyBtn = form.querySelector('.btn-buy');
+        if (buyBtn) {
+          buyBtn.disabled = !match.available;
+          buyBtn.firstChild.textContent = match.available ? 'Add to basket ' : 'Sold out ';
+        }
+        // Update URL with variant ID (no page reload, preserves browser history)
+        const url = new URL(window.location.href);
+        url.searchParams.set('variant', match.id);
+        history.replaceState({}, '', url.toString());
+      }
+    });
+  });
+
+  // Thumbnail switching
+  document.querySelectorAll('.thumb').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.thumb').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      const idx = parseInt(t.dataset.thumb, 10);
+      const media = {{ product.media | json }};
+      const m = media[idx];
+      if (m) {
+        const main = document.getElementById('gallery-main-img');
+        if (main && m.preview_image) main.src = m.preview_image.src + '&width=1400';
+      }
+    });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Product",
+  "settings": [
+    { "type": "checkbox", "id": "show_dynamic_checkout", "label": "Show dynamic checkout buttons (Apple Pay etc.)", "default": true },
+    { "type": "checkbox", "id": "show_batch", "label": "Show \"Batch of N\" eyebrow", "default": false }
+  ]
+}
+{% endschema %}

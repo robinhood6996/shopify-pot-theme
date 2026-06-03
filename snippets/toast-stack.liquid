@@ -1,0 +1,126 @@
+{%- comment -%}
+  Toast notification stack — rendered globally from theme.liquid.
+  Fire toasts from anywhere with: window.KC.toast({ type, title, body, action, dur })
+{%- endcomment -%}
+
+<style>
+  .toast-stack {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    z-index: 200;
+    display: flex; flex-direction: column-reverse;
+    gap: 10px;
+    max-width: 380px; width: calc(100% - 48px);
+    pointer-events: none;
+  }
+  .toast {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--clay);
+    box-shadow: 0 16px 40px rgba(26, 20, 14, 0.12);
+    padding: 14px 16px 14px 18px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
+    align-items: start;
+    pointer-events: auto;
+    transform: translateX(120%);
+    opacity: 0;
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .toast.show { transform: translateX(0); opacity: 1; }
+  .toast.dismissing { transform: translateX(120%); opacity: 0; }
+
+  .toast-icon {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--cream);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--clay);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .toast-icon svg { width: 14px; height: 14px; }
+
+  .toast-content { min-width: 0; }
+  .toast-content .title {
+    font-family: var(--font-heading); font-size: 15px; font-weight: 400;
+    line-height: 1.2; margin-bottom: 2px;
+  }
+  .toast-content .title em { font-style: italic; font-weight: 300; color: var(--clay); }
+  .toast-content .body {
+    font-size: 12.5px; color: var(--ink-soft); line-height: 1.5;
+  }
+  .toast-content .actions {
+    margin-top: 8px;
+    display: flex; gap: 12px;
+  }
+  .toast-content .actions a, .toast-content .actions button {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em;
+    color: var(--ink); font-weight: 500;
+    border: none; background: none; padding: 0;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 1px;
+    font-family: inherit; cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+    text-decoration: none;
+  }
+  .toast-content .actions a:hover, .toast-content .actions button:hover {
+    color: var(--clay); border-color: var(--clay);
+  }
+
+  .toast-close {
+    background: none; border: none; cursor: pointer;
+    color: var(--muted);
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s, color 0.2s;
+    margin-top: -2px; margin-right: -4px;
+    padding: 0;
+  }
+  .toast-close:hover { background: var(--cream); color: var(--ink); }
+  .toast-close svg { width: 12px; height: 12px; }
+
+  .toast-progress {
+    position: absolute;
+    bottom: 0; left: 0;
+    height: 2px;
+    background: var(--clay); opacity: 0.5;
+    width: 0%;
+    transition: width var(--dur, 4s) linear;
+  }
+  .toast.show .toast-progress { width: 100%; }
+  .toast.paused .toast-progress { transition: none; }
+
+  .toast.t-success { border-left-color: var(--success); }
+  .toast.t-success .toast-icon { background: rgba(79, 91, 69, 0.12); color: var(--success); }
+  .toast.t-success .toast-progress { background: var(--success); }
+
+  .toast.t-error { border-left-color: var(--error); }
+  .toast.t-error .toast-icon { background: rgba(178, 56, 56, 0.1); color: var(--error); }
+  .toast.t-error .toast-progress { background: var(--error); }
+
+  .toast.t-info { border-left-color: var(--ink); }
+  .toast.t-info .toast-icon { background: var(--cream); color: var(--ink); }
+  .toast.t-info .toast-progress { background: var(--ink); }
+
+  .toast.t-wishlist { border-left-color: var(--clay); }
+
+  .toast.has-thumb .toast-icon {
+    width: 44px; height: 44px;
+    border-radius: 2px;
+    background: linear-gradient(160deg, #C68B5C, #7E4D2C);
+    overflow: hidden;
+    padding: 0;
+  }
+  .toast.has-thumb .toast-icon img { width: 100%; height: 100%; object-fit: cover; }
+
+  @media (max-width: 600px) {
+    .toast-stack { left: 12px; right: 12px; max-width: none; bottom: 12px; }
+  }
+</style>
+
+<div class="toast-stack" id="toast-stack" aria-live="polite" aria-atomic="false"></div>

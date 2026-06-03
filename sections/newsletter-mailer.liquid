@@ -1,0 +1,104 @@
+<section class="newsletter">
+  <div class="mailer">
+    <div class="mailer-postmark" aria-hidden="true">
+      <div>
+        <span class="cy">K&amp;C</span>
+        <span>{{ section.settings.postmark_place | default: 'Stoke' }}<br>{{ section.settings.postmark_year | default: 2026 }}</span>
+      </div>
+    </div>
+    <div class="mailer-stamp" aria-hidden="true">{{ section.settings.stamp_text | default: 'First Class · UK' }}</div>
+
+    <div class="mailer-text">
+      <div class="script-tag">{{ settings.newsletter_script_tag | default: section.settings.script_tag | default: 'a quiet letter,' }}</div>
+
+      {{ settings.newsletter_heading | default: section.settings.heading | default: '<p>Plant care, <em>quietly</em>,<br>once a fortnight.</p>' }}
+
+      <p>{{ settings.newsletter_body | default: section.settings.body | default: 'New pieces, restocks, seasonal repotting reminders, and the occasional pot-of-the-month — straight to your inbox.' }}</p>
+
+      {%- if section.settings.signoff != blank -%}
+        <div class="signoff">{{ settings.newsletter_signoff | default: section.settings.signoff }}</div>
+      {%- endif -%}
+    </div>
+
+    {% form 'customer', class: 'mailer-form', id: 'newsletter-form' %}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+
+      <label for="NewsletterName-{{ section.id }}">Your name</label>
+      <input id="NewsletterName-{{ section.id }}" type="text" name="contact[first_name]" placeholder="Sophie">
+
+      <label for="NewsletterEmail-{{ section.id }}" style="margin-top: 12px;">Email address</label>
+      <input id="NewsletterEmail-{{ section.id }}" type="email" name="contact[email]" placeholder="your@email.co.uk" required autocorrect="off" autocapitalize="off" autocomplete="email">
+
+      <button type="submit" name="commit">
+        {{ 'general.newsletter.submit' | t | default: 'Subscribe to The Slow List' }}
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+      </button>
+
+      {%- if form.posted_successfully? -%}
+        <div class="small" style="color: var(--success);">{{ 'general.newsletter.success' | t }}</div>
+      {%- else -%}
+        <div class="small">By subscribing you agree to our privacy policy. We send roughly 2 emails a month.</div>
+      {%- endif -%}
+
+      {%- if form.errors -%}
+        <div class="small" style="color: var(--error);">{{ form.errors | default_errors }}</div>
+      {%- endif -%}
+    {% endform %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter (mailer)",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Most copy lives in Theme settings → Newsletter (mailer) so it stays consistent across pages. Use the fields below for per-section overrides."
+    },
+    {
+      "type": "text",
+      "id": "postmark_place",
+      "label": "Postmark place",
+      "default": "Stoke"
+    },
+    {
+      "type": "text",
+      "id": "postmark_year",
+      "label": "Postmark year",
+      "default": "2026"
+    },
+    {
+      "type": "text",
+      "id": "stamp_text",
+      "label": "Stamp text",
+      "default": "First Class · UK"
+    },
+    {
+      "type": "text",
+      "id": "script_tag",
+      "label": "Script tag (override)"
+    },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Headline (override)"
+    },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Body (override)"
+    },
+    {
+      "type": "text",
+      "id": "signoff",
+      "label": "Caveat signoff (override)"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter (mailer)",
+      "category": "Email signup"
+    }
+  ]
+}
+{% endschema %}

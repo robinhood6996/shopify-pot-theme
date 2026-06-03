@@ -1,0 +1,258 @@
+{%- comment -%}
+  Mobile nav drawer — slides in from the left when hamburger is tapped.
+  Renders globally from theme.liquid; visibility controlled by JS.
+{%- endcomment -%}
+
+<style>
+  .mobile-nav-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26, 20, 14, 0.45);
+    backdrop-filter: blur(2px);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 200;
+  }
+  .mobile-nav-overlay.show { opacity: 1; pointer-events: auto; }
+
+  .mobile-nav {
+    position: fixed;
+    top: 0; left: 0;
+    height: 100vh;
+    width: 100%; max-width: 420px;
+    background: var(--paper);
+    z-index: 201;
+    transform: translateX(-100%);
+    transition: transform 0.35s ease;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .mobile-nav.show { transform: translateX(0); }
+
+  .mn-head {
+    display: grid; grid-template-columns: auto 1fr auto;
+    align-items: center; gap: 12px;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  .mn-close {
+    background: none; border: none; cursor: pointer;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink);
+    transition: background 0.2s;
+    padding: 0;
+  }
+  .mn-close:hover { background: var(--cream); }
+  .mn-close svg { width: 18px; height: 18px; }
+  .mn-logo {
+    text-align: center;
+    font-family: var(--font-heading); font-size: 22px;
+    letter-spacing: 0.04em; color: var(--ink);
+  }
+  .mn-logo em { font-style: italic; font-weight: 300; }
+  .mn-account {
+    background: var(--cream); border: none; cursor: pointer;
+    border-radius: 100px;
+    padding: 7px 13px 7px 6px;
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--ink);
+    font-family: inherit; font-size: 12.5px;
+    text-decoration: none;
+  }
+  .mn-account .av {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #B25A38, #5C2A14);
+    flex-shrink: 0;
+  }
+
+  .mn-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 22px 24px;
+    display: flex; flex-direction: column;
+    gap: 2px;
+  }
+
+  .mn-search {
+    margin-top: 18px; margin-bottom: 18px;
+    display: flex; align-items: center;
+    border: 1px solid var(--ink);
+    background: var(--paper);
+    transition: border-color 0.2s;
+    flex-shrink: 0;
+  }
+  .mn-search:focus-within { border-color: var(--clay); }
+  .mn-search svg { width: 16px; height: 16px; margin-left: 14px; color: var(--muted); }
+  .mn-search input {
+    flex: 1; background: none; border: none;
+    padding: 13px 12px;
+    font-family: var(--font-heading); font-style: italic; font-weight: 300;
+    font-size: 16px; color: var(--ink);
+    outline: none;
+  }
+  .mn-search input::placeholder { color: var(--muted); }
+
+  .mn-section-h {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.18em;
+    color: var(--clay); font-weight: 500;
+    padding: 18px 0 10px;
+  }
+  .mn-section-h:first-of-type { padding-top: 0; }
+
+  .mn-link {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line-soft);
+    color: var(--ink); text-decoration: none;
+    font-family: var(--font-heading); font-size: 22px; font-weight: 400;
+    line-height: 1.1;
+    transition: color 0.2s, padding 0.2s;
+  }
+  .mn-link:hover { color: var(--clay); padding-left: 4px; }
+  .mn-link em { font-style: italic; font-weight: 300; color: var(--clay); }
+  .mn-link .arrow {
+    color: var(--muted);
+    transition: transform 0.2s, color 0.2s;
+    flex-shrink: 0;
+  }
+  .mn-link .arrow svg { width: 14px; height: 14px; }
+  .mn-link:hover .arrow { color: var(--clay); transform: translateX(3px); }
+
+  .mn-secondary { display: flex; flex-direction: column; gap: 2px; margin-top: 6px; }
+  .mn-secondary a {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 0;
+    font-size: 14px;
+    color: var(--ink-soft); text-decoration: none;
+    transition: color 0.2s, padding 0.2s;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .mn-secondary a:hover { color: var(--clay); padding-left: 4px; }
+  .mn-secondary a:last-child { border-bottom: none; }
+  .mn-secondary a svg { width: 18px; height: 18px; color: var(--clay); flex-shrink: 0; }
+  .mn-secondary a strong { color: var(--ink); font-weight: 500; }
+  .mn-secondary a .pill {
+    margin-left: auto;
+    background: var(--cream);
+    border-radius: 100px;
+    padding: 3px 10px;
+    font-size: 11px;
+    color: var(--ink); font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .mn-quick {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 8px 16px;
+    padding: 14px 0;
+    margin-top: 10px;
+  }
+  .mn-quick a {
+    font-size: 13px;
+    color: var(--ink-soft);
+    padding: 6px 0;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .mn-quick a:hover { color: var(--clay); }
+
+  .mn-social {
+    display: flex; gap: 16px;
+    padding: 12px 0;
+    border-top: 1px solid var(--line-soft);
+    margin-top: 8px;
+  }
+  .mn-social a {
+    font-size: 13px; color: var(--ink-soft);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    text-decoration: none;
+  }
+  .mn-social a:hover { color: var(--clay); }
+</style>
+
+<div class="mobile-nav-overlay" id="mobile-nav-overlay" data-mobile-nav-close aria-hidden="true"></div>
+
+<aside class="mobile-nav" id="mobile-nav" aria-label="Main menu" aria-hidden="true">
+  <div class="mn-head">
+    <button class="mn-close" data-mobile-nav-close aria-label="{{ 'accessibility.close' | t }}">
+      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
+    </button>
+    <a href="{{ routes.root_url }}" class="mn-logo">
+      {%- if settings.logo != blank -%}
+        <img src="{{ settings.logo | image_url: width: 320 }}" alt="{{ shop.name }}" width="320" height="{{ 320 | divided_by: settings.logo.aspect_ratio | round }}" style="max-height: 28px; width: auto;">
+      {%- else -%}
+        Kiln <em>&amp;</em> Clay
+      {%- endif -%}
+    </a>
+    {%- if customer -%}
+      <a href="{{ routes.account_url }}" class="mn-account">
+        <span class="av"></span>
+        {{ customer.first_name | default: customer.name }}
+      </a>
+    {%- else -%}
+      <a href="{{ routes.account_login_url | default: '#' }}" class="mn-account">
+        <span class="av"></span>
+        Sign in
+      </a>
+    {%- endif -%}
+  </div>
+
+  <div class="mn-body">
+    <form class="mn-search" action="{{ routes.search_url }}" method="get">
+      <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" name="q" placeholder="Search the shop or journal…">
+    </form>
+
+    <div class="mn-section-h">Shop</div>
+    <nav>
+      {%- if linklists['main-menu'] != blank -%}
+        {%- for link in linklists['main-menu'].links -%}
+          <a href="{{ link.url }}" class="mn-link">
+            {{ link.title }}
+            <span class="arrow">
+              <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+            </span>
+          </a>
+        {%- endfor -%}
+      {%- else -%}
+        <a href="{{ routes.collections_url }}" class="mn-link">Shop all<span class="arrow"><svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></a>
+        <a href="{{ routes.collections_url }}" class="mn-link">By <em>material</em><span class="arrow"><svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></a>
+        <a href="{{ blogs.journal.url | default: routes.root_url }}" class="mn-link">Journal<span class="arrow"><svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></a>
+      {%- endif -%}
+    </nav>
+
+    <div class="mn-section-h">Yours</div>
+    <div class="mn-secondary">
+      {%- if shop.customer_accounts_enabled -%}
+        <a href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}">
+          <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>
+          <strong>{%- if customer -%}Account{%- else -%}Sign in{%- endif -%}</strong>
+        </a>
+      {%- endif -%}
+      <a href="{{ routes.cart_url }}" data-cart-open>
+        <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M5 7h14l-1.5 12h-11Z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>
+        <strong>Basket</strong>
+        <span class="pill">{{ cart.item_count }}</span>
+      </a>
+    </div>
+
+    <div class="mn-section-h">Help</div>
+    <div class="mn-quick">
+      <a href="/policies/shipping-policy">Delivery</a>
+      <a href="/policies/refund-policy">Returns</a>
+      <a href="/pages/care-guide">Care guide</a>
+      <a href="/pages/contact">Contact</a>
+      <a href="/pages/faqs">FAQs</a>
+      <a href="/pages/trade">Trade</a>
+    </div>
+
+    <div class="mn-social">
+      {%- if settings.social_instagram != blank -%}<a href="{{ settings.social_instagram }}" rel="noopener">Instagram</a>{%- endif -%}
+      {%- if settings.social_pinterest != blank -%}<a href="{{ settings.social_pinterest }}" rel="noopener">Pinterest</a>{%- endif -%}
+      {%- if settings.social_substack  != blank -%}<a href="{{ settings.social_substack }}"  rel="noopener">Substack</a>{%- endif -%}
+    </div>
+  </div>
+</aside>

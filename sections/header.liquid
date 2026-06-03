@@ -1,0 +1,70 @@
+<header class="site-header">
+  <div class="header-inner">
+
+    {%- comment -%} Mobile hamburger (left on mobile) {%- endcomment -%}
+    <button class="hamburger" aria-label="{{ 'accessibility.menu' | t }}" data-mobile-nav-open>
+      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+        <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    {%- comment -%} Desktop nav (left) {%- endcomment -%}
+    <nav class="nav-left" role="navigation" aria-label="Primary">
+      {%- if section.settings.menu != blank -%}
+        {%- for link in section.settings.menu.links -%}
+          <a href="{{ link.url }}"{% if link.active %} class="active"{% endif %}>{{ link.title }}</a>
+        {%- endfor -%}
+      {%- else -%}
+        <a href="{{ routes.collections_url }}">{{ 'general.shop_all' | t | default: 'Shop All' }}</a>
+        <a href="{{ routes.collections_url }}">Material</a>
+        <a href="{{ blogs.journal.url | default: routes.blog_url | default: '#' }}">Journal</a>
+      {%- endif -%}
+    </nav>
+
+    {%- comment -%} Logo (centre) {%- endcomment -%}
+    <a href="{{ routes.root_url }}" class="site-logo">
+      {%- if settings.logo != blank -%}
+        <img src="{{ settings.logo | image_url: width: 480 }}"
+             alt="{{ shop.name }}"
+             width="{{ settings.logo_width }}"
+             height="auto">
+      {%- else -%}
+        Kiln <em>&amp;</em> Clay
+      {%- endif -%}
+    </a>
+
+    {%- comment -%} Right icons {%- endcomment -%}
+    <nav class="nav-right" role="navigation" aria-label="Account &amp; basket">
+      <a href="{{ routes.search_url }}" class="icon-btn" aria-label="{{ 'general.search.search' | t }}">
+        <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      </a>
+
+      {%- if shop.customer_accounts_enabled -%}
+        <a href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}" class="icon-btn" aria-label="Account">
+          <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>
+        </a>
+      {%- endif -%}
+
+      <button class="icon-btn" aria-label="{{ 'cart.general.title' | t }}" data-cart-open>
+        <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M5 7h14l-1.5 12h-11Z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>
+        <span class="visually-hidden">Basket</span>
+        <span class="cart-badge"{% if cart.item_count == 0 %} style="display:none"{% endif %}>{{ cart.item_count }}</span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Main menu",
+      "default": "main-menu",
+      "info": "Choose a menu from Online Store → Navigation. Falls back to Shop All / Material / Journal if blank."
+    }
+  ]
+}
+{% endschema %}

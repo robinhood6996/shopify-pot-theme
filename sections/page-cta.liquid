@@ -1,0 +1,50 @@
+<style>
+  #shopify-section-{{ section.id }} .cta {
+    background: var(--cream);
+    text-align: center;
+    padding: 140px 40px;
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  }
+  #shopify-section-{{ section.id }} .cta-inner { max-width: 800px; margin: 0 auto; }
+  #shopify-section-{{ section.id }} .cta .eb { color: var(--clay); margin-bottom: 18px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.22em; font-weight: 500; }
+  #shopify-section-{{ section.id }} .cta h2 {
+    font-family: var(--font-heading); font-weight: 400;
+    font-size: clamp(44px, 6vw, 78px); line-height: 1.05; letter-spacing: -0.02em;
+    margin-bottom: 28px;
+  }
+  #shopify-section-{{ section.id }} .cta h2 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  #shopify-section-{{ section.id }} .cta p {
+    color: var(--ink-soft); font-size: 17px; line-height: 1.65; margin-bottom: 36px;
+  }
+  @media (max-width: 1024px) {
+    #shopify-section-{{ section.id }} .cta { padding: 80px 24px; }
+  }
+</style>
+
+<section class="cta">
+  <div class="cta-inner">
+    {%- if section.settings.eyebrow != blank -%}<div class="eb">{{ section.settings.eyebrow }}</div>{%- endif -%}
+    <h2 class="display">{{ section.settings.heading | replace: '<p>', '' | replace: '</p>', '' }}</h2>
+    {%- if section.settings.body != blank -%}<p>{{ section.settings.body }}</p>{%- endif -%}
+    {%- if section.settings.cta_label != blank -%}
+      <a href="{{ section.settings.cta_link | default: '#' }}" class="btn btn-primary">
+        {{ section.settings.cta_label }}
+        <span class="arrow">→</span>
+      </a>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Page CTA",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "richtext", "id": "heading", "label": "Heading" },
+    { "type": "textarea", "id": "body", "label": "Body" },
+    { "type": "text", "id": "cta_label", "label": "Button label" },
+    { "type": "url",  "id": "cta_link",  "label": "Button link" }
+  ],
+  "presets": [{ "name": "Page CTA", "category": "Text" }]
+}
+{% endschema %}

@@ -1,0 +1,273 @@
+{% paginate collection.products by 24 %}
+
+<style>
+  #shopify-section-{{ section.id }} .col-hero {
+    max-width: 1400px; margin: 0 auto;
+    padding: 50px 40px 70px;
+    display: grid; grid-template-columns: 1.4fr 1fr;
+    gap: 80px; align-items: end;
+    border-bottom: 1px solid var(--line);
+  }
+  #shopify-section-{{ section.id }} .col-hero h1 {
+    font-family: var(--font-heading); font-weight: 400;
+    font-size: clamp(56px, 8vw, 120px);
+    line-height: 0.95; letter-spacing: -0.02em;
+  }
+  #shopify-section-{{ section.id }} .col-hero h1 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  #shopify-section-{{ section.id }} .col-hero-meta {
+    display: flex; gap: 36px; margin: 30px 0 24px; flex-wrap: wrap;
+  }
+  #shopify-section-{{ section.id }} .col-meta-item .num {
+    font-family: var(--font-heading); font-style: italic; font-weight: 300;
+    font-size: 28px; color: var(--clay); line-height: 1;
+  }
+  #shopify-section-{{ section.id }} .col-meta-item .lab {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em;
+    color: var(--muted); margin-top: 6px;
+  }
+  #shopify-section-{{ section.id }} .col-hero-text p {
+    color: var(--ink-soft); font-size: 16px; line-height: 1.7; max-width: 540px;
+  }
+
+  #shopify-section-{{ section.id }} .filter-bar {
+    max-width: 1400px; margin: 0 auto;
+    padding: 28px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 20px; flex-wrap: wrap;
+    border-bottom: 1px solid var(--line);
+    background: var(--paper);
+    position: sticky; top: 78px; z-index: 50;
+  }
+  #shopify-section-{{ section.id }} .filter-pills { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  #shopify-section-{{ section.id }} .filter-pill {
+    border: 1px solid var(--line); padding: 8px 14px; border-radius: 100px;
+    font-size: 12.5px; background: transparent; cursor: pointer; color: var(--ink-soft);
+    transition: all 0.2s; font-family: inherit;
+    display: inline-flex; align-items: center; gap: 8px;
+    text-decoration: none;
+  }
+  #shopify-section-{{ section.id }} .filter-pill:hover { border-color: var(--ink); color: var(--ink); }
+  #shopify-section-{{ section.id }} .filter-pill.active { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+  #shopify-section-{{ section.id }} .filter-pill .x { font-size: 14px; line-height: 0; opacity: 0.7; }
+  #shopify-section-{{ section.id }} .filter-count {
+    font-size: 13px; color: var(--muted); margin-right: 4px;
+  }
+  #shopify-section-{{ section.id }} .filter-count strong { color: var(--ink); font-weight: 500; }
+  #shopify-section-{{ section.id }} .sort-wrap { display: flex; align-items: center; gap: 12px; font-size: 13px; }
+  #shopify-section-{{ section.id }} .sort-wrap select {
+    border: 1px solid var(--line); background: transparent;
+    padding: 8px 32px 8px 14px;
+    font-family: inherit; font-size: 13px; border-radius: 100px;
+    appearance: none; cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%231A140E' stroke-width='1.5' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center;
+  }
+
+  #shopify-section-{{ section.id }} .layout {
+    max-width: 1400px; margin: 0 auto;
+    padding: 50px 40px 80px;
+    display: grid; grid-template-columns: 240px 1fr; gap: 60px;
+  }
+  #shopify-section-{{ section.id }} .sidebar {
+    position: sticky; top: 160px; align-self: start;
+    max-height: calc(100vh - 180px); overflow-y: auto;
+    padding-right: 8px;
+  }
+  #shopify-section-{{ section.id }} .filter-group {
+    border-bottom: 1px solid var(--line-soft);
+    padding: 22px 0;
+  }
+  #shopify-section-{{ section.id }} .filter-group:first-child { padding-top: 0; }
+  #shopify-section-{{ section.id }} .filter-group h3 {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.18em;
+    font-weight: 500; margin-bottom: 18px;
+  }
+  #shopify-section-{{ section.id }} .filter-group ul { list-style: none; }
+  #shopify-section-{{ section.id }} .filter-group li {
+    margin-bottom: 12px; font-size: 14px;
+    display: flex; align-items: center; justify-content: space-between;
+    color: var(--ink-soft);
+  }
+  #shopify-section-{{ section.id }} .filter-group label {
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer; flex: 1;
+  }
+  #shopify-section-{{ section.id }} .filter-group input[type="checkbox"] {
+    appearance: none;
+    width: 14px; height: 14px;
+    border: 1px solid var(--line); background: var(--paper);
+    cursor: pointer; position: relative;
+  }
+  #shopify-section-{{ section.id }} .filter-group input[type="checkbox"]:checked {
+    background: var(--ink); border-color: var(--ink);
+  }
+  #shopify-section-{{ section.id }} .filter-group input[type="checkbox"]:checked::after {
+    content: ''; position: absolute; top: 2px; left: 4px;
+    width: 4px; height: 7px;
+    border: solid var(--cream); border-width: 0 1.5px 1.5px 0;
+    transform: rotate(45deg);
+  }
+  #shopify-section-{{ section.id }} .filter-group .count {
+    font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums;
+  }
+
+  #shopify-section-{{ section.id }} .grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 36px 24px;
+  }
+  #shopify-section-{{ section.id }} .empty-state {
+    grid-column: 1 / -1;
+    text-align: center; padding: 80px 20px;
+    color: var(--muted);
+    font-family: var(--font-heading); font-style: italic; font-size: 22px;
+  }
+  #shopify-section-{{ section.id }} .empty-state a {
+    color: var(--clay); border-bottom: 1px solid var(--clay); padding-bottom: 1px;
+  }
+
+  #shopify-section-{{ section.id }} .pagination {
+    grid-column: 1 / -1;
+    display: flex; justify-content: center; align-items: center;
+    gap: 30px; padding: 50px 0 0;
+  }
+  #shopify-section-{{ section.id }} .pagination a, #shopify-section-{{ section.id }} .pagination span.current {
+    background: transparent; border: 1px solid var(--ink); color: var(--ink);
+    padding: 12px 22px;
+    font-family: inherit; font-size: 12px;
+    text-transform: uppercase; letter-spacing: 0.15em; font-weight: 500;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  #shopify-section-{{ section.id }} .pagination span.current { background: var(--ink); color: var(--cream); }
+  #shopify-section-{{ section.id }} .pagination a:hover { background: var(--ink); color: var(--cream); }
+  #shopify-section-{{ section.id }} .pagination .page-meta {
+    font-size: 12.5px; color: var(--muted);
+  }
+
+  @media (max-width: 1024px) {
+    #shopify-section-{{ section.id }} .col-hero { grid-template-columns: 1fr; gap: 40px; padding: 30px 24px 50px; }
+    #shopify-section-{{ section.id }} .filter-bar { padding: 20px 24px; top: 78px; }
+    #shopify-section-{{ section.id }} .layout { grid-template-columns: 1fr; padding: 30px 24px 60px; gap: 40px; }
+    #shopify-section-{{ section.id }} .sidebar {
+      position: static; max-height: none; overflow: visible;
+      border: 1px solid var(--line); padding: 24px;
+    }
+    #shopify-section-{{ section.id }} .grid { grid-template-columns: repeat(2, 1fr); gap: 28px 16px; }
+  }
+  @media (max-width: 600px) {
+    #shopify-section-{{ section.id }} .grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<nav class="breadcrumb">
+  <a href="{{ routes.root_url }}">Home</a><span class="sep">/</span>
+  <a href="{{ routes.collections_url }}">Plant pots</a><span class="sep">/</span>
+  <span class="current">{{ collection.title }}</span>
+</nav>
+
+<section class="col-hero">
+  <div class="col-hero-text">
+    <div class="eyebrow" style="margin-bottom: 16px; color: var(--clay);">Collection · {{ collection.metafields.custom.eyebrow | default: 'All' }}</div>
+    <h1 class="display">{{ collection.title | replace: ' ', ' <em>' | append: '</em>' | replace: 'plant <em>pots</em>', 'plant <em>pots</em>' }}</h1>
+    {%- if collection.products_count > 0 -%}
+      <div class="col-hero-meta">
+        <div class="col-meta-item">
+          <div class="num">{{ collection.products_count }}</div>
+          <div class="lab">Pieces in range</div>
+        </div>
+        {%- if collection.metafields.custom.size_range -%}
+          <div class="col-meta-item">
+            <div class="num">{{ collection.metafields.custom.size_range }}<span style="font-size: 14px; opacity: 0.7;">cm</span></div>
+            <div class="lab">Sizes</div>
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+  <div class="col-hero-text">
+    {%- if collection.description != blank -%}
+      <div>{{ collection.description }}</div>
+    {%- else -%}
+      <p>Hand-thrown ceramic plant pots, finished in three British studios. Glazed stoneware that gets better with age — and built around the drainage your plants actually need.</p>
+    {%- endif -%}
+  </div>
+</section>
+
+<div class="filter-bar">
+  <div class="filter-pills">
+    <span class="filter-count"><strong>{{ collection.products_count }}</strong> products</span>
+    {%- comment -%} Active filter pills (Shopify Search & Discovery via collection.filters) {%- endcomment -%}
+    {%- for filter in collection.filters -%}
+      {%- for value in filter.active_values -%}
+        <a href="{{ value.url_to_remove }}" class="filter-pill active">
+          {{ value.label }}
+          <span class="x">×</span>
+        </a>
+      {%- endfor -%}
+    {%- endfor -%}
+  </div>
+  <div class="sort-wrap">
+    <span style="color: var(--muted);">Sort:</span>
+    <select onchange="window.location.href = this.value;">
+      {%- for option in collection.sort_options -%}
+        <option value="?sort_by={{ option.value }}" {% if option.value == collection.sort_by %}selected{% endif %}>
+          {{ option.name }}
+        </option>
+      {%- endfor -%}
+    </select>
+  </div>
+</div>
+
+<div class="layout">
+
+  <aside class="sidebar">
+    {%- for filter in collection.filters -%}
+      <div class="filter-group">
+        <h3>{{ filter.label }}</h3>
+        <ul>
+          {%- for value in filter.values -%}
+            <li{% if value.active %} class="checked"{% endif %}>
+              <label>
+                <input type="checkbox"
+                       {% if value.active %}checked{% endif %}
+                       {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                       onchange="window.location.href = '{% if value.active %}{{ value.url_to_remove }}{% else %}{{ value.url_to_add }}{% endif %}';">
+                {{ value.label }}
+              </label>
+              <span class="count">{{ value.count }}</span>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endfor -%}
+  </aside>
+
+  <main class="grid">
+    {%- if collection.products.size == 0 -%}
+      <div class="empty-state">
+        No products in this collection yet. <a href="{{ routes.collections_url }}">Browse all collections →</a>
+      </div>
+    {%- else -%}
+      {%- for product in collection.products -%}
+        {% render 'product-card', product: product %}
+      {%- endfor -%}
+
+      {%- if paginate.pages > 1 -%}
+        <div class="pagination">
+          {%- if paginate.previous %}<a href="{{ paginate.previous.url }}">{{ 'general.pagination.previous' | t | default: 'Newer' }}</a>{% endif -%}
+          <span class="page-meta">{{ paginate.current_page }} / {{ paginate.pages }}</span>
+          {%- if paginate.next %}<a href="{{ paginate.next.url }}">{{ 'general.pagination.next' | t | default: 'Older' }}</a>{% endif -%}
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+  </main>
+</div>
+
+{% endpaginate %}
+
+{% schema %}
+{
+  "name": "Collection",
+  "settings": []
+}
+{% endschema %}

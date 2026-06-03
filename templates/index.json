@@ -1,0 +1,41 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {}
+    },
+    "shop-by-material": {
+      "type": "shop-by-material",
+      "settings": {}
+    },
+    "featured-collection": {
+      "type": "featured-collection",
+      "settings": {}
+    },
+    "erin-signature": {
+      "type": "erin-signature",
+      "settings": {}
+    },
+    "editorial-block": {
+      "type": "editorial-block",
+      "settings": {}
+    },
+    "curated-edits": {
+      "type": "curated-edits",
+      "settings": {}
+    },
+    "newsletter-mailer": {
+      "type": "newsletter-mailer",
+      "settings": {}
+    }
+  },
+  "order": [
+    "hero",
+    "shop-by-material",
+    "featured-collection",
+    "erin-signature",
+    "editorial-block",
+    "curated-edits",
+    "newsletter-mailer"
+  ]
+}

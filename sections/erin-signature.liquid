@@ -1,0 +1,196 @@
+{%- liquid
+  assign feat = section.settings.featured_product
+-%}
+
+<style>
+  #shopify-section-{{ section.id }} .signature {
+    background: var(--cream-deep);
+    overflow: hidden;
+  }
+  #shopify-section-{{ section.id }} .signature-inner {
+    max-width: 1400px; margin: 0 auto;
+    padding: 120px 40px;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 100px; align-items: center;
+    position: relative;
+  }
+  #shopify-section-{{ section.id }} .signature-watermark {
+    position: absolute; bottom: -40px; right: 40px;
+    font-family: var(--font-heading); font-style: italic; font-weight: 300;
+    font-size: 200px;
+    color: rgba(178, 90, 56, 0.08);
+    line-height: 1; pointer-events: none; user-select: none; z-index: 0;
+  }
+  #shopify-section-{{ section.id }} .signature-text { position: relative; z-index: 2; }
+  #shopify-section-{{ section.id }} .signature-text .badge {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--paper); border: 1px solid var(--line);
+    padding: 8px 14px; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.18em;
+    color: var(--ink-soft); margin-bottom: 28px;
+  }
+  #shopify-section-{{ section.id }} .signature-text .badge::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--clay);
+  }
+  #shopify-section-{{ section.id }} .signature-text h2 {
+    font-family: var(--font-heading); font-weight: 400;
+    font-size: clamp(42px, 5.5vw, 72px); line-height: 1.05; letter-spacing: -0.02em;
+    margin-bottom: 28px;
+  }
+  #shopify-section-{{ section.id }} .signature-text h2 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  #shopify-section-{{ section.id }} .signature-text .lede {
+    font-family: var(--font-heading); font-style: italic; font-weight: 300;
+    font-size: 21px; line-height: 1.5; color: var(--ink-soft);
+    margin-bottom: 24px; max-width: 480px;
+  }
+  #shopify-section-{{ section.id }} .signature-text p.body {
+    color: var(--ink-soft); font-size: 15.5px; line-height: 1.7;
+    margin-bottom: 18px; max-width: 480px;
+    white-space: pre-line;
+  }
+  #shopify-section-{{ section.id }} .signature-specs {
+    display: grid; grid-template-columns: repeat(3, auto);
+    gap: 36px; margin: 36px 0 40px;
+    padding: 24px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  }
+  #shopify-section-{{ section.id }} .signature-specs .spec .k {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em;
+    color: var(--muted); margin-bottom: 6px;
+  }
+  #shopify-section-{{ section.id }} .signature-specs .spec .v {
+    font-family: var(--font-heading); font-size: 18px; font-weight: 400;
+  }
+  #shopify-section-{{ section.id }} .signature-cta { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; }
+  #shopify-section-{{ section.id }} .signature-price {
+    font-family: var(--font-heading); font-size: 28px;
+    display: flex; align-items: baseline; gap: 8px;
+  }
+  #shopify-section-{{ section.id }} .signature-price .from {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em;
+    color: var(--muted); font-family: var(--font-body);
+  }
+  #shopify-section-{{ section.id }} .signature-visual {
+    position: relative; aspect-ratio: 4 / 5;
+    background: linear-gradient(160deg, #C68B5C 0%, #A06840 60%, #7E4D2C 100%);
+    border-radius: 2px; overflow: hidden;
+    box-shadow: 40px 40px 100px rgba(142, 68, 38, 0.22);
+  }
+  #shopify-section-{{ section.id }} .signature-visual img {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  }
+
+  @media (max-width: 1024px) {
+    #shopify-section-{{ section.id }} .signature-inner { grid-template-columns: 1fr; gap: 60px; padding: 80px 24px; }
+    #shopify-section-{{ section.id }} .signature-watermark { font-size: 120px; }
+  }
+</style>
+
+<section class="signature">
+  <div class="signature-inner">
+    {%- assign watermark_text = section.settings.watermark | default: 'Erin' -%}
+    <div class="signature-watermark">{{ watermark_text }}</div>
+
+    <div class="signature-text">
+      {%- if section.settings.eyebrow != blank -%}
+        <div class="badge">{{ section.settings.eyebrow }}</div>
+      {%- endif -%}
+
+      <h2 class="display">{{ section.settings.heading | default: '<p>The <em>Erin</em><br>Pot.</p>' | replace: '<p>', '' | replace: '</p>', '' }}</h2>
+
+      {%- if section.settings.lede != blank -%}
+        <p class="lede">{{ section.settings.lede }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.body != blank -%}
+        <p class="body">{{ section.settings.body }}</p>
+      {%- endif -%}
+
+      <div class="signature-specs">
+        {%- if section.settings.spec_1_label != blank -%}
+          <div class="spec">
+            <div class="k">{{ section.settings.spec_1_label }}</div>
+            <div class="v">{{ section.settings.spec_1_value }}</div>
+          </div>
+        {%- endif -%}
+        {%- if section.settings.spec_2_label != blank -%}
+          <div class="spec">
+            <div class="k">{{ section.settings.spec_2_label }}</div>
+            <div class="v">{{ section.settings.spec_2_value }}</div>
+          </div>
+        {%- endif -%}
+        {%- if section.settings.spec_3_label != blank -%}
+          <div class="spec">
+            <div class="k">{{ section.settings.spec_3_label }}</div>
+            <div class="v">{{ section.settings.spec_3_value }}</div>
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="signature-cta">
+        <div class="signature-price">
+          <span class="from">From</span>
+          <span>
+            {%- if feat -%}
+              {{ feat.price | money }}
+            {%- else -%}
+              {{ section.settings.price_from | times: 100 | money }}
+            {%- endif -%}
+          </span>
+        </div>
+        {%- if section.settings.primary_cta_label != blank -%}
+          <a href="{%- if feat -%}{{ feat.url }}{%- else -%}{{ section.settings.primary_cta_link }}{%- endif -%}" class="btn btn-primary">
+            {{ section.settings.primary_cta_label }}
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </a>
+        {%- endif -%}
+        {%- if section.settings.secondary_cta_label != blank -%}
+          <a href="{{ section.settings.secondary_cta_link | default: '#' }}" class="btn btn-ghost">{{ section.settings.secondary_cta_label }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="signature-visual">
+      {%- if section.settings.image != blank -%}
+        <img src="{{ section.settings.image | image_url: width: 1000 }}" alt="{{ section.settings.image.alt | default: 'Featured product' }}" width="1000" height="{{ 1000 | divided_by: section.settings.image.aspect_ratio | round }}" loading="lazy">
+      {%- elsif feat and feat.featured_media -%}
+        <img src="{{ feat.featured_media | image_url: width: 1000 }}" alt="{{ feat.title | escape }}" width="1000" height="{{ 1000 | divided_by: feat.featured_media.aspect_ratio | round }}" loading="lazy">
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Erin signature",
+  "settings": [
+    { "type": "header", "content": "Product link" },
+    { "type": "product", "id": "featured_product", "label": "Featured product", "info": "Falls back to manual fields below if no product picked." },
+
+    { "type": "header", "content": "Copy" },
+    { "type": "text", "id": "watermark", "label": "Watermark text (large background)", "default": "Erin" },
+    { "type": "text", "id": "eyebrow",   "label": "Eyebrow",      "default": "The signature piece" },
+    { "type": "richtext", "id": "heading", "label": "Heading", "default": "<p>The <em>Erin</em><br>Pot.</p>" },
+    { "type": "textarea", "id": "lede",   "label": "Lede (italic Fraunces)" },
+    { "type": "textarea", "id": "body",   "label": "Body (line breaks preserved)" },
+
+    { "type": "header", "content": "Specs (3)" },
+    { "type": "text", "id": "spec_1_label", "label": "Spec 1 label", "default": "Material" },
+    { "type": "text", "id": "spec_1_value", "label": "Spec 1 value", "default": "Stoneware" },
+    { "type": "text", "id": "spec_2_label", "label": "Spec 2 label", "default": "Size" },
+    { "type": "text", "id": "spec_2_value", "label": "Spec 2 value", "default": "Ø 22cm" },
+    { "type": "text", "id": "spec_3_label", "label": "Spec 3 label", "default": "Made by" },
+    { "type": "text", "id": "spec_3_value", "label": "Spec 3 value", "default": "Margaret H." },
+
+    { "type": "header", "content": "Buttons" },
+    { "type": "text", "id": "primary_cta_label", "label": "Primary button", "default": "Shop the Erin" },
+    { "type": "url",  "id": "primary_cta_link",  "label": "Primary link" },
+    { "type": "text", "id": "secondary_cta_label", "label": "Secondary button", "default": "Read the maker's notes" },
+    { "type": "url",  "id": "secondary_cta_link",  "label": "Secondary link" },
+    { "type": "number", "id": "price_from", "label": "Price fallback (£)", "default": 42 },
+
+    { "type": "header", "content": "Image" },
+    { "type": "image_picker", "id": "image", "label": "Image (overrides product image)" }
+  ],
+  "presets": [{ "name": "Signature feature", "category": "Featured product" }]
+}
+{% endschema %}

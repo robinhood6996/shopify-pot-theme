@@ -1,0 +1,82 @@
+<footer class="site-footer" role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-top">
+
+      <div class="footer-brand">
+        <div class="logo-foot">{{ shop.name | replace: '&', '<em>&amp;</em>' }}</div>
+        {{ settings.footer_brand_text }}
+      </div>
+
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'menu' -%}
+          <div class="footer-col" {{ block.shopify_attributes }}>
+            <h4>{{ block.settings.heading }}</h4>
+            <ul>
+              {%- if block.settings.menu != blank -%}
+                {%- for link in block.settings.menu.links -%}
+                  <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                {%- endfor -%}
+              {%- endif -%}
+            </ul>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+
+    </div>
+
+    {%- if shop.privacy_policy.url or shop.refund_policy.url or shop.shipping_policy.url or shop.terms_of_service.url -%}
+      <div class="footer-policies">
+        {%- if shop.privacy_policy.url      -%}<a href="{{ shop.privacy_policy.url }}">Privacy</a>{%- endif -%}
+        {%- if shop.refund_policy.url       -%}<a href="{{ shop.refund_policy.url }}">Refunds</a>{%- endif -%}
+        {%- if shop.shipping_policy.url     -%}<a href="{{ shop.shipping_policy.url }}">Shipping</a>{%- endif -%}
+        {%- if shop.terms_of_service.url    -%}<a href="{{ shop.terms_of_service.url }}">Terms</a>{%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="footer-bottom">
+      <div>{{ settings.footer_legal }}</div>
+      <div class="socials">
+        {%- if settings.social_instagram  != blank -%}<a href="{{ settings.social_instagram }}"  target="_blank" rel="noopener">Instagram</a>{%- endif -%}
+        {%- if settings.social_pinterest  != blank -%}<a href="{{ settings.social_pinterest }}"  target="_blank" rel="noopener">Pinterest</a>{%- endif -%}
+        {%- if settings.social_substack   != blank -%}<a href="{{ settings.social_substack }}"   target="_blank" rel="noopener">Substack</a>{%- endif -%}
+        {%- if settings.social_trustpilot != blank -%}<a href="{{ settings.social_trustpilot }}" target="_blank" rel="noopener">Trustpilot</a>{%- endif -%}
+      </div>
+      <div>{{ settings.footer_vat }}</div>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "max_blocks": 4,
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Menu column",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Shop"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu",
+          "info": "Pick a menu from Online Store → Navigation."
+        }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      { "type": "menu", "settings": { "heading": "Shop" } },
+      { "type": "menu", "settings": { "heading": "Material" } },
+      { "type": "menu", "settings": { "heading": "Help" } },
+      { "type": "menu", "settings": { "heading": "About" } }
+    ]
+  }
+}
+{% endschema %}

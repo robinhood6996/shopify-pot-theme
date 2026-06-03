@@ -1,0 +1,78 @@
+<style>
+  #shopify-section-{{ section.id }} .stats {
+    background: var(--cream);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  #shopify-section-{{ section.id }} .stats-inner {
+    max-width: 1400px; margin: 0 auto;
+    padding: 70px 40px;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+  }
+  #shopify-section-{{ section.id }} .stat-block {
+    border-left: 1px solid var(--line);
+    padding-left: 26px;
+  }
+  #shopify-section-{{ section.id }} .stat-block:first-child { border-left: none; padding-left: 0; }
+  #shopify-section-{{ section.id }} .stat-block .num {
+    font-family: var(--font-heading); font-style: italic; font-weight: 300;
+    font-size: 66px; color: var(--clay);
+    line-height: 0.95; margin-bottom: 14px;
+  }
+  #shopify-section-{{ section.id }} .stat-block .lab {
+    font-size: 13px; line-height: 1.5;
+    color: var(--ink-soft); max-width: 220px;
+  }
+  #shopify-section-{{ section.id }} .stat-block .lab strong {
+    display: block; color: var(--ink); font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    font-size: 11px; margin-bottom: 4px;
+  }
+  @media (max-width: 1024px) {
+    #shopify-section-{{ section.id }} .stats-inner { grid-template-columns: 1fr 1fr; gap: 40px 30px; padding: 50px 24px; }
+    #shopify-section-{{ section.id }} .stat-block { border-left: none; padding-left: 0; }
+  }
+</style>
+
+<section class="stats">
+  <div class="stats-inner">
+    {%- for block in section.blocks -%}
+      <div class="stat-block" {{ block.shopify_attributes }}>
+        <div class="num">{{ block.settings.value }}</div>
+        <div class="lab">
+          {%- if block.settings.title != blank %}<strong>{{ block.settings.title }}</strong>{% endif -%}
+          {{ block.settings.body }}
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "About: stats",
+  "max_blocks": 4,
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Stat",
+      "settings": [
+        { "type": "text", "id": "value", "label": "Number / value", "default": "94" },
+        { "type": "text", "id": "title", "label": "Title (uppercase)" },
+        { "type": "text", "id": "body", "label": "Body" }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "About: stats",
+    "category": "About",
+    "blocks": [
+      { "type": "stat", "settings": { "value": "3",    "title": "Independent Studios", "body": "All within 30 minutes." } },
+      { "type": "stat", "settings": { "value": "94",   "title": "Pieces in Range",     "body": "Every one selected by hand." } },
+      { "type": "stat", "settings": { "value": "100%", "title": "Made in Britain",     "body": "From wheel to box." } },
+      { "type": "stat", "settings": { "value": "0",    "title": "Pieces Imported",     "body": "Not now. Ever." } }
+    ]
+  }]
+}
+{% endschema %}

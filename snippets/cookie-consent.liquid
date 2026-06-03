@@ -1,0 +1,282 @@
+{%- comment -%}
+  Cookie consent banner — rendered globally from theme.liquid.
+  Persistence via localStorage. Other scripts can read window.KC.consent
+  to gate analytics, marketing pixels, etc.
+{%- endcomment -%}
+
+<style>
+  .cookie {
+    position: fixed;
+    bottom: 24px; left: 24px;
+    width: calc(100% - 48px); max-width: 460px;
+    z-index: 100;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    box-shadow: 0 24px 60px rgba(26, 20, 14, 0.18);
+    border-radius: 2px;
+    transform: translateY(20px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+    overflow: hidden;
+  }
+  .cookie.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
+
+  .cookie-head {
+    padding: 22px 26px 16px;
+    display: flex; align-items: flex-start; gap: 16px;
+  }
+  .cookie-head .icon {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: var(--cream);
+    border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--clay);
+    flex-shrink: 0;
+  }
+  .cookie-head .icon svg { width: 20px; height: 20px; }
+  .cookie-head .text { flex: 1; min-width: 0; }
+  .cookie-head .eyebrow {
+    color: var(--clay); margin-bottom: 6px;
+    font-size: 10.5px; letter-spacing: 0.18em;
+    text-transform: uppercase; font-weight: 500;
+  }
+  .cookie-head h2 {
+    font-family: var(--font-heading); font-size: 19px; font-weight: 400;
+    line-height: 1.2; margin-bottom: 8px;
+  }
+  .cookie-head h2 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  .cookie-head p {
+    font-size: 13px; color: var(--ink-soft);
+    line-height: 1.55;
+  }
+  .cookie-head p a {
+    color: var(--clay); border-bottom: 1px solid var(--clay);
+    padding-bottom: 1px;
+  }
+
+  .cookie-prefs {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease, margin 0.3s, padding 0.3s;
+    padding: 0 26px;
+    border-top: 1px solid transparent;
+  }
+  .cookie.expanded .cookie-prefs {
+    max-height: 600px;
+    padding: 16px 26px 0;
+    border-top-color: var(--line-soft);
+  }
+  .pref-row {
+    display: grid; grid-template-columns: 1fr auto;
+    gap: 16px; align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .pref-row:last-of-type { border-bottom: none; }
+  .pref-row .pref-name {
+    font-family: var(--font-heading); font-size: 15px; font-weight: 400;
+    line-height: 1.2; margin-bottom: 4px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .pref-row .pref-name em { font-style: italic; font-weight: 300; color: var(--clay); }
+  .pref-row .req-tag {
+    font-size: 9px; text-transform: uppercase; letter-spacing: 0.16em;
+    color: var(--muted); font-weight: 500;
+    background: var(--cream-deep);
+    padding: 2px 8px; border-radius: 100px;
+    font-family: var(--font-body);
+  }
+  .pref-row .pref-desc {
+    font-size: 12px; color: var(--ink-soft); line-height: 1.5;
+    max-width: 320px;
+  }
+
+  .toggle-switch {
+    position: relative; width: 38px; height: 22px;
+    background: var(--line); border-radius: 100px;
+    cursor: pointer; transition: background 0.2s;
+    flex-shrink: 0; border: none; padding: 0;
+  }
+  .toggle-switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 18px; height: 18px;
+    background: var(--paper); border-radius: 50%;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
+  .toggle-switch.on { background: var(--clay); }
+  .toggle-switch.on::after { transform: translateX(16px); }
+  .toggle-switch.locked { background: var(--ink-soft); cursor: not-allowed; opacity: 0.7; }
+  .toggle-switch.locked::after { transform: translateX(16px); }
+
+  .cookie-actions {
+    padding: 16px 26px 22px;
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+  }
+  .cookie.expanded .cookie-actions { border-top: 1px solid var(--line-soft); margin-top: 8px; padding-top: 18px; }
+  .cookie-btn {
+    background: none; border: none; cursor: pointer;
+    padding: 11px 16px;
+    font-family: inherit; font-size: 11.5px; font-weight: 500;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .cookie-btn.primary {
+    background: var(--ink); color: var(--cream); flex: 1;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .cookie-btn.primary:hover { background: var(--clay-deep); }
+  .cookie-btn.primary .arrow {
+    font-family: var(--font-heading); font-style: italic; font-weight: 300;
+    font-size: 14px; letter-spacing: 0; text-transform: none;
+  }
+  .cookie-btn.secondary {
+    border: 1px solid var(--line); color: var(--ink-soft);
+    background: transparent;
+  }
+  .cookie-btn.secondary:hover { border-color: var(--ink); color: var(--ink); }
+  .cookie-btn.text {
+    color: var(--ink-soft);
+    text-decoration: underline;
+    text-decoration-color: var(--line);
+    text-underline-offset: 4px;
+    background: transparent;
+  }
+  .cookie-btn.text:hover { color: var(--clay); text-decoration-color: var(--clay); }
+
+  .cookie-actions.expanded-actions {
+    flex-direction: column; align-items: stretch; gap: 8px;
+  }
+  .cookie.expanded .cookie-actions.default-actions { display: none; }
+  .cookie:not(.expanded) .cookie-actions.expanded-actions { display: none; }
+  .cookie-actions.expanded-actions .row { display: flex; gap: 8px; }
+  .cookie-actions.expanded-actions .row button { flex: 1; }
+
+  .cookie-toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    z-index: 110;
+    background: var(--ink); color: var(--cream);
+    padding: 12px 22px;
+    font-size: 12.5px; letter-spacing: 0.04em;
+    border-radius: 100px;
+    display: inline-flex; align-items: center; gap: 10px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s, transform 0.3s;
+    box-shadow: 0 16px 40px rgba(26, 20, 14, 0.25);
+  }
+  .cookie-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .cookie-toast svg { width: 14px; height: 14px; color: var(--clay); }
+  .cookie-toast strong { color: var(--cream); font-weight: 500; }
+
+  .cookie-reopen {
+    position: fixed; bottom: 24px; right: 24px;
+    z-index: 90;
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 100px;
+    padding: 9px 14px;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em; font-weight: 500;
+    color: var(--ink-soft);
+    cursor: pointer; display: none;
+    align-items: center; gap: 8px;
+    box-shadow: 0 8px 24px rgba(26, 20, 14, 0.08);
+    font-family: inherit;
+  }
+  .cookie-reopen.show { display: inline-flex; }
+  .cookie-reopen:hover { border-color: var(--ink); color: var(--ink); }
+  .cookie-reopen svg { width: 12px; height: 12px; }
+
+  @media (max-width: 600px) {
+    .cookie { bottom: 12px; left: 12px; width: calc(100% - 24px); }
+    .cookie-actions { flex-direction: column; align-items: stretch; }
+    .cookie-btn.primary { width: 100%; }
+    .cookie-reopen { bottom: 12px; right: 12px; }
+  }
+</style>
+
+<div class="cookie" id="cookie-banner" role="dialog" aria-labelledby="cookie-title" aria-describedby="cookie-desc">
+  <div class="cookie-head">
+    <div class="icon">
+      <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
+        <path d="M12 2a10 10 0 1 0 10 10 6 6 0 0 1-6-6 4 4 0 0 1-4-4Z"/>
+        <circle cx="9" cy="11" r="0.9" fill="currentColor"/>
+        <circle cx="15" cy="14" r="0.9" fill="currentColor"/>
+        <circle cx="11" cy="16" r="0.9" fill="currentColor"/>
+        <circle cx="7" cy="14" r="0.9" fill="currentColor"/>
+        <circle cx="13" cy="9" r="0.9" fill="currentColor"/>
+      </svg>
+    </div>
+    <div class="text">
+      <div class="eyebrow">Cookies &amp; data</div>
+      <h2 id="cookie-title">A small <em>note</em> about cookies.</h2>
+      <p id="cookie-desc">We use a few cookies to make the shop work, see how it's doing, and (optionally) show you the right pots when you visit again. Choose what you're happy with — change your mind any time. <a href="/policies/privacy-policy">Read our policy</a>.</p>
+    </div>
+  </div>
+
+  <div class="cookie-prefs">
+    <div class="pref-row">
+      <div class="pref-info">
+        <div class="pref-name"><em>Essential</em><span class="req-tag">Required</span></div>
+        <div class="pref-desc">Login, basket, security — bits the site can't run without. Always on.</div>
+      </div>
+      <button class="toggle-switch on locked" data-pref="essential" aria-label="Essential cookies (required)" disabled></button>
+    </div>
+    <div class="pref-row">
+      <div class="pref-info">
+        <div class="pref-name"><em>Analytics</em></div>
+        <div class="pref-desc">Tells us which pages people visit and how long they stay. Aggregated, never tied to your name.</div>
+      </div>
+      <button class="toggle-switch on" data-pref="analytics" aria-label="Toggle analytics cookies"></button>
+    </div>
+    <div class="pref-row">
+      <div class="pref-info">
+        <div class="pref-name"><em>Marketing</em></div>
+        <div class="pref-desc">Lets us show you the right pots if you visit Pinterest or Instagram afterwards. Off by default.</div>
+      </div>
+      <button class="toggle-switch" data-pref="marketing" aria-label="Toggle marketing cookies"></button>
+    </div>
+    <div class="pref-row">
+      <div class="pref-info">
+        <div class="pref-name"><em>Personalisation</em></div>
+        <div class="pref-desc">Remembers your wishlist and which collections you've browsed.</div>
+      </div>
+      <button class="toggle-switch on" data-pref="personalisation" aria-label="Toggle personalisation cookies"></button>
+    </div>
+  </div>
+
+  <div class="cookie-actions default-actions">
+    <button class="cookie-btn text" data-cookie-action="customize">Customise</button>
+    <button class="cookie-btn secondary" data-cookie-action="essential">Essential only</button>
+    <button class="cookie-btn primary" data-cookie-action="accept-all">
+      Accept all
+      <span class="arrow">→</span>
+    </button>
+  </div>
+
+  <div class="cookie-actions expanded-actions">
+    <button class="cookie-btn primary" data-cookie-action="save-prefs">
+      Save preferences
+      <span class="arrow">→</span>
+    </button>
+    <div class="row">
+      <button class="cookie-btn secondary" data-cookie-action="essential">Essential only</button>
+      <button class="cookie-btn secondary" data-cookie-action="accept-all">Accept all</button>
+    </div>
+  </div>
+</div>
+
+<div class="cookie-toast" id="cookie-toast">
+  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+  <span>Preferences saved · <strong id="cookie-toast-summary">all cookies</strong></span>
+</div>
+
+<button class="cookie-reopen" id="cookie-reopen" aria-label="Reopen cookie preferences">
+  <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="10"/>
+    <circle cx="9" cy="11" r="0.9" fill="currentColor"/>
+    <circle cx="15" cy="14" r="0.9" fill="currentColor"/>
+    <circle cx="11" cy="16" r="0.9" fill="currentColor"/>
+  </svg>
+  Cookie preferences
+</button>

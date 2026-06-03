@@ -1,0 +1,99 @@
+{%- comment -%}
+  Customer dashboard sidebar.
+  Pass `active` (one of: dashboard, orders, addresses, profile) to mark current.
+{%- endcomment -%}
+
+<aside class="cust-sidebar">
+  <div class="cust-sidebar-card">
+    <div class="cust-sidebar-greet">
+      <div class="cust-sidebar-eb">Signed in as</div>
+      <div class="cust-sidebar-name">{{ customer.first_name | default: customer.email | split: '@' | first }}</div>
+      <div class="cust-sidebar-email">{{ customer.email }}</div>
+    </div>
+
+    <nav class="cust-sidebar-nav" aria-label="Account navigation">
+      <a href="{{ routes.account_url }}" {% if active == 'dashboard' %}class="active"{% endif %}>
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M3 12 12 4l9 8M5 10v10h14V10"/></svg>
+        Overview
+      </a>
+      <a href="#orders" {% if active == 'orders' %}class="active"{% endif %}>
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M4 7h16l-1.5 12H5.5L4 7Zm4 0V5a4 4 0 0 1 8 0v2"/></svg>
+        Orders
+        {%- if customer.orders_count > 0 -%}<span class="cust-sidebar-num">{{ customer.orders_count }}</span>{%- endif -%}
+      </a>
+      <a href="{{ routes.account_addresses_url }}" {% if active == 'addresses' %}class="active"{% endif %}>
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 22s8-7.6 8-13a8 8 0 1 0-16 0c0 5.4 8 13 8 13Z"/><circle cx="12" cy="9" r="3"/></svg>
+        Addresses
+        {%- if customer.addresses_count > 0 -%}<span class="cust-sidebar-num">{{ customer.addresses_count }}</span>{%- endif -%}
+      </a>
+      <a href="#profile" {% if active == 'profile' %}class="active"{% endif %}>
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
+        Profile
+      </a>
+    </nav>
+
+    <div class="cust-sidebar-sep"></div>
+
+    <a href="{{ routes.account_logout_url }}" class="cust-sidebar-logout">
+      <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M16 17l5-5-5-5M21 12H9M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></svg>
+      Sign out
+    </a>
+  </div>
+</aside>
+
+<style>
+  .cust-sidebar { position: sticky; top: 110px; align-self: start; }
+  .cust-sidebar-card {
+    background: var(--paper);
+    border: 1px solid var(--line-soft);
+    padding: 28px 24px;
+  }
+  .cust-sidebar-greet { padding-bottom: 22px; border-bottom: 1px solid var(--line-soft); margin-bottom: 16px; }
+  .cust-sidebar-eb {
+    font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.18em;
+    color: var(--muted); margin-bottom: 10px;
+  }
+  .cust-sidebar-name {
+    font-family: var(--font-heading); font-weight: 400; font-size: 22px;
+    line-height: 1.1; margin-bottom: 4px;
+  }
+  .cust-sidebar-email { font-size: 12.5px; color: var(--ink-soft); word-break: break-all; }
+
+  .cust-sidebar-nav { display: flex; flex-direction: column; gap: 2px; }
+  .cust-sidebar-nav a {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 12px;
+    font-size: 13.5px; color: var(--ink-soft);
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+    position: relative;
+  }
+  .cust-sidebar-nav a:hover { background: var(--cream); color: var(--ink); }
+  .cust-sidebar-nav a.active {
+    background: var(--ink); color: var(--cream);
+  }
+  .cust-sidebar-nav a svg { width: 18px; height: 18px; flex-shrink: 0; }
+  .cust-sidebar-num {
+    margin-left: auto;
+    font-family: var(--font-heading); font-style: italic; font-weight: 300;
+    font-size: 13px;
+    background: var(--cream-deep); color: var(--ink);
+    padding: 1px 9px; border-radius: 100px;
+  }
+  .cust-sidebar-nav a.active .cust-sidebar-num { background: var(--clay); color: var(--cream); }
+
+  .cust-sidebar-sep { height: 1px; background: var(--line-soft); margin: 16px 0; }
+  .cust-sidebar-logout {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 12px;
+    font-size: 13.5px; color: var(--muted);
+    text-decoration: none; transition: color 0.15s;
+  }
+  .cust-sidebar-logout:hover { color: var(--error); }
+  .cust-sidebar-logout svg { width: 18px; height: 18px; }
+
+  @media (max-width: 900px) {
+    .cust-sidebar { position: static; }
+    .cust-sidebar-card { padding: 20px; }
+  }
+</style>

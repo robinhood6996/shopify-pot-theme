@@ -1,0 +1,154 @@
+{% render 'customer-shell-styles' %}
+
+<style>
+  .pw-meter {
+    margin-top: 10px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .pw-meter-bar {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;
+  }
+  .pw-meter-bar span {
+    height: 3px; background: var(--line-soft); border-radius: 2px;
+    transition: background 0.25s;
+  }
+  .pw-meter-bar[data-strength="1"] span:nth-child(-n+1) { background: var(--error); }
+  .pw-meter-bar[data-strength="2"] span:nth-child(-n+2) { background: #C68B5C; }
+  .pw-meter-bar[data-strength="3"] span:nth-child(-n+3) { background: var(--clay); }
+  .pw-meter-bar[data-strength="4"] span { background: var(--success); }
+  .pw-meter-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em;
+    color: var(--muted);
+  }
+  .pw-meter-label strong { color: var(--ink-soft); font-weight: 500; }
+
+  .activate-welcome {
+    margin-bottom: 24px;
+    padding: 18px 20px;
+    background: var(--cream); border: 1px solid var(--line-soft);
+    display: flex; align-items: flex-start; gap: 14px;
+    font-size: 13.5px; color: var(--ink-soft); line-height: 1.5;
+  }
+  .activate-welcome svg { width: 20px; height: 20px; color: var(--clay); flex-shrink: 0; margin-top: 2px; }
+  .activate-welcome strong { display: block; color: var(--ink); font-weight: 500; margin-bottom: 2px; }
+
+  .decline-form {
+    text-align: center; margin-top: 6px;
+    font-size: 13px; color: var(--ink-soft);
+  }
+  .decline-form button {
+    background: none; border: none; padding: 0;
+    font-family: inherit; font-size: inherit;
+    color: var(--muted); cursor: pointer;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 1px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .decline-form button:hover { color: var(--error); border-color: var(--error); }
+</style>
+
+<div class="acct-shell">
+  {% render 'customer-brand-pane',
+    eyebrow: "You've been invited",
+    heading: 'Welcome to <em>Kiln &amp;<br>Clay</em>.',
+    lede: "Set a password and your account is yours. We'll keep your orders, addresses, and notes from the studio in one quiet place."
+  %}
+
+  <main class="form-pane">
+    <div class="form-inner">
+
+      <h2 class="pane-title">Activate your <em>account</em>.</h2>
+      <p class="pane-sub">Pick a password to finish setting up. You'll use it with the email we have on file.</p>
+
+      <div class="activate-welcome">
+        <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M3 8 12 13l9-5"/><rect x="3" y="6" width="18" height="14" rx="1.5"/></svg>
+        <div>
+          <strong>One step left.</strong>
+          We sent this invitation to your email. Choose a password below and you'll be signed in.
+        </div>
+      </div>
+
+      {% form 'activate_customer_password', novalidate: 'novalidate' %}
+        {%- if form.errors -%}
+          <div class="form-errors">
+            <ul>
+              {%- for f in form.errors -%}
+                <li>{{ form.errors.messages[f] }}</li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+
+        <div class="field">
+          <div class="field-label-row"><span>Password</span></div>
+          <div class="field-pw">
+            <input type="password" class="field-input" name="customer[password]" placeholder="At least 8 characters" required minlength="8" autocomplete="new-password" id="activate-pw" autofocus>
+            <button type="button" class="toggle-pw" data-pw="activate-pw" aria-label="Show password">
+              <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <div class="pw-meter">
+            <div class="pw-meter-bar" data-strength="0" id="pw-meter-bar">
+              <span></span><span></span><span></span><span></span>
+            </div>
+            <div class="pw-meter-label">Strength: <strong id="pw-meter-label">enter a password</strong></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-label-row"><span>Confirm password</span></div>
+          <div class="field-pw">
+            <input type="password" class="field-input" name="customer[password_confirmation]" placeholder="Repeat the password" required minlength="8" autocomplete="new-password" id="activate-pw-confirm">
+            <button type="button" class="toggle-pw" data-pw="activate-pw-confirm" aria-label="Show password">
+              <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn">Activate account <span class="arrow">→</span></button>
+      {% endform %}
+
+      {%- comment -%} Decline invite — sends a delete to the invitation URL {%- endcomment -%}
+      <div class="decline-form">
+        Didn't expect this invitation?
+        {% form 'activate_customer_password' %}
+          <input type="hidden" name="_method" value="delete">
+          <button type="submit" name="decline">Decline and remove me →</button>
+        {% endform %}
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+  // Show/hide password
+  document.querySelectorAll('.toggle-pw').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.pw;
+      const input = document.getElementById(id);
+      if (!input) return;
+      input.type = input.type === 'password' ? 'text' : 'password';
+    });
+  });
+
+  // Strength meter
+  const pw = document.getElementById('activate-pw');
+  const bar = document.getElementById('pw-meter-bar');
+  const label = document.getElementById('pw-meter-label');
+  const labels = ['enter a password', 'too short', 'getting there', 'good', 'strong'];
+
+  if (pw) {
+    pw.addEventListener('input', () => {
+      const v = pw.value;
+      let score = 0;
+      if (v.length >= 8) score++;
+      if (v.length >= 12) score++;
+      if (/[A-Z]/.test(v) && /[a-z]/.test(v)) score++;
+      if (/\d/.test(v) && /[^A-Za-z0-9]/.test(v)) score++;
+      if (v.length === 0) score = 0;
+      bar.dataset.strength = score;
+      label.textContent = labels[score];
+    });
+  }
+</script>

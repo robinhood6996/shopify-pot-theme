@@ -1,0 +1,246 @@
+{% layout none %}
+<!DOCTYPE html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ shop.name }} · Gift card</title>
+  <meta name="robots" content="noindex">
+
+  <style>
+    {{ settings.heading_font | font_face: font_display: 'swap' }}
+    {{ settings.heading_font | font_modify: 'weight', '300' | font_face: font_display: 'swap' }}
+    {{ settings.heading_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+    {{ settings.body_font | font_face: font_display: 'swap' }}
+    {{ settings.accent_font | font_face: font_display: 'swap' }}
+  </style>
+
+  {{ 'theme.css' | asset_url | stylesheet_tag }}
+
+  <style>
+    :root {
+      --cream: {{ settings.colour_cream }};
+      --cream-deep: {{ settings.colour_cream_deep }};
+      --paper: {{ settings.colour_paper }};
+      --ink: {{ settings.colour_ink }};
+      --ink-soft: {{ settings.colour_ink_soft }};
+      --muted: {{ settings.colour_muted }};
+      --line: {{ settings.colour_line }};
+      --line-soft: {{ settings.colour_line_soft }};
+      --clay: {{ settings.colour_clay }};
+      --clay-deep: {{ settings.colour_clay_deep }};
+      --bone: #E5DCC8; --success: #4F5B45; --error: #B23838;
+      --font-heading: {{ settings.heading_font.family }}, {{ settings.heading_font.fallback_families }};
+      --font-body: {{ settings.body_font.family }}, {{ settings.body_font.fallback_families }};
+      --font-accent: {{ settings.accent_font.family }}, {{ settings.accent_font.fallback_families }};
+    }
+
+    .gc-page {
+      max-width: 720px; margin: 0 auto;
+      padding: 60px 40px 80px;
+    }
+    .gc-page header {
+      text-align: center; margin-bottom: 50px;
+    }
+    .gc-page header .logo {
+      font-family: var(--font-heading); font-size: 26px; letter-spacing: 0.04em;
+      color: var(--ink);
+    }
+    .gc-page header .logo em { font-style: italic; font-weight: 300; }
+
+    .gc-hero { text-align: center; margin-bottom: 40px; }
+    .gc-hero .eyebrow {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.22em;
+      color: var(--clay); font-weight: 500; margin-bottom: 16px;
+    }
+    .gc-hero h1 {
+      font-family: var(--font-heading); font-weight: 400;
+      font-size: clamp(36px, 5vw, 56px); line-height: 1; letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }
+    .gc-hero h1 em { font-style: italic; font-weight: 300; color: var(--clay); }
+    .gc-hero p {
+      font-family: var(--font-heading); font-style: italic; font-weight: 300;
+      font-size: 18px; line-height: 1.5; color: var(--ink-soft);
+      max-width: 480px; margin: 0 auto;
+    }
+
+    .gc-card {
+      aspect-ratio: 16 / 10;
+      background: linear-gradient(160deg, #C68B5C 0%, #8E4426 60%, #5C2A14 100%);
+      border-radius: 4px;
+      position: relative; overflow: hidden;
+      color: var(--cream);
+      box-shadow: 0 30px 60px rgba(178, 90, 56, 0.18);
+    }
+    .gc-card-inner {
+      padding: 44px 50px; height: 100%;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      grid-template-rows: auto 1fr auto;
+    }
+    .gc-card .brand {
+      font-family: var(--font-heading); font-size: 22px; letter-spacing: 0.04em;
+    }
+    .gc-card .brand em { font-style: italic; font-weight: 300; }
+    .gc-card .badge {
+      border: 1px solid rgba(244, 237, 224, 0.35);
+      padding: 6px 12px;
+      font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; font-weight: 500;
+    }
+    .gc-card .balance {
+      grid-column: 1 / -1; align-self: center;
+    }
+    .gc-card .balance .l {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em;
+      opacity: 0.7; margin-bottom: 12px;
+    }
+    .gc-card .balance .v {
+      font-family: var(--font-heading); font-weight: 400;
+      font-size: clamp(56px, 8vw, 92px); line-height: 0.95;
+    }
+    .gc-card .balance .v em { font-style: italic; font-weight: 300; }
+    .gc-card .stamp {
+      grid-column: 2; align-self: end;
+      font-family: var(--font-accent); font-weight: 500;
+      font-size: 26px; line-height: 1;
+      opacity: 0.8; transform: rotate(-2deg);
+    }
+    .gc-card .meta {
+      grid-column: 1; align-self: end;
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.18em;
+      opacity: 0.75;
+    }
+    .gc-card .expired {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--cream);
+      font-family: var(--font-heading); font-style: italic; font-size: 32px;
+    }
+
+    .gc-code {
+      margin-top: 24px;
+      background: var(--paper); border: 1px solid var(--line);
+      padding: 14px 18px;
+      display: grid; grid-template-columns: auto 1fr auto;
+      gap: 16px; align-items: center;
+    }
+    .gc-code .l {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em;
+      color: var(--muted); font-weight: 500;
+    }
+    .gc-code .code {
+      font-family: var(--font-heading); font-size: 20px;
+      letter-spacing: 0.06em; color: var(--ink);
+    }
+    .gc-code button {
+      background: var(--ink); color: var(--cream);
+      border: none; cursor: pointer; padding: 10px 18px;
+      font-family: inherit; font-size: 11px; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase;
+    }
+    .gc-code button.copied { background: #4F5B45; }
+
+    .gc-instructions {
+      margin-top: 36px;
+      padding: 28px 30px;
+      background: var(--cream); border-radius: 2px;
+    }
+    .gc-instructions h2 {
+      font-family: var(--font-heading); font-size: 18px; font-weight: 400;
+      margin-bottom: 12px;
+    }
+    .gc-instructions p {
+      font-size: 14px; line-height: 1.7; color: var(--ink-soft);
+    }
+    .gc-instructions a {
+      color: var(--clay); border-bottom: 1px solid var(--clay); padding-bottom: 1px;
+    }
+
+    .gc-print {
+      margin-top: 30px; text-align: center;
+    }
+    .gc-print button {
+      background: transparent; border: 1px solid var(--ink);
+      color: var(--ink); cursor: pointer; padding: 14px 26px;
+      font-family: inherit; font-size: 12px; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase;
+    }
+    .gc-print button:hover { background: var(--ink); color: var(--cream); }
+
+    @media print {
+      .gc-print, .gc-instructions, .gc-code button { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="gc-page">
+
+  <header>
+    <div class="logo">{{ shop.name | replace: '&', '<em>&amp;</em>' }}</div>
+  </header>
+
+  <div class="gc-hero">
+    <div class="eyebrow">Your gift card</div>
+    <h1>A small <em>gift</em>, from someone.</h1>
+    <p>Use the code below at checkout. The balance applies to anything in the shop, including delivery.</p>
+  </div>
+
+  <div class="gc-card">
+    {%- if gift_card.expired -%}
+      <div class="expired">Expired</div>
+    {%- endif -%}
+    <div class="gc-card-inner">
+      <div class="brand">{{ shop.name | replace: '&', '<em>&amp;</em>' }}</div>
+      <div class="badge">Gift Card · {{ gift_card.expires_on | date: "%Y" | default: "2026" }}</div>
+      <div class="balance">
+        <div class="l">Balance</div>
+        <div class="v">{{ gift_card.balance | money_without_trailing_zeros }}</div>
+      </div>
+      <div class="meta">
+        Issued {{ gift_card.created_at | date: "%-d %b %Y" }}
+        {%- if gift_card.expires_on %} · Expires {{ gift_card.expires_on | date: "%-d %b %Y" }}{% else %} · No expiry{% endif -%}
+      </div>
+      <div class="stamp">— with love</div>
+    </div>
+  </div>
+
+  <div class="gc-code">
+    <span class="l">Code</span>
+    <div class="code">{{ gift_card.code | format_code }}</div>
+    <button id="copyBtn" data-copy="{{ gift_card.code }}">
+      <span id="copyLabel">Copy</span>
+    </button>
+  </div>
+
+  <div class="gc-instructions">
+    <h2>How to use it</h2>
+    <p>Add anything to your basket and apply the code at checkout in the <strong>Promo / gift card</strong> field. Don't use the whole balance? The remainder stays on the card.</p>
+  </div>
+
+  <div class="gc-print">
+    <button onclick="window.print();">Print this card</button>
+  </div>
+
+</div>
+
+<script>
+  const btn = document.getElementById('copyBtn');
+  const lab = document.getElementById('copyLabel');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const code = btn.dataset.copy;
+      function flash() {
+        btn.classList.add('copied');
+        lab.textContent = 'Copied';
+        setTimeout(() => { btn.classList.remove('copied'); lab.textContent = 'Copy'; }, 1500);
+      }
+      if (navigator.clipboard) navigator.clipboard.writeText(code).then(flash);
+      else { const ta=document.createElement('textarea'); ta.value=code; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); flash(); }
+    });
+  }
+</script>
+</body>
+</html>

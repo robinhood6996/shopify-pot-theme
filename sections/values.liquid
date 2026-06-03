@@ -1,0 +1,76 @@
+<style>
+  #shopify-section-{{ section.id }} .values { background: var(--cream); }
+  #shopify-section-{{ section.id }} .values-inner {
+    max-width: 1400px; margin: 0 auto; padding: 120px 40px;
+  }
+  #shopify-section-{{ section.id }} .values-head { text-align: center; margin-bottom: 70px; }
+  #shopify-section-{{ section.id }} .values-head .eb { color: var(--clay); margin-bottom: 18px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.22em; font-weight: 500; }
+  #shopify-section-{{ section.id }} .values-head h2 {
+    font-family: var(--font-heading); font-weight: 400;
+    font-size: clamp(40px, 6vw, 76px); line-height: 1.05; letter-spacing: -0.02em;
+    max-width: 900px; margin: 0 auto;
+  }
+  #shopify-section-{{ section.id }} .values-head h2 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  #shopify-section-{{ section.id }} .values-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 60px 80px;
+  }
+  #shopify-section-{{ section.id }} .value {
+    display: grid; grid-template-columns: auto 1fr; gap: 24px;
+  }
+  #shopify-section-{{ section.id }} .v-num {
+    font-family: var(--font-heading); font-style: italic; font-weight: 300;
+    font-size: 56px; color: var(--clay); line-height: 0.85;
+  }
+  #shopify-section-{{ section.id }} .v-text h3 {
+    font-family: var(--font-heading); font-size: 24px; font-weight: 400;
+    margin-bottom: 14px; line-height: 1.2;
+  }
+  #shopify-section-{{ section.id }} .v-text p { font-size: 15px; line-height: 1.7; color: var(--ink-soft); }
+  @media (max-width: 1024px) {
+    #shopify-section-{{ section.id }} .values-inner { padding: 80px 24px; }
+    #shopify-section-{{ section.id }} .values-grid { grid-template-columns: 1fr; gap: 40px; }
+  }
+</style>
+
+<section class="values">
+  <div class="values-inner">
+    <div class="values-head">
+      {%- if section.settings.eyebrow != blank -%}<div class="eb">{{ section.settings.eyebrow }}</div>{%- endif -%}
+      <h2 class="display">{{ section.settings.heading | replace: '<p>', '' | replace: '</p>', '' }}</h2>
+    </div>
+    <div class="values-grid">
+      {%- for block in section.blocks -%}
+        <div class="value" {{ block.shopify_attributes }}>
+          <div class="v-num">{{ block.settings.num }}</div>
+          <div class="v-text">
+            <h3>{{ block.settings.title }}</h3>
+            <p>{{ block.settings.body }}</p>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Values",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "What we believe" },
+    { "type": "richtext", "id": "heading", "label": "Heading" }
+  ],
+  "blocks": [
+    {
+      "type": "value",
+      "name": "Value",
+      "settings": [
+        { "type": "text", "id": "num", "label": "Number", "default": "01" },
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "textarea", "id": "body", "label": "Body" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Values", "category": "About" }]
+}
+{% endschema %}

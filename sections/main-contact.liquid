@@ -1,0 +1,502 @@
+<style>
+  .ct-hero { max-width: 980px; margin: 0 auto; padding: 80px 40px 40px; text-align: center; }
+  .ct-hero .eyebrow { color: var(--clay); margin-bottom: 22px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.22em; font-weight: 500; }
+  .ct-hero h1 { font-family: var(--font-heading); font-weight: 400; font-size: clamp(48px, 7vw, 88px); line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 26px; }
+  .ct-hero h1 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  .ct-hero .lede { font-family: var(--font-heading); font-style: italic; font-weight: 300; font-size: 21px; line-height: 1.5; color: var(--ink-soft); max-width: 680px; margin: 0 auto; }
+
+  .ct-quick { max-width: 1280px; margin: 0 auto; padding: 30px 40px 0; }
+  .ct-quick-inner { background: var(--cream); border-radius: 2px; padding: 28px 32px; display: grid; grid-template-columns: auto 1fr; gap: 32px; align-items: center; }
+  .ct-quick-text { font-family: var(--font-heading); font-style: italic; font-weight: 300; font-size: 17px; color: var(--ink-soft); line-height: 1.4; max-width: 240px; }
+  .ct-quick-text strong { display: block; font-style: normal; font-weight: 400; color: var(--ink); font-size: 13px; text-transform: uppercase; letter-spacing: 0.16em; font-family: var(--font-body); margin-bottom: 4px; }
+  .ct-quick-links { display: flex; gap: 10px; flex-wrap: wrap; }
+  .ct-quick-links a { border: 1px solid var(--line); background: var(--paper); padding: 10px 16px; border-radius: 100px; font-size: 13px; color: var(--ink-soft); display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; text-decoration: none; }
+  .ct-quick-links a:hover { border-color: var(--ink); color: var(--ink); }
+  .ct-quick-links a svg { width: 14px; height: 14px; color: var(--clay); }
+
+  .ct-layout { max-width: 1280px; margin: 0 auto; padding: 70px 40px 80px; display: grid; grid-template-columns: 1.4fr 1fr; gap: 80px; align-items: start; }
+
+  .ct-form-section h2 { font-family: var(--font-heading); font-size: clamp(32px, 4vw, 44px); font-weight: 400; line-height: 1.1; margin-bottom: 12px; }
+  .ct-form-section h2 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  .ct-form-lede { color: var(--ink-soft); font-size: 15.5px; margin-bottom: 36px; max-width: 520px; }
+
+  .ct-field { margin-bottom: 26px; }
+  .ct-field-label { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em; font-weight: 500; color: var(--ink-soft); }
+  .ct-field-label .opt { font-family: var(--font-heading); font-style: italic; font-weight: 300; text-transform: none; letter-spacing: 0; font-size: 13px; color: var(--muted); }
+
+  .ct-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .ct-chip { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border: 1px solid var(--line); background: var(--paper); border-radius: 100px; font-family: inherit; font-size: 13px; cursor: pointer; color: var(--ink-soft); transition: all 0.2s; }
+  .ct-chip:hover { border-color: var(--ink); color: var(--ink); }
+  .ct-chip.active { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+  .ct-chip svg { width: 13px; height: 13px; }
+  .ct-chip input[type="radio"] { display: none; }
+
+  .ct-input, .ct-textarea { width: 100%; background: var(--paper); border: 1px solid var(--line); color: var(--ink); padding: 14px 16px; font-family: var(--font-heading); font-size: 17px; font-style: italic; font-weight: 300; outline: none; transition: border-color 0.2s; }
+  .ct-input::placeholder, .ct-textarea::placeholder { color: var(--muted); }
+  .ct-input:focus, .ct-textarea:focus { border-color: var(--clay); }
+  .ct-textarea { min-height: 140px; resize: vertical; font-style: normal; font-family: var(--font-body); font-size: 15px; line-height: 1.6; }
+
+  .ct-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .ct-order-field { display: none; }
+  .ct-order-field.show { display: block; }
+
+  .ct-counter { text-align: right; font-size: 11px; color: var(--muted); margin-top: 6px; font-variant-numeric: tabular-nums; letter-spacing: 0.04em; }
+
+  .ct-privacy { display: flex; align-items: flex-start; gap: 12px; margin-top: 8px; margin-bottom: 26px; font-size: 12.5px; color: var(--ink-soft); line-height: 1.6; }
+  .ct-privacy input[type="checkbox"] { appearance: none; width: 16px; height: 16px; border: 1px solid var(--line); background: var(--paper); cursor: pointer; position: relative; flex-shrink: 0; margin-top: 2px; }
+  .ct-privacy input[type="checkbox"]:checked { background: var(--ink); border-color: var(--ink); }
+  .ct-privacy input[type="checkbox"]:checked::after { content: ''; position: absolute; top: 2px; left: 5px; width: 4px; height: 8px; border: solid var(--cream); border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); }
+  .ct-privacy a { color: var(--clay); border-bottom: 1px solid var(--clay); padding-bottom: 1px; }
+
+  .ct-submit-row { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+  .ct-submit-btn { background: var(--ink); color: var(--cream); border: none; cursor: pointer; padding: 18px 32px; font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; transition: background 0.2s, transform 0.2s; display: inline-flex; align-items: center; gap: 12px; }
+  .ct-submit-btn:hover { background: var(--clay-deep); transform: translateY(-1px); }
+  .ct-submit-btn .arrow { font-family: var(--font-heading); font-style: italic; font-weight: 300; font-size: 16px; letter-spacing: 0; }
+  .ct-submit-meta { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 8px; letter-spacing: 0.04em; }
+  .ct-submit-meta svg { width: 13px; height: 13px; color: var(--success); }
+
+  .ct-form-errors { background: #fdf2f2; border: 1px solid #f0c8c8; padding: 16px 20px; margin-bottom: 24px; color: var(--error); font-size: 14px; }
+  .ct-form-errors ul { margin: 8px 0 0 20px; }
+  .ct-form-errors li { margin-bottom: 4px; }
+
+  .ct-success { padding: 36px 32px; background: var(--cream); border: 1px solid var(--line-soft); }
+  .ct-success .icon { width: 48px; height: 48px; border-radius: 50%; background: var(--paper); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; color: var(--success); margin-bottom: 18px; }
+  .ct-success .icon svg { width: 22px; height: 22px; }
+  .ct-success h3 { font-family: var(--font-heading); font-size: 26px; font-weight: 400; line-height: 1.2; margin-bottom: 12px; }
+  .ct-success h3 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  .ct-success p { color: var(--ink-soft); font-size: 14.5px; line-height: 1.7; margin-bottom: 14px; }
+  .ct-success .signoff { font-family: var(--font-accent); font-size: 22px; color: var(--ink-soft); margin-top: 8px; }
+
+  .ct-info-rail { position: sticky; top: 100px; }
+  .ct-info-rail h2 { font-family: var(--font-heading); font-size: clamp(28px, 3vw, 36px); font-weight: 400; line-height: 1.1; margin-bottom: 28px; }
+  .ct-info-rail h2 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  .ct-info-card { border-top: 1px solid var(--line); padding: 22px 0; }
+  .ct-info-card:last-of-type { border-bottom: 1px solid var(--line); }
+  .ct-ic-eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--clay); font-weight: 500; margin-bottom: 6px; }
+  .ct-ic-name { font-family: var(--font-heading); font-size: 19px; font-weight: 400; line-height: 1.3; margin-bottom: 4px; }
+  .ct-ic-name em { font-style: italic; font-weight: 300; color: var(--clay); }
+  .ct-ic-detail { font-size: 14px; color: var(--ink-soft); margin-bottom: 8px; }
+  .ct-ic-link { color: var(--ink); border-bottom: 1px solid var(--ink-soft); padding-bottom: 1px; font-size: 14px; transition: color 0.2s, border-color 0.2s; text-decoration: none; }
+  .ct-ic-link:hover { color: var(--clay); border-color: var(--clay); }
+  .ct-ic-time { font-size: 11.5px; color: var(--muted); margin-top: 8px; display: flex; align-items: center; gap: 6px; letter-spacing: 0.04em; }
+  .ct-ic-time svg { width: 12px; height: 12px; color: var(--success); }
+  .ct-ic-time strong { color: var(--ink); font-weight: 500; margin: 0 4px; }
+
+  .ct-phone { background: var(--cream-deep); border-radius: 2px; padding: 22px 24px; margin-top: 28px; }
+  .ct-phone-eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--clay); font-weight: 500; margin-bottom: 8px; }
+  .ct-phone-num { font-family: var(--font-heading); font-size: 26px; font-weight: 400; color: var(--ink); line-height: 1; margin-bottom: 8px; letter-spacing: -0.01em; }
+  .ct-phone-num em { font-style: italic; font-weight: 300; color: var(--clay); }
+  .ct-phone-hours { font-size: 12.5px; color: var(--ink-soft); line-height: 1.5; }
+  .ct-phone-hours strong { color: var(--ink); font-weight: 500; display: block; margin-bottom: 2px; }
+
+  .ct-visit { background: var(--cream); padding: 80px 40px; border-top: 1px solid var(--line); }
+  .ct-visit-inner { max-width: 1280px; margin: 0 auto; }
+  .ct-visit-head { text-align: center; margin-bottom: 50px; }
+  .ct-visit-head .eyebrow { color: var(--clay); margin-bottom: 14px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.22em; font-weight: 500; }
+  .ct-visit-head h2 { font-family: var(--font-heading); font-size: clamp(32px, 4vw, 44px); font-weight: 400; line-height: 1.1; }
+  .ct-visit-head h2 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  .ct-visit-head p { font-family: var(--font-heading); font-style: italic; font-weight: 300; font-size: 17px; color: var(--ink-soft); max-width: 540px; margin: 14px auto 0; }
+  .ct-visit-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; background: var(--paper); border: 1px solid var(--line); }
+  .ct-visit-card { padding: 36px 30px; border-right: 1px solid var(--line); }
+  .ct-visit-card:last-child { border-right: none; }
+  .ct-place-name { font-family: var(--font-heading); font-size: 22px; font-weight: 400; margin-bottom: 6px; }
+  .ct-place-name em { font-style: italic; font-weight: 300; color: var(--clay); }
+  .ct-place-role { font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--muted); margin-bottom: 22px; }
+  .ct-addr { font-style: normal; font-size: 14px; color: var(--ink-soft); line-height: 1.65; margin-bottom: 22px; }
+  .ct-addr strong { color: var(--ink); font-weight: 500; }
+  .ct-visit-link { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink); border-bottom: 1px solid var(--ink); padding-bottom: 4px; font-weight: 500; transition: color 0.2s, border-color 0.2s; text-decoration: none; }
+  .ct-visit-link:hover { color: var(--clay); border-color: var(--clay); }
+
+  .ct-map-strip { max-width: 1280px; margin: 0 auto; padding: 30px 40px 80px; }
+  .ct-map-card { aspect-ratio: 21 / 9; border-radius: 2px; background: var(--cream-deep); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+  .ct-map-bg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.3; }
+  .ct-map-marker { position: absolute; top: 38%; left: 47%; z-index: 3; width: 28px; height: 28px; border-radius: 50%; background: var(--clay); border: 3px solid var(--paper); box-shadow: 0 6px 14px rgba(26,20,14,0.07); animation: ct-pulse 2.4s ease-in-out infinite; }
+  .ct-map-marker::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 60px; height: 60px; border-radius: 50%; background: rgba(26,20,14,0.08); z-index: -1; animation: ct-pulse-ring 2.4s ease-in-out infinite; }
+  @keyframes ct-pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
+  @keyframes ct-pulse-ring { 0%{transform:translate(-50%,-50%) scale(0.8);opacity:0.6} 100%{transform:translate(-50%,-50%) scale(1.6);opacity:0} }
+  .ct-map-overlay { position: relative; z-index: 2; background: rgba(251,247,238,0.95); backdrop-filter: blur(4px); border: 1px solid var(--line); padding: 20px 24px 22px; max-width: 320px; }
+  .ct-map-overlay .eyebrow { color: var(--clay); margin-bottom: 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.22em; font-weight: 500; }
+  .ct-map-overlay .place { font-family: var(--font-heading); font-size: 20px; font-weight: 400; margin-bottom: 6px; }
+  .ct-map-overlay .place em { font-style: italic; font-weight: 300; color: var(--clay); }
+  .ct-map-overlay .coord { font-size: 11.5px; color: var(--muted); letter-spacing: 0.06em; font-variant-numeric: tabular-nums; margin-bottom: 14px; }
+  .ct-map-overlay a { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink); border-bottom: 1px solid var(--ink); padding-bottom: 2px; font-weight: 500; transition: color 0.2s, border-color 0.2s; text-decoration: none; }
+  .ct-map-overlay a:hover { color: var(--clay); border-color: var(--clay); }
+  .ct-map-overlay a svg { width: 12px; height: 12px; }
+
+  @media (max-width: 1024px) {
+    .ct-hero { padding: 50px 24px 30px; }
+    .ct-quick { padding: 20px 24px 0; }
+    .ct-quick-inner { grid-template-columns: 1fr; gap: 16px; padding: 22px 24px; }
+    .ct-quick-text { max-width: none; }
+    .ct-layout { grid-template-columns: 1fr; gap: 60px; padding: 50px 24px 60px; }
+    .ct-info-rail { position: static; }
+    .ct-visit { padding: 60px 24px; }
+    .ct-visit-grid { grid-template-columns: 1fr; }
+    .ct-visit-card { border-right: none; border-bottom: 1px solid var(--line); }
+    .ct-visit-card:last-child { border-bottom: none; }
+    .ct-map-strip { padding: 20px 24px 60px; }
+    .ct-map-card { aspect-ratio: 4 / 3; }
+  }
+  @media (max-width: 600px) {
+    .ct-field-row { grid-template-columns: 1fr; }
+    .ct-submit-row { flex-direction: column; align-items: stretch; gap: 12px; }
+    .ct-submit-btn { justify-content: center; }
+  }
+</style>
+
+<nav class="breadcrumb">
+  <a href="{{ routes.root_url }}">Home</a><span class="sep">/</span>
+  <span class="current">Contact</span>
+</nav>
+
+<section class="ct-hero">
+  <div class="eyebrow">Get in touch</div>
+  <h1 class="display">Say <em>{{ section.settings.heading_italic | default: 'hello' }}</em>.</h1>
+  <p class="lede">{{ section.settings.hero_lede | default: "A real person reads every email. We aim to write back within two working days — usually faster, especially if something's gone wrong with an order." }}</p>
+</section>
+
+<div class="ct-quick">
+  <div class="ct-quick-inner">
+    <div class="ct-quick-text">
+      <strong>Before you write</strong>
+      Most questions have a quicker answer here.
+    </div>
+    <div class="ct-quick-links">
+      <a href="{{ shop.shipping_policy.url }}">
+        <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M3 7h13l3 4v6h-2a2 2 0 0 1-4 0H7a2 2 0 0 1-4 0V7Z"/><circle cx="9" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
+        Delivery &amp; tracking
+      </a>
+      <a href="{{ shop.refund_policy.url }}">
+        <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+        Returns &amp; refunds
+      </a>
+      {%- if section.settings.care_guide_url != blank -%}
+        <a href="{{ section.settings.care_guide_url }}">
+          <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/></svg>
+          Pot care &amp; cleaning
+        </a>
+      {%- endif -%}
+      {%- if section.settings.sizing_url != blank -%}
+        <a href="{{ section.settings.sizing_url }}">
+          <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M3 7l9-4 9 4v10l-9 4-9-4V7Z"/><path d="m3 7 9 4 9-4M12 11v10"/></svg>
+          Sizing &amp; pot finder
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+<div class="ct-layout">
+
+  <section class="ct-form-section">
+    <h2>Write to <em>us</em>.</h2>
+    <p class="ct-form-lede">Pick a topic so we can route your message to the right inbox. Tagged messages get answered fastest.</p>
+
+    {%- form 'contact', id: 'ContactForm' -%}
+
+      {%- if form.posted_successfully? -%}
+        <div class="ct-success">
+          <div class="icon">
+            <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+          </div>
+          <h3>We've got your <em>message</em>.</h3>
+          <p>Your message is in our inbox. We aim to reply within two working days — usually faster, especially if it's about an order.</p>
+          <p>In the meantime, your basket and wishlist are waiting on the shop, and the journal is good company on a quiet afternoon.</p>
+          <div class="signoff">— {{ section.settings.signoff | default: 'Margaret & the K&C team' }}</div>
+        </div>
+
+      {%- else -%}
+
+        {%- if form.errors -%}
+          <div class="ct-form-errors" role="alert">
+            <strong>Please fix the following:</strong>
+            <ul>
+              {%- for field in form.errors -%}
+                <li>{{ form.errors.messages[field] }}</li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+
+        <div class="ct-field">
+          <div class="ct-field-label"><span>What's it about?</span></div>
+          <div class="ct-chips" id="ctTopicChips">
+            <label class="ct-chip active" data-topic="general">
+              <input type="radio" name="contact[topic]" value="general" checked>
+              <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10Z"/></svg>
+              General question
+            </label>
+            <label class="ct-chip" data-topic="order">
+              <input type="radio" name="contact[topic]" value="order">
+              <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M5 7h14l-1.5 12h-11Z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>
+              Something's wrong with my order
+            </label>
+            <label class="ct-chip" data-topic="trade">
+              <input type="radio" name="contact[topic]" value="trade">
+              <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M3 9 12 3l9 6v12H3V9Z"/><path d="M9 21V12h6v9"/></svg>
+              Trade / wholesale
+            </label>
+            <label class="ct-chip" data-topic="press">
+              <input type="radio" name="contact[topic]" value="press">
+              <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M3 5h12v14H3z"/><path d="M15 9h6v10H15z"/></svg>
+              Press / journalism
+            </label>
+            <label class="ct-chip" data-topic="studio">
+              <input type="radio" name="contact[topic]" value="studio">
+              <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M12 2v6m0 0L9 5m3 3 3-3"/><path d="M5 12a7 7 0 1 0 14 0"/></svg>
+              Studio visit
+            </label>
+          </div>
+        </div>
+
+        <div class="ct-field-row">
+          <div class="ct-field">
+            <div class="ct-field-label"><span>Your name</span></div>
+            <input class="ct-input" type="text" name="contact[name]" placeholder="Sophie M." value="{{ form.name }}" required autocomplete="name">
+          </div>
+          <div class="ct-field">
+            <div class="ct-field-label"><span>Email</span></div>
+            <input class="ct-input" type="email" name="contact[email]" placeholder="your@email.co.uk" value="{{ form.email }}" required autocomplete="email">
+          </div>
+        </div>
+
+        <div class="ct-field ct-order-field" id="ctOrderField">
+          <div class="ct-field-label">
+            <span>Order number</span>
+            <span class="opt">helps us find your order</span>
+          </div>
+          <input class="ct-input" type="text" name="contact[order_number]" placeholder="#KC-1024">
+        </div>
+
+        <div class="ct-field">
+          <div class="ct-field-label">
+            <span>Your message</span>
+            <span class="opt">be as specific as you'd like</span>
+          </div>
+          <textarea class="ct-textarea" name="contact[body]" id="ctMessage" placeholder="Tell us what you'd like to know — short or long, both are fine." maxlength="2000" required>{{ form.body }}</textarea>
+          <div class="ct-counter"><span id="ctCharCount">0</span> / 2000</div>
+        </div>
+
+        <label class="ct-privacy">
+          <input type="checkbox" required>
+          <span>I'm happy for {{ shop.name }} to use my email to reply to this message. We won't add you to the newsletter from this form.
+            {%- if shop.privacy_policy.url != blank %}
+              <a href="{{ shop.privacy_policy.url }}">Read our privacy policy</a>.
+            {%- endif -%}
+          </span>
+        </label>
+
+        <div class="ct-submit-row">
+          <button type="submit" class="ct-submit-btn">
+            Send your message
+            <span class="arrow">→</span>
+          </button>
+          <span class="ct-submit-meta" id="ctReplyMeta">
+            <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/></svg>
+            Reply within 2 working days
+          </span>
+        </div>
+
+      {%- endif -%}
+
+    {%- endform -%}
+  </section>
+
+  <aside class="ct-info-rail">
+    <h2>Or write <em>direct</em>.</h2>
+
+    {%- if section.settings.email_general != blank -%}
+      <div class="ct-info-card">
+        <div class="ct-ic-eyebrow">Customer chat</div>
+        <div class="ct-ic-name">Order, delivery &amp; care</div>
+        <div class="ct-ic-detail">For anything to do with an existing order, returns, or how to look after a piece you already have.</div>
+        <a href="mailto:{{ section.settings.email_general }}" class="ct-ic-link">{{ section.settings.email_general }}</a>
+        <div class="ct-ic-time">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/></svg>
+          Reply within <strong>1 working day</strong>
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.email_trade != blank -%}
+      <div class="ct-info-card">
+        <div class="ct-ic-eyebrow">Trade &amp; wholesale</div>
+        <div class="ct-ic-name">Buyers, hotels, designers</div>
+        <div class="ct-ic-detail">Trade pricing, sample requests, and bespoke runs for hospitality and interior design.</div>
+        <a href="mailto:{{ section.settings.email_trade }}" class="ct-ic-link">{{ section.settings.email_trade }}</a>
+        <div class="ct-ic-time">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/></svg>
+          Reply within <strong>3 working days</strong>
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.email_press != blank -%}
+      <div class="ct-info-card">
+        <div class="ct-ic-eyebrow">Press &amp; journalism</div>
+        <div class="ct-ic-name">Editorial, podcasts, features</div>
+        <div class="ct-ic-detail">High-res imagery, founder interviews, and the studio film. Press kit available on request.</div>
+        <a href="mailto:{{ section.settings.email_press }}" class="ct-ic-link">{{ section.settings.email_press }}</a>
+        <div class="ct-ic-time">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/></svg>
+          Reply within <strong>1 week</strong>
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.phone != blank -%}
+      <div class="ct-phone">
+        <div class="ct-phone-eyebrow">Or call</div>
+        <div class="ct-phone-num">{{ section.settings.phone | replace: ' ', ' <em>' | append: '</em>' }}</div>
+        <div class="ct-phone-hours">
+          <strong>{{ section.settings.phone_hours | default: 'Mon–Fri · 09:30–16:30' }}</strong>
+          {{ section.settings.phone_note | default: 'Closed bank holidays. Voicemail outside hours — we return calls the next working day.' }}
+        </div>
+      </div>
+    {%- endif -%}
+  </aside>
+
+</div>
+
+<section class="ct-visit">
+  <div class="ct-visit-inner">
+    <div class="ct-visit-head">
+      <div class="eyebrow">Find us</div>
+      <h2>Drop in, <em>any time</em>.</h2>
+      <p>Three places where you can see (and touch) the work in person — or meet the people behind it.</p>
+    </div>
+    <div class="ct-visit-grid">
+      <div class="ct-visit-card">
+        <div class="ct-place-name">The <em>Office</em></div>
+        <div class="ct-place-role">Buying &amp; Operations</div>
+        <address class="ct-addr">
+          <strong>{{ section.settings.office_name | default: shop.name | append: ' HQ' }}</strong><br>
+          {{ section.settings.office_address | default: 'Unit 4, Mill Yard, Stone, Staffordshire, ST15 8PJ' | newline_to_br }}
+        </address>
+        {%- if section.settings.office_maps_url != blank -%}
+          <a href="{{ section.settings.office_maps_url }}" target="_blank" rel="noopener" class="ct-visit-link">Get directions →</a>
+        {%- endif -%}
+      </div>
+      <div class="ct-visit-card">
+        <div class="ct-place-name">The <em>Showroom</em></div>
+        <div class="ct-place-role">{{ section.settings.showroom_hours | default: 'Open Sat 10–4 by appointment' }}</div>
+        <address class="ct-addr">
+          <strong>{{ section.settings.showroom_name | default: shop.name | append: ' Showroom' }}</strong><br>
+          {{ section.settings.showroom_address | default: '12 High Street, Stone, Staffordshire, ST15 8AA' | newline_to_br }}
+        </address>
+        {%- if section.settings.showroom_book_url != blank -%}
+          <a href="{{ section.settings.showroom_book_url }}" class="ct-visit-link">Book a visit →</a>
+        {%- endif -%}
+      </div>
+      <div class="ct-visit-card">
+        <div class="ct-place-name">Studio <em>visits</em></div>
+        <div class="ct-place-role">{{ section.settings.studio_schedule | default: 'Twice yearly · spring & autumn' }}</div>
+        <address class="ct-addr">
+          <strong>Open studio days</strong><br>
+          {{ section.settings.studio_description | default: 'Meet the makers, see the wheel, buy seconds & test pieces.' | newline_to_br }}
+          {%- if section.settings.studio_next_date != blank -%}
+            <br>Next: {{ section.settings.studio_next_date }}
+          {%- endif -%}
+        </address>
+        {%- if section.settings.studio_reserve_url != blank -%}
+          <a href="{{ section.settings.studio_reserve_url }}" class="ct-visit-link">Reserve a place →</a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ct-map-strip">
+  <div class="ct-map-card">
+    <svg class="ct-map-bg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <pattern id="ct-dots" width="14" height="14" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="0.8" fill="#847566" opacity="0.4"/>
+        </pattern>
+      </defs>
+      <rect width="800" height="400" fill="url(#ct-dots)"/>
+      <path d="M340 70 L360 68 L385 75 L400 70 L420 95 L420 120 L405 130 L420 150 L425 175 L410 195 L420 220 L405 250 L395 270 L380 285 L360 295 L340 310 L325 325 L320 345 L335 365 L355 370 L370 350 L375 330 L390 320 L405 305 L425 290 L435 270 L445 250 L450 230 L455 210 L450 190 L460 175 L455 155 L450 135 L455 115 L450 95 L440 78 L420 60 L395 55 L370 58 L350 62 Z" fill="#C68B5C" opacity="0.25" stroke="#8E4426" stroke-width="0.8" stroke-opacity="0.4"/>
+      <path d="M280 180 L300 170 L320 180 L325 200 L320 225 L305 240 L285 235 L275 215 L278 195 Z" fill="#C68B5C" opacity="0.18" stroke="#8E4426" stroke-width="0.8" stroke-opacity="0.3"/>
+    </svg>
+
+    <div class="ct-map-marker" aria-hidden="true"></div>
+
+    <div class="ct-map-overlay">
+      <div class="eyebrow">Where we are</div>
+      <div class="place"><em>{{ section.settings.location_city | default: 'Stone' }}</em>, {{ section.settings.location_county | default: 'Staffordshire' }}</div>
+      <div class="coord">{{ section.settings.location_coords | default: '52.9100° N · 2.1473° W' }}</div>
+      {%- if section.settings.office_maps_url != blank -%}
+        <a href="{{ section.settings.office_maps_url }}" target="_blank" rel="noopener">
+          <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          Open in Google Maps
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var replyTimes = { general: '2 working days', order: 'same working day', trade: '3 working days', press: '1 week', studio: '2 working days' };
+  var meta = document.getElementById('ctReplyMeta');
+  var orderField = document.getElementById('ctOrderField');
+
+  document.querySelectorAll('.ct-chip').forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      document.querySelectorAll('.ct-chip').forEach(function (c) { c.classList.remove('active'); });
+      chip.classList.add('active');
+      var t = chip.dataset.topic;
+      if (meta) {
+        meta.innerHTML = '<svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/></svg> Reply within ' + replyTimes[t];
+      }
+      if (orderField) { orderField.classList.toggle('show', t === 'order'); }
+    });
+  });
+
+  var msg = document.getElementById('ctMessage');
+  var cnt = document.getElementById('ctCharCount');
+  if (msg && cnt) {
+    cnt.textContent = msg.value.length;
+    msg.addEventListener('input', function () { cnt.textContent = msg.value.length; });
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Contact page",
+  "settings": [
+    { "type": "header", "content": "Hero" },
+    { "type": "text",     "id": "heading_italic", "label": "Heading italic word",  "default": "hello" },
+    { "type": "textarea", "id": "hero_lede",       "label": "Hero lede text",       "default": "A real person reads every email. We aim to write back within two working days — usually faster, especially if something's gone wrong with an order." },
+    { "type": "header", "content": "Quick help links" },
+    { "type": "url",  "id": "care_guide_url", "label": "Pot care page URL" },
+    { "type": "url",  "id": "sizing_url",     "label": "Sizing / pot finder URL" },
+    { "type": "header", "content": "Contact details" },
+    { "type": "text", "id": "email_general", "label": "General / customer email", "default": "hello@example.com" },
+    { "type": "text", "id": "email_trade",   "label": "Trade email" },
+    { "type": "text", "id": "email_press",   "label": "Press email" },
+    { "type": "text", "id": "phone",         "label": "Phone number" },
+    { "type": "text", "id": "phone_hours",   "label": "Phone hours",  "default": "Mon–Fri · 09:30–16:30" },
+    { "type": "text", "id": "phone_note",    "label": "Phone note",   "default": "Closed bank holidays. Voicemail outside hours — we return calls the next working day." },
+    { "type": "header", "content": "Locations" },
+    { "type": "text",     "id": "office_name",    "label": "Office name" },
+    { "type": "textarea", "id": "office_address", "label": "Office address (one item per line)" },
+    { "type": "url",      "id": "office_maps_url","label": "Google Maps link (used for map + office)" },
+    { "type": "text",     "id": "showroom_name",  "label": "Showroom name" },
+    { "type": "textarea", "id": "showroom_address","label": "Showroom address (one item per line)" },
+    { "type": "text",     "id": "showroom_hours", "label": "Showroom hours / note", "default": "Open Sat 10–4 by appointment" },
+    { "type": "url",      "id": "showroom_book_url","label": "Showroom booking URL" },
+    { "type": "text",     "id": "studio_schedule",   "label": "Studio visit schedule", "default": "Twice yearly · spring & autumn" },
+    { "type": "textarea", "id": "studio_description","label": "Studio visit description" },
+    { "type": "text",     "id": "studio_next_date",  "label": "Next studio date (e.g. 14 May 2026)" },
+    { "type": "url",      "id": "studio_reserve_url","label": "Studio reservation URL" },
+    { "type": "header", "content": "Map" },
+    { "type": "text", "id": "location_city",   "label": "City name",    "default": "Stone" },
+    { "type": "text", "id": "location_county", "label": "County name",  "default": "Staffordshire" },
+    { "type": "text", "id": "location_coords", "label": "Coordinates",  "default": "52.9100° N · 2.1473° W" },
+    { "type": "header", "content": "Other" },
+    { "type": "text", "id": "signoff", "label": "Success message sign-off", "default": "Margaret & the K&C team" }
+  ]
+}
+{% endschema %}

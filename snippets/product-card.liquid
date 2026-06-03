@@ -1,0 +1,104 @@
+{%- comment -%}
+  Reusable product card.
+  Usage: {% render 'product-card', product: product, show_quick_add: true %}
+
+  Variables:
+    product           — the product object (required)
+    show_quick_add    — boolean, default true
+    show_wishlist     — boolean, default true
+    show_swatches     — boolean, default true
+{%- endcomment -%}
+
+{%- assign show_quick_add = show_quick_add | default: true -%}
+{%- assign show_wishlist = show_wishlist | default: true -%}
+{%- assign show_swatches = show_swatches | default: true -%}
+{%- assign feat = product.featured_media -%}
+
+<a href="{{ product.url }}" class="product-card" data-product-id="{{ product.id }}">
+  <div class="product-card-img">
+    {%- comment -%} Tag — uses product tags or compare-at price {%- endcomment -%}
+    {%- if product.tags contains 'new' or product.tags contains 'New' -%}
+      <span class="product-card-tag new">New</span>
+    {%- elsif product.tags contains 'bestseller' or product.tags contains 'Bestseller' -%}
+      <span class="product-card-tag bestseller">Bestseller</span>
+    {%- elsif product.available == false -%}
+      <span class="product-card-tag low">Sold out</span>
+    {%- elsif product.selected_or_first_available_variant.inventory_quantity > 0 and product.selected_or_first_available_variant.inventory_quantity < 5 -%}
+      <span class="product-card-tag low">{{ product.selected_or_first_available_variant.inventory_quantity }} left</span>
+    {%- endif -%}
+
+    {%- if show_wishlist -%}
+      <button class="wishlist-btn" data-wish="{{ product.id }}" aria-label="Save to wishlist">
+        <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.5-9C.5 8 3 4 7 4c2 0 4 1.5 5 3 1-1.5 3-3 5-3 4 0 6.5 4 4.5 8-2.5 4.5-9.5 9-9.5 9Z"/></svg>
+      </button>
+    {%- endif -%}
+
+    {%- if feat -%}
+      <img src="{{ feat | image_url: width: 600 }}"
+           alt="{{ feat.alt | default: product.title | escape }}"
+           loading="lazy"
+           width="600" height="750">
+    {%- else -%}
+      {%- comment -%} Fallback SVG when no image — keeps card looking right while products are being entered {%- endcomment -%}
+      <svg class="pot-svg" viewBox="0 0 200 240" fill="none" style="width:100%;height:100%;background:linear-gradient(160deg,#EFE5D2,#D4C4A8);">
+        <ellipse cx="100" cy="220" rx="78" ry="14" fill="rgba(0,0,0,0.1)"/>
+        <path d="M40 80 L50 220 L150 220 L160 80 Z" fill="#C68B5C" stroke="#8E4426" stroke-width="0.8"/>
+        <ellipse cx="100" cy="80" rx="60" ry="14" fill="#A06840"/>
+        <ellipse cx="100" cy="80" rx="56" ry="10" fill="#3A2519"/>
+      </svg>
+    {%- endif -%}
+
+    {%- if show_quick_add and product.available -%}
+      <button class="quick-add" type="button" data-product-handle="{{ product.handle }}" data-quick-add>
+        Quick add
+      </button>
+    {%- endif -%}
+  </div>
+
+  <div class="product-card-info">
+    <div>
+      <div class="product-card-name">{{ product.title }}</div>
+      {%- if product.metafields.custom.material or product.metafields.custom.size -%}
+        <div class="product-card-meta">
+          {%- if product.metafields.custom.material -%}{{ product.metafields.custom.material }}{%- endif -%}
+          {%- if product.metafields.custom.material and product.metafields.custom.size %} · {% endif -%}
+          {%- if product.metafields.custom.size -%}{{ product.metafields.custom.size }}{%- endif -%}
+        </div>
+      {%- elsif product.type != blank -%}
+        <div class="product-card-meta">{{ product.type }}</div>
+      {%- endif -%}
+
+      {%- comment -%} Ratings — wire to your reviews app metafield. Falls back to silence if missing. {%- endcomment -%}
+      {%- if product.metafields.reviews.rating != blank -%}
+        <div class="product-card-rating">
+          <span class="stars">★★★★★</span>
+          <span class="num">{{ product.metafields.reviews.rating.value.rating | round: 1 }} · {{ product.metafields.reviews.rating_count }}</span>
+        </div>
+      {%- endif -%}
+
+      {%- if show_swatches and product.has_only_default_variant == false -%}
+        {%- assign colour_option = nil -%}
+        {%- for option in product.options_with_values -%}
+          {%- assign opt_name = option.name | downcase -%}
+          {%- if opt_name contains 'colour' or opt_name contains 'color' -%}
+            {%- assign colour_option = option -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if colour_option -%}
+          <div class="product-card-swatches">
+            {%- for v in colour_option.values limit: 4 -%}
+              <span class="sw" style="background: {{ v }};" title="{{ v }}"></span>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+    <div class="product-card-price">
+      {%- if product.price_varies -%}
+        {{ 'products.product.from_lowest_price_html' | t: lowest_price: product.price_min | money }}
+      {%- else -%}
+        {{ product.price | money }}
+      {%- endif -%}
+    </div>
+  </div>
+</a>

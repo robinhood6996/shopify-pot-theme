@@ -1,0 +1,177 @@
+{% render 'customer-shell-styles' %}
+
+<style>
+  .form-view { display: none; }
+  .form-view.active { display: block; }
+  .recovery-back {
+    background: none; border: none; cursor: pointer;
+    color: var(--muted); font-family: inherit; font-size: 12px;
+    text-transform: uppercase; letter-spacing: 0.14em;
+    margin-bottom: 24px;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 0; transition: color 0.2s;
+    text-decoration: none;
+  }
+  .recovery-back:hover { color: var(--clay); }
+  .recovery-back svg { width: 14px; height: 14px; }
+
+  .form-divider {
+    display: flex; align-items: center; gap: 14px;
+    margin: 24px 0 20px;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--muted);
+  }
+  .form-divider::before, .form-divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--line-soft);
+  }
+
+  .recovery-success-card {
+    padding: 28px;
+    background: var(--cream); border: 1px solid var(--line-soft);
+  }
+  .recovery-success-card .icon {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--paper); border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--success); margin-bottom: 16px;
+  }
+  .recovery-success-card .icon svg { width: 20px; height: 20px; }
+  .recovery-success-card h3 {
+    font-family: var(--font-heading); font-size: 22px; font-weight: 400;
+    line-height: 1.2; margin-bottom: 8px;
+  }
+  .recovery-success-card h3 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  .recovery-success-card p {
+    color: var(--ink-soft); font-size: 14px; line-height: 1.6;
+  }
+  .recovery-success-card a { color: var(--clay); border-bottom: 1px solid var(--clay); padding-bottom: 1px; }
+</style>
+
+<div class="acct-shell">
+  {% render 'customer-brand-pane' %}
+
+  <main class="form-pane">
+    <div class="form-inner">
+
+      {%- comment -%} Tab toggle (hidden on recovery view) {%- endcomment -%}
+      <div class="tab-toggle" id="tab-toggle" role="tablist">
+        <span class="indicator"></span>
+        <a href="{{ routes.account_login_url }}" class="active">Sign in</a>
+        <a href="{{ routes.account_register_url }}">Create account</a>
+      </div>
+
+      {%- comment -%} ─── SIGN IN VIEW ─── {%- endcomment -%}
+      <section class="form-view active" id="view-signin">
+        <h2 class="pane-title">Welcome <em>back</em>.</h2>
+        <p class="pane-sub">Sign in to see your orders, saved addresses, and wishlist.</p>
+
+        {% form 'customer_login', novalidate: 'novalidate' %}
+          {%- if form.errors -%}
+            <div class="form-errors">
+              <ul>{%- for f in form.errors -%}<li>{{ form.errors.messages[f] }}</li>{%- endfor -%}</ul>
+            </div>
+          {%- endif -%}
+
+          <div class="field">
+            <div class="field-label-row"><span>Email</span></div>
+            <input type="email" class="field-input" name="customer[email]" placeholder="your@email.co.uk" required autocomplete="email" autofocus>
+          </div>
+
+          <div class="field">
+            <div class="field-label-row">
+              <span>Password</span>
+              <a href="#recover" id="forgot-link">Forgot?</a>
+            </div>
+            <div class="field-pw">
+              <input type="password" class="field-input" name="customer[password]" placeholder="At least 8 characters" required autocomplete="current-password" id="signin-pw">
+              <button type="button" class="toggle-pw" data-pw="signin-pw" aria-label="Show password">
+                <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="submit-btn">Sign in <span class="arrow">→</span></button>
+
+          <div class="form-foot">
+            New to {{ shop.name }}? <a href="{{ routes.account_register_url }}">Create an account →</a>
+          </div>
+        {% endform %}
+      </section>
+
+      {%- comment -%} ─── RECOVERY VIEW ─── {%- endcomment -%}
+      <section class="form-view" id="view-recovery">
+        <button type="button" class="recovery-back" id="recovery-back">
+          <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"/></svg>
+          Back to sign in
+        </button>
+
+        <div id="recovery-form-block">
+          <h2 class="pane-title">Reset your <em>password</em>.</h2>
+          <p class="pane-sub">Enter the email address tied to your account. We'll send a link.</p>
+
+          {% form 'recover_customer_password' %}
+            {%- if form.posted_successfully? -%}
+              {%- assign recovery_posted = true -%}
+              <div class="recovery-success-card">
+                <div class="icon">
+                  <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+                </div>
+                <h3>Check your <em>inbox</em>.</h3>
+                <p>If an account exists for that email, we've sent a reset link. <strong>Click it within 30 minutes</strong> — after that you'll need to request a new one. Don't see it? Check your spam folder, or write to <a href="mailto:chat@kilnandclay.co.uk">chat@kilnandclay.co.uk</a>.</p>
+              </div>
+            {%- else -%}
+              {%- if form.errors -%}
+                <div class="form-errors"><ul>{%- for f in form.errors -%}<li>{{ form.errors.messages[f] }}</li>{%- endfor -%}</ul></div>
+              {%- endif -%}
+              <div class="field">
+                <div class="field-label-row"><span>Email</span></div>
+                <input type="email" class="field-input" name="email" placeholder="your@email.co.uk" required autocomplete="email">
+              </div>
+              <button type="submit" class="submit-btn">Send reset link <span class="arrow">→</span></button>
+            {%- endif -%}
+          {% endform %}
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script>
+  // Show/hide password
+  document.querySelectorAll('.toggle-pw').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.pw;
+      const input = document.getElementById(id);
+      if (!input) return;
+      input.type = input.type === 'password' ? 'text' : 'password';
+    });
+  });
+
+  // Recovery toggle (matches Shopify default behaviour)
+  const signin = document.getElementById('view-signin');
+  const recovery = document.getElementById('view-recovery');
+  const toggle = document.getElementById('tab-toggle');
+  const forgot = document.getElementById('forgot-link');
+  const back = document.getElementById('recovery-back');
+
+  function showSignin() {
+    signin.classList.add('active');
+    recovery.classList.remove('active');
+    toggle.style.display = 'grid';
+  }
+  function showRecovery() {
+    signin.classList.remove('active');
+    recovery.classList.add('active');
+    toggle.style.display = 'none';
+  }
+  if (forgot) forgot.addEventListener('click', e => { e.preventDefault(); showRecovery(); window.location.hash = '#recover'; });
+  if (back) back.addEventListener('click', () => { showSignin(); window.location.hash = ''; });
+
+  // Show recovery if URL has #recover (e.g. coming from a "forgot?" link)
+  if (window.location.hash === '#recover') showRecovery();
+
+  // If form was just posted (recovery success), keep showing recovery view
+  {%- if recovery_posted -%}
+    showRecovery();
+  {%- endif -%}
+</script>

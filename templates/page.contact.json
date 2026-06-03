@@ -1,0 +1,25 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-contact",
+      "settings": {
+        "heading_italic": "hello",
+        "hero_lede": "A real person reads every email. We aim to write back within two working days — usually faster, especially if something's gone wrong with an order.",
+        "email_general": "hello@example.com",
+        "phone_hours": "Mon–Fri · 09:30–16:30",
+        "phone_note": "Closed bank holidays. Voicemail outside hours — we return calls the next working day.",
+        "showroom_hours": "Open Sat 10–4 by appointment",
+        "studio_schedule": "Twice yearly · spring & autumn",
+        "location_city": "Stone",
+        "location_county": "Staffordshire",
+        "location_coords": "52.9100° N · 2.1473° W",
+        "signoff": "Margaret & the K&C team"
+      }
+    },
+    "newsletter": {
+      "type": "newsletter-mailer",
+      "settings": {}
+    }
+  },
+  "order": ["main", "newsletter"]
+}

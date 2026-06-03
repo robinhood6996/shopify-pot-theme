@@ -1,0 +1,77 @@
+<style>
+  #shopify-section-{{ section.id }} .a-hero {
+    max-width: 1400px; margin: 0 auto;
+    padding: 100px 40px 80px;
+  }
+  #shopify-section-{{ section.id }} .a-hero .eyebrow {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 40px;
+    color: var(--clay);
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.22em; font-weight: 500;
+  }
+  #shopify-section-{{ section.id }} .a-hero .eyebrow::before {
+    content: ''; width: 32px; height: 1px; background: var(--clay);
+  }
+  #shopify-section-{{ section.id }} .a-hero h1 {
+    font-family: var(--font-heading); font-weight: 400;
+    font-size: clamp(56px, 9vw, 130px); line-height: 0.95; letter-spacing: -0.02em;
+    max-width: 1100px;
+  }
+  #shopify-section-{{ section.id }} .a-hero h1 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  #shopify-section-{{ section.id }} .a-hero-sub {
+    margin-top: 50px;
+    display: grid; grid-template-columns: 1fr 1.5fr;
+    gap: 80px; align-items: end;
+  }
+  #shopify-section-{{ section.id }} .briefly {
+    font-family: var(--font-heading); font-style: italic; font-weight: 300;
+    font-size: 17px; color: var(--ink-soft); line-height: 1.4;
+  }
+  #shopify-section-{{ section.id }} .briefly strong {
+    display: block; color: var(--ink); font-style: normal;
+    font-weight: 400; font-size: 12px;
+    text-transform: uppercase; letter-spacing: 0.18em;
+    margin-bottom: 10px;
+    font-family: var(--font-body);
+  }
+  #shopify-section-{{ section.id }} .a-hero-sub p {
+    font-size: 18px; line-height: 1.65;
+    color: var(--ink-soft); max-width: 640px;
+  }
+  @media (max-width: 1024px) {
+    #shopify-section-{{ section.id }} .a-hero { padding: 60px 24px 50px; }
+    #shopify-section-{{ section.id }} .a-hero-sub { grid-template-columns: 1fr; gap: 30px; }
+  }
+</style>
+
+<section class="a-hero">
+  {%- if section.settings.eyebrow != blank -%}
+    <div class="eyebrow">{{ section.settings.eyebrow }}</div>
+  {%- endif -%}
+  <h1 class="display">{{ section.settings.heading | replace: '<p>', '' | replace: '</p>', '' }}</h1>
+
+  <div class="a-hero-sub">
+    {%- if section.settings.briefly != blank -%}
+      <div class="briefly">
+        <strong>Briefly</strong>
+        {{ section.settings.briefly }}
+      </div>
+    {%- endif -%}
+    {%- if section.settings.intro != blank -%}
+      <p>{{ section.settings.intro }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "About: hero",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "richtext", "id": "heading", "label": "Heading" },
+    { "type": "textarea", "id": "briefly", "label": "Briefly (italic Fraunces)" },
+    { "type": "textarea", "id": "intro", "label": "Intro paragraph" }
+  ],
+  "presets": [{ "name": "About: hero", "category": "About" }]
+}
+{% endschema %}

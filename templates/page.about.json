@@ -1,0 +1,103 @@
+{
+  "sections": {
+    "hero": {
+      "type": "about-hero",
+      "settings": {
+        "eyebrow": "Our story · Founded 2026, Staffordshire",
+        "heading": "<p>A small <em>British</em> pottery house,<br>on a slow <em>mission</em>.</p>",
+        "briefly": "Three studios. Ninety-four pieces. One unfashionable belief — that a plant pot should outlast every plant you put in it.",
+        "intro": "Kiln & Clay is a small homewares brand based in Stone, Staffordshire — six miles from the historic potteries of Stoke-on-Trent. We work directly with three independent ceramic studios to make plant pots in stoneware, terracotta, concrete and fibreclay. No mass moulds. No fast-fashion ceramics. Pots that take time, and last decades."
+      }
+    },
+    "letter": {
+      "type": "founder-letter",
+      "settings": {
+        "body": "For fifteen years, I was a homewares buyer. I sat in spreadsheet meetings about <em>units shifted per square foot</em> and watched some of the best ceramic studios in Britain quietly close their doors because their pots couldn't compete on price with a £4 plastic look-alike from a container in Shenzhen.\n\nI started Kiln & Clay because someone needed to. Not as a venture-backed mission. Not as a 'disruptor.' Just as <strong>a small British pottery house</strong> committed to keeping a few independent studios busy, and to making plant pots that aren't disposable.\n\nEvery piece we sell is thrown by hand in one of three studios within a thirty-minute drive of our office. We pay the makers properly — not 'fair trade' properly, <em>actually</em> properly. We work in small batches and we tell you who made what.\n\nIf that sounds small, it is. We don't want to be a billion-pound brand by 2030. We want to still be here in 2030."
+      }
+    },
+    "pull-quote": {
+      "type": "pull-quote",
+      "settings": {
+        "quote": "Mass production made plant pots cheaper. It also made them <em>worse</em>. We're not interested in cheap. We're interested in <em>good</em>, and built to last.",
+        "author_name": "Margaret Holloway",
+        "author_role": "Founder · Kiln & Clay"
+      }
+    },
+    "founder": {
+      "type": "founder-card",
+      "settings": {
+        "eyebrow": "Meet the founder",
+        "heading": "<p>From <em>buyer</em> to maker.</p>",
+        "body": "Margaret 'Maggie' Holloway spent fifteen years on the buying floor at a major British homewares retailer before walking away in 2025 to start Kiln & Clay. She lives in Stone, Staffordshire with her partner Tom and a fiddle leaf fig called Margaret-the-Second.\n\nMaggie's job at Kiln & Clay is essentially the same as her old one — choosing what gets made — but with one critical difference: <strong>she now picks pieces by visiting the studios that make them, not from a wholesale catalogue.</strong>\n\nShe is the only person who chooses what we sell. If a pot wouldn't earn space in her own home, it doesn't earn space in ours.",
+        "video_eyebrow": "Founder film",
+        "video_title": "Meet Maggie · Stone, Staffordshire",
+        "video_duration": "02:14",
+        "credit": "Photographed by Tom Pollard"
+      }
+    },
+    "stats": {
+      "type": "about-stats",
+      "settings": {},
+      "blocks": {
+        "s1": { "type": "stat", "settings": { "value": "3",    "title": "Independent Studios", "body": "All within 30 minutes of our office in Stone." } },
+        "s2": { "type": "stat", "settings": { "value": "94",   "title": "Pieces in Range",     "body": "Every one selected, never bought from a catalogue." } },
+        "s3": { "type": "stat", "settings": { "value": "100%", "title": "Made in Britain",     "body": "From the throwing wheel to the kraft box on your door." } },
+        "s4": { "type": "stat", "settings": { "value": "0",    "title": "Pieces Imported",     "body": "Not now. Not as we grow. Ever." } }
+      },
+      "block_order": ["s1", "s2", "s3", "s4"]
+    },
+    "makers": {
+      "type": "makers",
+      "settings": {
+        "eyebrow": "Our makers",
+        "heading": "<p>Three studios, <em>three hands</em>.</p>",
+        "body": "Every Kiln & Clay piece comes from one of three small ceramic studios in Staffordshire. They each have their own materials, their own kiln, their own signature finish."
+      },
+      "blocks": {
+        "m1": { "type": "maker", "settings": { "num": "Studio · 01", "name": "Sarah Whitlock", "place": "Whitlock Studio · Stoke", "role": "Stoneware · Reactive Glazes", "body": "Sarah trained at the Royal College of Art and has been throwing pots for twenty-three years. She works alone in a converted Victorian warehouse and mixes her own glazes from <strong>iron oxide, feldspar and ash</strong>.", "signature": "Reactive matte glaze" } },
+        "m2": { "type": "maker", "settings": { "num": "Studio · 02", "name": "Naomi & Daniel Cross", "place": "Rivermill Pottery · Burslem", "role": "Terracotta · Earthenware", "body": "Naomi and Daniel run Rivermill from a converted mill on the Trent. They source their clay from a single quarry in Etruria — the same earth that Wedgwood drew from <strong>two hundred and sixty years ago</strong>.", "signature": "Hand-pulled rims" } },
+        "m3": { "type": "maker", "settings": { "num": "Studio · 03", "name": "Jonas Hartley", "place": "Etruria Studio · Hanley", "role": "Concrete · Fibreclay", "body": "Jonas is the youngest of our three makers — twenty-eight, classically trained, and the only one who doesn't throw on a wheel. Instead, he <strong>casts in handmade silicone moulds</strong>.", "signature": "Cast forms in fibreclay" } }
+      },
+      "block_order": ["m1", "m2", "m3"]
+    },
+    "values": {
+      "type": "values",
+      "settings": {
+        "eyebrow": "What we believe",
+        "heading": "<p>Four small principles, <em>quietly held</em>.</p>"
+      },
+      "blocks": {
+        "v1": { "type": "value", "settings": { "num": "01", "title": "Slow over scaled.",    "body": "We could make our range twice as big in a year by buying from overseas wholesalers. We don't, and we won't. The range grows when it grows." } },
+        "v2": { "type": "value", "settings": { "num": "02", "title": "Names, not anonymity.", "body": "Every product page tells you who made it. Every maker has a profile, and a fair-priced contract." } },
+        "v3": { "type": "value", "settings": { "num": "03", "title": "Built to outlast.",     "body": "A good ceramic pot will live on a shelf for fifty years. A cheap one will crack in two winters. We sell pots in the first category." } },
+        "v4": { "type": "value", "settings": { "num": "04", "title": "Honest about what we are.", "body": "We make a few good things, slowly, in Britain, and price them at what they should cost. If that sits between two markets, that's fine." } }
+      },
+      "block_order": ["v1", "v2", "v3", "v4"]
+    },
+    "press": {
+      "type": "press-strip",
+      "settings": { "eyebrow": "As featured in" },
+      "blocks": {
+        "p1": { "type": "publication", "settings": { "name": "Hearth Quarterly", "style": "italic" } },
+        "p2": { "type": "publication", "settings": { "name": "House Notes", "style": "upper" } },
+        "p3": { "type": "publication", "settings": { "name": "The Slow", "style": "italic" } },
+        "p4": { "type": "publication", "settings": { "name": "Atrium", "style": "upper" } },
+        "p5": { "type": "publication", "settings": { "name": "Field & Hearth", "style": "italic" } },
+        "p6": { "type": "publication", "settings": { "name": "Cabin Journal", "style": "upper" } }
+      },
+      "block_order": ["p1", "p2", "p3", "p4", "p5", "p6"]
+    },
+    "cta": {
+      "type": "page-cta",
+      "settings": {
+        "eyebrow": "Now you know us",
+        "heading": "<p>See what <em>we make</em>.</p>",
+        "body": "Ninety-four pieces, three studios, one quietly stubborn idea about how plant pots should be.",
+        "cta_label": "Shop the collection",
+        "cta_link": "shopify://collections/all"
+      }
+    },
+    "newsletter": { "type": "newsletter-mailer", "settings": {} }
+  },
+  "order": ["hero", "letter", "pull-quote", "founder", "stats", "makers", "values", "press", "cta", "newsletter"]
+}

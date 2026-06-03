@@ -1,0 +1,76 @@
+{%- comment -%}
+  Cart drawer — rendered globally from theme.liquid.
+  Populated by theme.js via /cart.js on page load and after every change.
+{%- endcomment -%}
+
+<div class="drawer-overlay" id="drawer-overlay" aria-hidden="true"></div>
+
+<aside class="cart-drawer" id="cart-drawer" aria-label="{{ 'cart.general.title' | t }}" aria-hidden="true">
+
+  <div class="cart-drawer-head">
+    <div class="ttl">
+      Your <em>basket</em>
+      <span class="ct" id="cart-drawer-count" style="font-family: var(--font-heading); font-style: italic; font-weight: 300; color: var(--muted); font-size: 18px; margin-left: 10px;">0 items</span>
+    </div>
+    <button class="cart-drawer-close" data-cart-close aria-label="{{ 'accessibility.close' | t }}">
+      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+
+  {%- if settings.show_free_shipping_bar -%}
+    <div class="ship-bar" id="ship-bar" data-threshold="{{ settings.free_shipping_threshold | times: 100 }}">
+      <div class="ship-text">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+        <span class="h"><strong>Add {{ settings.free_shipping_threshold | times: 100 | money }}</strong> for free UK delivery.</span>
+      </div>
+      <div class="ship-progress"></div>
+    </div>
+  {%- endif -%}
+
+  <div class="cart-drawer-items" id="cart-drawer-items"></div>
+
+  {%- comment -%} Empty state {%- endcomment -%}
+  <div class="cart-drawer-empty" id="cart-drawer-empty" style="display:none">
+    <div class="icon">
+      <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
+        <path d="M5 7h14l-1.5 12h-11Z"/>
+        <path d="M9 7V5a3 3 0 0 1 6 0v2"/>
+      </svg>
+    </div>
+    <h3>Nothing in here, <em>yet</em>.</h3>
+    <p>Browse the shop, save a few to your wishlist, then come back to check out.</p>
+    <a href="{{ routes.all_products_collection_url | default: routes.collections_url }}">
+      Shop the collection
+      <span style="font-family: var(--font-heading); font-style: italic; font-weight: 300;">→</span>
+    </a>
+  </div>
+
+  <div class="cart-drawer-foot" id="cart-drawer-foot">
+    <div class="foot-row">
+      <span class="l">Subtotal</span>
+      <span class="v" id="cart-drawer-subtotal">{{ cart.total_price | money }}</span>
+    </div>
+    <div class="foot-row">
+      <span class="l">Delivery</span>
+      <span class="v" style="color: var(--success); font-weight: 500; display: inline-flex; align-items: center; gap: 6px;">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width: 12px; height: 12px;"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+        {{ 'cart.general.free' | t | default: 'Free' }}
+      </span>
+    </div>
+    <div class="foot-row total">
+      <span class="l">{{ 'cart.general.total' | t | default: 'Total' }}</span>
+      <span class="v" id="cart-drawer-total">{{ cart.total_price | money }}</span>
+    </div>
+    <div class="foot-tax">{{ 'products.product.include_taxes' | t | default: 'Inc. VAT' }}</div>
+
+    <a href="{{ routes.cart_url }}/checkout" class="checkout-cta">
+      {{ 'cart.general.checkout' | t | default: 'Checkout securely' }}
+      <span class="arrow">→</span>
+    </a>
+
+    <a href="{{ routes.cart_url }}" class="view-basket-link">
+      View full basket
+      <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" style="width: 12px; height: 12px;"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+    </a>
+  </div>
+</aside>

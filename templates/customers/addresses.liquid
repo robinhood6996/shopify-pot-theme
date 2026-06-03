@@ -1,0 +1,415 @@
+<style>
+  .addr-page {
+    max-width: 1280px; margin: 0 auto;
+    padding: 60px 32px 100px;
+  }
+  .addr-hero {
+    margin-bottom: 48px; padding-bottom: 36px;
+    border-bottom: 1px solid var(--line-soft);
+    display: flex; align-items: flex-end; justify-content: space-between;
+    flex-wrap: wrap; gap: 24px;
+  }
+  .addr-hero .eb {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.22em;
+    color: var(--muted); margin-bottom: 18px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .addr-hero .eb::before { content: ''; width: 32px; height: 1px; background: var(--clay); }
+  .addr-hero h1 {
+    font-family: var(--font-heading); font-weight: 400;
+    font-size: clamp(36px, 5vw, 52px); line-height: 1;
+    letter-spacing: -0.01em; margin-bottom: 12px;
+  }
+  .addr-hero h1 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  .addr-hero .lede {
+    font-family: var(--font-heading); font-style: italic; font-weight: 300;
+    font-size: 18px; color: var(--ink-soft); max-width: 520px;
+  }
+  .add-new-btn {
+    background: var(--ink); color: var(--cream);
+    border: none; cursor: pointer;
+    padding: 14px 22px;
+    font-family: inherit; font-size: 12px; font-weight: 500;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    display: inline-flex; align-items: center; gap: 10px;
+    transition: background 0.2s;
+  }
+  .add-new-btn:hover { background: var(--clay-deep); }
+  .add-new-btn svg { width: 16px; height: 16px; }
+
+  .addr-grid {
+    display: grid; grid-template-columns: 280px 1fr; gap: 48px;
+    align-items: start;
+  }
+
+  .addr-list {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+  }
+
+  .addr-card-full {
+    padding: 24px;
+    background: var(--paper);
+    border: 1px solid var(--line-soft);
+    display: flex; flex-direction: column;
+    transition: border-color 0.15s;
+  }
+  .addr-card-full:hover { border-color: var(--line); }
+  .addr-card-full.is-default { border-color: var(--clay); }
+
+  .addr-card-head {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 14px;
+  }
+  .addr-card-name {
+    font-family: var(--font-heading); font-weight: 400;
+    font-size: 19px; line-height: 1.2;
+  }
+  .addr-card-name em { font-style: italic; font-weight: 300; color: var(--clay); }
+  .addr-default-pill {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.16em;
+    background: var(--clay); color: var(--cream);
+    padding: 4px 10px; line-height: 1;
+  }
+
+  .addr-card-body {
+    font-size: 13.5px; line-height: 1.7; color: var(--ink-soft);
+    flex: 1; padding-bottom: 18px;
+  }
+
+  .addr-card-actions {
+    display: flex; gap: 14px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line-soft);
+    font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.14em;
+  }
+  .addr-card-actions a, .addr-card-actions button {
+    background: none; border: none; cursor: pointer;
+    font-family: inherit; font-size: inherit; letter-spacing: inherit;
+    text-transform: inherit;
+    color: var(--ink); text-decoration: none;
+    padding: 0; transition: color 0.15s;
+  }
+  .addr-card-actions a:hover, .addr-card-actions button:hover { color: var(--clay); }
+  .addr-card-actions .danger { color: var(--muted); margin-left: auto; }
+  .addr-card-actions .danger:hover { color: var(--error); }
+  .addr-card-actions .set-default { color: var(--clay); }
+
+  .addr-empty {
+    padding: 64px 32px; text-align: center;
+    background: var(--cream); border: 1px solid var(--line-soft);
+  }
+  .addr-empty svg { width: 56px; height: 56px; color: var(--muted); margin-bottom: 18px; }
+  .addr-empty h3 {
+    font-family: var(--font-heading); font-weight: 400; font-size: 26px;
+    margin-bottom: 8px;
+  }
+  .addr-empty h3 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  .addr-empty p { font-size: 14px; color: var(--ink-soft); max-width: 380px; margin: 0 auto; }
+
+  {%- comment -%} ─── FORM PANEL ─── {%- endcomment -%}
+  .addr-form-panel {
+    display: none;
+    margin-top: 32px;
+    padding: 32px;
+    background: var(--cream);
+    border: 1px solid var(--line);
+  }
+  .addr-form-panel.open { display: block; }
+  .addr-form-panel h2 {
+    font-family: var(--font-heading); font-weight: 400;
+    font-size: 26px; line-height: 1; margin-bottom: 6px;
+  }
+  .addr-form-panel h2 em { font-style: italic; font-weight: 300; color: var(--clay); }
+  .addr-form-panel .sub {
+    font-size: 13px; color: var(--ink-soft); margin-bottom: 24px;
+  }
+  .addr-form-panel .field-input,
+  .addr-form-panel select.field-input {
+    width: 100%; padding: 13px 14px;
+    background: var(--paper); border: 1px solid var(--line);
+    font-family: inherit; font-size: 14px; color: var(--ink);
+    transition: border-color 0.15s;
+  }
+  .addr-form-panel .field-input:focus { outline: none; border-color: var(--clay); }
+  .addr-form-panel .field { margin-bottom: 16px; }
+  .addr-form-panel .field-label-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 8px;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em;
+    font-weight: 500; color: var(--ink-soft);
+  }
+  .addr-form-panel .field-label-row .opt {
+    font-family: var(--font-heading); font-style: italic; font-weight: 300;
+    text-transform: none; letter-spacing: 0; font-size: 13px; color: var(--muted);
+  }
+  .addr-form-panel .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .addr-form-panel .row-3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 14px; }
+  .addr-form-panel .row-2 .field, .addr-form-panel .row-3 .field { margin-bottom: 0; }
+
+  .addr-form-actions {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 24px;
+    padding-top: 24px; border-top: 1px solid var(--line-soft);
+    flex-wrap: wrap; gap: 16px;
+  }
+  .addr-form-default {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13.5px; color: var(--ink-soft); cursor: pointer;
+  }
+  .addr-form-default input {
+    appearance: none; width: 16px; height: 16px;
+    border: 1px solid var(--line); background: var(--paper);
+    cursor: pointer; position: relative;
+  }
+  .addr-form-default input:checked { background: var(--ink); border-color: var(--ink); }
+  .addr-form-default input:checked::after {
+    content: ''; position: absolute; top: 2px; left: 5px;
+    width: 4px; height: 8px;
+    border: solid var(--cream); border-width: 0 1.5px 1.5px 0;
+    transform: rotate(45deg);
+  }
+  .addr-form-buttons { display: flex; gap: 10px; margin-left: auto; }
+  .addr-form-buttons button {
+    padding: 12px 22px;
+    font-family: inherit; font-size: 11.5px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.16em;
+    border: none; cursor: pointer;
+  }
+  .addr-form-buttons .save {
+    background: var(--ink); color: var(--cream);
+  }
+  .addr-form-buttons .save:hover { background: var(--clay-deep); }
+  .addr-form-buttons .cancel {
+    background: var(--paper); color: var(--ink); border: 1px solid var(--line);
+  }
+
+  @media (max-width: 900px) {
+    .addr-grid { grid-template-columns: 1fr; gap: 32px; }
+    .addr-form-panel { padding: 22px; }
+    .addr-form-panel .row-2, .addr-form-panel .row-3 { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="addr-page">
+
+  <header class="addr-hero">
+    <div>
+      <div class="eb">Account · Addresses</div>
+      <h1>Saved <em>addresses</em>.</h1>
+      <p class="lede">For faster checkout, and pots that arrive at the right doorstep.</p>
+    </div>
+    <button type="button" class="add-new-btn" id="addr-new-btn">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      Add new address
+    </button>
+  </header>
+
+  <div class="addr-grid">
+
+    {% render 'customer-sidebar', active: 'addresses' %}
+
+    <div>
+
+      {%- paginate customer.addresses by 8 -%}
+
+        {%- if customer.addresses.size > 0 -%}
+          <div class="addr-list">
+            {%- for address in customer.addresses -%}
+              <article class="addr-card-full {% if address == customer.default_address %}is-default{% endif %}" data-id="{{ address.id }}">
+                <div class="addr-card-head">
+                  <div class="addr-card-name">
+                    {{ address.first_name }} <em>{{ address.last_name }}</em>
+                  </div>
+                  {%- if address == customer.default_address -%}
+                    <span class="addr-default-pill">Default</span>
+                  {%- endif -%}
+                </div>
+                <div class="addr-card-body">
+                  {%- if address.company != blank -%}{{ address.company }}<br>{%- endif -%}
+                  {{ address.address1 }}<br>
+                  {%- if address.address2 != blank -%}{{ address.address2 }}<br>{%- endif -%}
+                  {{ address.city }}, {{ address.zip }}<br>
+                  {{ address.country }}
+                  {%- if address.phone != blank -%}<br>{{ address.phone }}{%- endif -%}
+                </div>
+                <div class="addr-card-actions">
+                  <button type="button" class="addr-edit-btn" data-id="{{ address.id }}">Edit</button>
+                  {%- unless address == customer.default_address -%}
+                    <button type="button" class="set-default" data-set-default="{{ address.id }}">Set default</button>
+                  {%- endunless -%}
+                  <button type="button" class="danger" data-delete="{{ address.id }}" data-url="{{ address.url }}">Delete</button>
+                </div>
+
+                {%- comment -%} Hidden form for setting default + delete (uses Shopify's default forms) {%- endcomment -%}
+                <form method="post" action="{{ address.url }}" id="set-default-{{ address.id }}" style="display:none">
+                  <input type="hidden" name="_method" value="put">
+                  <input type="hidden" name="address[default]" value="true">
+                </form>
+                <form method="post" action="{{ address.url }}" id="delete-{{ address.id }}" style="display:none">
+                  <input type="hidden" name="_method" value="delete">
+                </form>
+              </article>
+            {%- endfor -%}
+          </div>
+
+          {%- if paginate.pages > 1 -%}
+            <div style="margin-top: 32px; text-align: center; font-size: 13px; color: var(--ink-soft);">
+              {{ paginate | default_pagination }}
+            </div>
+          {%- endif -%}
+
+        {%- else -%}
+          <div class="addr-empty">
+            <svg fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 24 24"><path d="M12 22s8-7.6 8-13a8 8 0 1 0-16 0c0 5.4 8 13 8 13Z"/><circle cx="12" cy="9" r="3"/></svg>
+            <h3>No saved <em>addresses</em>.</h3>
+            <p>Add one now to make checkout quicker. We'll also use it for any handwritten notes that come with your pots.</p>
+          </div>
+        {%- endif -%}
+
+      {%- endpaginate -%}
+
+      {%- comment -%} ─── ADD / EDIT FORM PANEL ─── {%- endcomment -%}
+      <section class="addr-form-panel" id="addr-form-panel">
+        <h2 id="addr-form-title">New <em>address</em>.</h2>
+        <p class="sub">Required fields are marked. Phone is helpful for delivery drivers.</p>
+
+        {% form 'customer_address', customer.new_address, id: 'addr-form' %}
+          {%- if form.errors -%}
+            <div class="form-errors" style="margin-bottom: 20px; padding: 12px 16px; background: rgba(178,56,56,0.08); border: 1px solid var(--error); color: var(--error); font-size: 13px;">
+              {{ form.errors | default_errors }}
+            </div>
+          {%- endif -%}
+
+          <div class="row-2">
+            <div class="field">
+              <div class="field-label-row"><span>First name</span></div>
+              <input type="text" class="field-input" name="address[first_name]" required>
+            </div>
+            <div class="field">
+              <div class="field-label-row"><span>Last name</span></div>
+              <input type="text" class="field-input" name="address[last_name]" required>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="field-label-row">
+              <span>Company</span>
+              <span class="opt">optional</span>
+            </div>
+            <input type="text" class="field-input" name="address[company]">
+          </div>
+
+          <div class="field">
+            <div class="field-label-row"><span>Address line 1</span></div>
+            <input type="text" class="field-input" name="address[address1]" required>
+          </div>
+
+          <div class="field">
+            <div class="field-label-row">
+              <span>Address line 2</span>
+              <span class="opt">flat, building</span>
+            </div>
+            <input type="text" class="field-input" name="address[address2]">
+          </div>
+
+          <div class="row-3">
+            <div class="field">
+              <div class="field-label-row"><span>Town / City</span></div>
+              <input type="text" class="field-input" name="address[city]" required>
+            </div>
+            <div class="field">
+              <div class="field-label-row"><span>Postcode</span></div>
+              <input type="text" class="field-input" name="address[zip]" required>
+            </div>
+            <div class="field">
+              <div class="field-label-row"><span>Country</span></div>
+              <select class="field-input" name="address[country]" required id="AddressCountryNew" data-default="{{ form.country }}">
+                {{ all_country_option_tags }}
+              </select>
+            </div>
+          </div>
+
+          <div class="row-2">
+            <div class="field">
+              <div class="field-label-row">
+                <span>Province / Region</span>
+                <span class="opt">if applicable</span>
+              </div>
+              <select class="field-input" name="address[province]" id="AddressProvinceNew" data-default="{{ form.province }}">
+              </select>
+            </div>
+            <div class="field">
+              <div class="field-label-row">
+                <span>Phone</span>
+                <span class="opt">for the driver</span>
+              </div>
+              <input type="tel" class="field-input" name="address[phone]" autocomplete="tel">
+            </div>
+          </div>
+
+          <div class="addr-form-actions">
+            <label class="addr-form-default">
+              <input type="checkbox" name="address[default]" value="1">
+              <span>Set as my default address</span>
+            </label>
+            <div class="addr-form-buttons">
+              <button type="button" class="cancel" id="addr-cancel">Cancel</button>
+              <button type="submit" class="save">Save address</button>
+            </div>
+          </div>
+        {% endform %}
+      </section>
+
+    </div>
+  </div>
+</div>
+
+{%- comment -%} Shopify's country/province dropdown helper {%- endcomment -%}
+<script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const panel = document.getElementById('addr-form-panel');
+    const title = document.getElementById('addr-form-title');
+    const form = document.getElementById('addr-form');
+    const newBtn = document.getElementById('addr-new-btn');
+    const cancelBtn = document.getElementById('addr-cancel');
+
+    function open(mode) {
+      panel.classList.add('open');
+      if (mode === 'new') {
+        title.innerHTML = 'New <em>address</em>.';
+        form.reset();
+        form.action = '{{ routes.account_addresses_url }}';
+      }
+      panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    function close() { panel.classList.remove('open'); }
+
+    if (newBtn) newBtn.addEventListener('click', () => open('new'));
+    if (cancelBtn) cancelBtn.addEventListener('click', close);
+
+    // Set default
+    document.querySelectorAll('[data-set-default]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById('set-default-' + btn.dataset.setDefault).submit();
+      });
+    });
+
+    // Delete with confirm
+    document.querySelectorAll('[data-delete]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (confirm('Remove this address?')) {
+          document.getElementById('delete-' + btn.dataset.delete).submit();
+        }
+      });
+    });
+
+    // Init country/province
+    if (window.Shopify && window.Shopify.CountryProvinceSelector) {
+      new Shopify.CountryProvinceSelector('AddressCountryNew', 'AddressProvinceNew', {
+        hideElement: 'AddressProvinceContainerNew'
+      });
+    }
+  });
+</script>
