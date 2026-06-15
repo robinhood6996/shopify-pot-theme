@@ -4,7 +4,7 @@
   assign maker = product.metafields.custom.maker
   assign studio = product.metafields.custom.studio
   assign material = product.metafields.custom.material | default: product.type
-  assign size = product.metafields.custom.size
+  assign size = product.metafields.custom.size | default: product.size
 -%}
 
 <style>
@@ -262,12 +262,17 @@
 </nav>
 
 <section class="pdp">
-
   <!-- THUMBNAILS -->
   <aside class="thumbs">
     {%- for media in product.media limit: 6 -%}
       <button class="thumb{% if forloop.first %} active{% endif %}" data-thumb="{{ forloop.index0 }}">
-        <img src="{{ media | image_url: width: 120 }}" alt="{{ media.alt | default: product.title | escape }}" width="120" height="{{ 120 | divided_by: media.preview_image.aspect_ratio | round }}" loading="lazy">
+        <img
+          src="{{ media | image_url: width: 120 }}"
+          alt="{{ media.alt | default: product.title | escape }}"
+          width="120"
+          height="{{ 120 | divided_by: media.preview_image.aspect_ratio | round }}"
+          loading="lazy"
+        >
       </button>
     {%- endfor -%}
   </aside>
@@ -276,12 +281,14 @@
   <div class="gallery">
     <div class="gallery-main" id="gallery-main">
       {%- if feat_media -%}
-        <img src="{{ feat_media | image_url: width: 1400 }}"
-             alt="{{ feat_media.alt | default: product.title | escape }}"
-             id="gallery-main-img"
-             width="1400"
-             height="{{ 1400 | divided_by: feat_media.preview_image.aspect_ratio | round }}"
-             loading="eager">
+        <img
+          src="{{ feat_media | image_url: width: 1400 }}"
+          alt="{{ feat_media.alt | default: product.title | escape }}"
+          id="gallery-main-img"
+          width="1400"
+          height="{{ 1400 | divided_by: feat_media.preview_image.aspect_ratio | round }}"
+          loading="eager"
+        >
       {%- endif -%}
     </div>
   </div>
@@ -289,11 +296,18 @@
   <!-- INFO -->
   <div class="info">
     <div class="eyebrow-row">
-      <span class="eyebrow">{{ material }}{%- if section.settings.show_batch -%} · Batch of {{ product.metafields.custom.batch_size | default: 24 }}{%- endif -%}</span>
+      <span class="eyebrow">
+        {{- material }}
+        {%- if section.settings.show_batch -%}
+          · Batch of {{ product.metafields.custom.batch_size | default: 24 }}
+        {%- endif -%}
+      </span>
       {%- if product.available -%}
         <span class="stock-badge">{{ 'products.product.in_stock' | t | default: 'In Stock' }}</span>
       {%- else -%}
-        <span class="stock-badge" style="color: var(--error);">{{ 'products.product.sold_out' | t | default: 'Sold Out' }}</span>
+        <span class="stock-badge" style="color: var(--error);">
+          {{- 'products.product.sold_out' | t | default: 'Sold Out' -}}
+        </span>
       {%- endif -%}
     </div>
 
@@ -306,7 +320,12 @@
     {%- if maker != blank -%}
       <a href="{{ product.metafields.custom.maker_url | default: '#' }}" class="maker-pill">
         <span class="avatar"></span>
-        <span>Made by <strong>{{ maker }}</strong>{%- if studio %}<span class="sep">·</span><span class="studio">{{ studio }}</span>{% endif -%}</span>
+        <span
+          >Made by <strong>{{ maker }}</strong>
+          {%- if studio -%}
+            <span class="sep">·</span><span class="studio">{{ studio }}</span>
+          {%- endif -%}
+        </span>
       </a>
     {%- endif -%}
 
@@ -339,7 +358,14 @@
             <div class="option-pills">
               {%- for value in option.values -%}
                 <label class="option-pill has-input{% if option.selected_value == value %} active{% endif %}">
-                  <input type="radio" name="options[{{ option.name | escape }}]" value="{{ value | escape }}"{% if option.selected_value == value %} checked{% endif %}>
+                  <input
+                    type="radio"
+                    name="options[{{ option.name | escape }}]"
+                    value="{{ value | escape }}"
+                    {% if option.selected_value == value %}
+                      checked
+                    {% endif %}
+                  >
                   <span>{{ value }}</span>
                 </label>
               {%- endfor -%}
@@ -354,7 +380,13 @@
           <input type="text" name="quantity" value="1" readonly>
           <button type="button" data-step="1">+</button>
         </div>
-        <button type="submit" class="btn-buy"{% unless current_variant.available %} disabled{% endunless %}>
+        <button
+          type="submit"
+          class="btn-buy"
+          {% unless current_variant.available %}
+            disabled
+          {% endunless %}
+        >
           {%- if current_variant.available -%}
             {{ 'products.product.add_to_cart' | t | default: 'Add to basket' }}
           {%- else -%}
@@ -375,19 +407,29 @@
     <!-- TRUST GRID -->
     <div class="trust-grid">
       <div class="trust-item">
-        <svg fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 24 24"><path d="M3 7h13l3 4v6h-2a2 2 0 0 1-4 0H7a2 2 0 0 1-4 0V7Z"/><circle cx="9" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
-        <div><strong>Free UK shipping</strong><span>Over £{{ settings.free_shipping_threshold }} · 2–3 days</span></div>
+        <svg fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 24 24">
+          <path d="M3 7h13l3 4v6h-2a2 2 0 0 1-4 0H7a2 2 0 0 1-4 0V7Z"/><circle cx="9" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>
+        </svg>
+        <div>
+          <strong>Free UK shipping</strong><span>Over £{{ settings.free_shipping_threshold }} · 2–3 days</span>
+        </div>
       </div>
       <div class="trust-item">
-        <svg fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+        <svg fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 24 24">
+          <path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/>
+        </svg>
         <div><strong>30-day returns</strong><span>Free if unopened</span></div>
       </div>
       <div class="trust-item">
-        <svg fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 24 24"><path d="M12 22s-8-4.5-8-12V5l8-3 8 3v5c0 7.5-8 12-8 12Z"/><path d="m9 12 2 2 4-4"/></svg>
+        <svg fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 24 24">
+          <path d="M12 22s-8-4.5-8-12V5l8-3 8 3v5c0 7.5-8 12-8 12Z"/><path d="m9 12 2 2 4-4"/>
+        </svg>
         <div><strong>1-year guarantee</strong><span>On every piece</span></div>
       </div>
       <div class="trust-item">
-        <svg fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>
+        <svg fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/>
+        </svg>
         <div><strong>Order by 2pm</strong><span>For next-day delivery</span></div>
       </div>
     </div>
@@ -397,15 +439,51 @@
       <summary>The details <span class="plus">+</span></summary>
       <div class="body">
         <ul>
-          {%- if material           %}<li><span class="key">Material</span><span>{{ material }}</span></li>{%- endif -%}
-          {%- if size               %}<li><span class="key">Size</span><span>{{ size }}</span></li>{%- endif -%}
-          {%- if product.metafields.custom.diameter %}<li><span class="key">Diameter</span><span>{{ product.metafields.custom.diameter }}</span></li>{%- endif -%}
-          {%- if product.metafields.custom.height   %}<li><span class="key">Height</span><span>{{ product.metafields.custom.height }}</span></li>{%- endif -%}
-          {%- if product.metafields.custom.weight   %}<li><span class="key">Weight</span><span>{{ product.metafields.custom.weight }}</span></li>{%- endif -%}
-          {%- if product.metafields.custom.drainage %}<li><span class="key">Drainage hole</span><span>{{ product.metafields.custom.drainage }}</span></li>{%- endif -%}
-          {%- if product.metafields.custom.indoor_outdoor %}<li><span class="key">Indoor / Outdoor</span><span>{{ product.metafields.custom.indoor_outdoor }}</span></li>{%- endif -%}
-          {%- if product.metafields.custom.frost_proof   %}<li><span class="key">Frost-proof</span><span>{{ product.metafields.custom.frost_proof }}</span></li>{%- endif -%}
-          {%- if product.metafields.custom.made_in       %}<li><span class="key">Made in</span><span>{{ product.metafields.custom.made_in }}</span></li>{%- endif -%}
+          {%- if material %}
+            <li>
+              <span class="key">Material</span><span>{{ material }}</span>
+            </li>
+          {%- endif -%}
+          {%- if size %}
+            <li>
+              <span class="key">Size</span><span>{{ size }}</span>
+            </li>
+          {%- endif -%}
+          {%- if product.metafields.custom.diameter %}
+            <li>
+              <span class="key">Diameter</span><span>{{ product.metafields.custom.diameter }}</span>
+            </li>
+          {%- endif -%}
+          {%- if product.metafields.custom.height %}
+            <li>
+              <span class="key">Height</span><span>{{ product.metafields.custom.height }}</span>
+            </li>
+          {%- endif -%}
+          {%- if product.metafields.custom.weight %}
+            <li>
+              <span class="key">Weight</span><span>{{ product.metafields.custom.weight }}</span>
+            </li>
+          {%- endif -%}
+          {%- if product.metafields.custom.drainage %}
+            <li>
+              <span class="key">Drainage hole</span><span>{{ product.metafields.custom.drainage }}</span>
+            </li>
+          {%- endif -%}
+          {%- if product.metafields.custom.indoor_outdoor %}
+            <li>
+              <span class="key">Indoor / Outdoor</span><span>{{ product.metafields.custom.indoor_outdoor }}</span>
+            </li>
+          {%- endif -%}
+          {%- if product.metafields.custom.frost_proof %}
+            <li>
+              <span class="key">Frost-proof</span><span>{{ product.metafields.custom.frost_proof }}</span>
+            </li>
+          {%- endif -%}
+          {%- if product.metafields.custom.made_in %}
+            <li>
+              <span class="key">Made in</span><span>{{ product.metafields.custom.made_in }}</span>
+            </li>
+          {%- endif -%}
         </ul>
       </div>
     </details>
@@ -420,8 +498,14 @@
     <details class="acc">
       <summary>Delivery &amp; returns <span class="plus">+</span></summary>
       <div class="body">
-        <p><strong>Free standard UK delivery</strong> on orders over £{{ settings.free_shipping_threshold }}. Standard 2–3 working days.</p>
-        <p style="margin-top: 10px;"><strong>Returns within 30 days.</strong> Free if unopened. Damaged in transit? Send us a photo at <a href="mailto:chat@kilnandclay.co.uk">chat@kilnandclay.co.uk</a>.</p>
+        <p>
+          <strong>Free standard UK delivery</strong> on orders over £{{ settings.free_shipping_threshold }}. Standard
+          2–3 working days.
+        </p>
+        <p style="margin-top: 10px;">
+          <strong>Returns within 30 days.</strong> Free if unopened. Damaged in transit? Send us a photo at
+          <a href="mailto:chat@kilnandclay.co.uk">chat@kilnandclay.co.uk</a>.
+        </p>
       </div>
     </details>
 
@@ -431,77 +515,81 @@
         <div class="body">{{ product.description }}</div>
       </details>
     {%- endif -%}
-
   </div>
 </section>
 
 <script>
-(function () {
-  // Variant select via radios → updates form and submits dynamic price
-  const form = document.getElementById('product-form');
-  if (!form) return;
-  form.querySelectorAll('input[type="radio"][name^="options"]').forEach(radio => {
-    radio.addEventListener('change', () => {
-      // Update the matching variant id by reading all selected option values
-      const formData = new FormData(form);
-      const selected = [];
-      form.querySelectorAll('input[type="radio"][name^="options"]:checked').forEach(r => {
-        selected.push(r.value);
-      });
-      // Find variant
-      const variants = {{ product.variants | json }};
-      const match = variants.find(v => v.options.every((opt, i) => opt === selected[i]));
-      if (match) {
-        document.getElementById('variant-id-input').value = match.id;
-        // Update price + selected label + buy button availability
-        const priceEl = document.querySelector('.price');
-        if (priceEl && match.price !== undefined) {
-          priceEl.textContent = window.KC.formatMoney(match.price);
-        }
-        // Update selected label per option
-        form.querySelectorAll('.variant').forEach((variantEl, i) => {
-          const lab = variantEl.querySelector('.selected');
-          if (lab) lab.textContent = selected[i];
-          variantEl.querySelectorAll('.option-pill').forEach(pill => {
-            const input = pill.querySelector('input');
-            pill.classList.toggle('active', input && input.checked);
-          });
+  (function () {
+    // Variant select via radios → updates form and submits dynamic price
+    const form = document.getElementById('product-form');
+    if (!form) return;
+    form.querySelectorAll('input[type="radio"][name^="options"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        // Update the matching variant id by reading all selected option values
+        const formData = new FormData(form);
+        const selected = [];
+        form.querySelectorAll('input[type="radio"][name^="options"]:checked').forEach(r => {
+          selected.push(r.value);
         });
-        const buyBtn = form.querySelector('.btn-buy');
-        if (buyBtn) {
-          buyBtn.disabled = !match.available;
-          buyBtn.firstChild.textContent = match.available ? 'Add to basket ' : 'Sold out ';
+        // Find variant
+        const variants = {{ product.variants | json }};
+        const match = variants.find(v => v.options.every((opt, i) => opt === selected[i]));
+        if (match) {
+          document.getElementById('variant-id-input').value = match.id;
+          // Update price + selected label + buy button availability
+          const priceEl = document.querySelector('.price');
+          if (priceEl && match.price !== undefined) {
+            priceEl.textContent = window.KC.formatMoney(match.price);
+          }
+          // Update selected label per option
+          form.querySelectorAll('.variant').forEach((variantEl, i) => {
+            const lab = variantEl.querySelector('.selected');
+            if (lab) lab.textContent = selected[i];
+            variantEl.querySelectorAll('.option-pill').forEach(pill => {
+              const input = pill.querySelector('input');
+              pill.classList.toggle('active', input && input.checked);
+            });
+          });
+          const buyBtn = form.querySelector('.btn-buy');
+          if (buyBtn) {
+            buyBtn.disabled = !match.available;
+            buyBtn.firstChild.textContent = match.available ? 'Add to basket ' : 'Sold out ';
+          }
+          // Update URL with variant ID (no page reload, preserves browser history)
+          const url = new URL(window.location.href);
+          url.searchParams.set('variant', match.id);
+          history.replaceState({}, '', url.toString());
         }
-        // Update URL with variant ID (no page reload, preserves browser history)
-        const url = new URL(window.location.href);
-        url.searchParams.set('variant', match.id);
-        history.replaceState({}, '', url.toString());
-      }
+      });
     });
-  });
 
-  // Thumbnail switching
-  document.querySelectorAll('.thumb').forEach(t => {
-    t.addEventListener('click', () => {
-      document.querySelectorAll('.thumb').forEach(x => x.classList.remove('active'));
-      t.classList.add('active');
-      const idx = parseInt(t.dataset.thumb, 10);
-      const media = {{ product.media | json }};
-      const m = media[idx];
-      if (m) {
-        const main = document.getElementById('gallery-main-img');
-        if (main && m.preview_image) main.src = m.preview_image.src + '&width=1400';
-      }
+    // Thumbnail switching
+    document.querySelectorAll('.thumb').forEach(t => {
+      t.addEventListener('click', () => {
+        document.querySelectorAll('.thumb').forEach(x => x.classList.remove('active'));
+        t.classList.add('active');
+        const idx = parseInt(t.dataset.thumb, 10);
+        const media = {{ product.media | json }};
+        const m = media[idx];
+        if (m) {
+          const main = document.getElementById('gallery-main-img');
+          if (main && m.preview_image) main.src = m.preview_image.src + '&width=1400';
+        }
+      });
     });
-  });
-})();
+  })();
 </script>
 
 {% schema %}
 {
   "name": "Product",
   "settings": [
-    { "type": "checkbox", "id": "show_dynamic_checkout", "label": "Show dynamic checkout buttons (Apple Pay etc.)", "default": true },
+    {
+      "type": "checkbox",
+      "id": "show_dynamic_checkout",
+      "label": "Show dynamic checkout buttons (Apple Pay etc.)",
+      "default": true
+    },
     { "type": "checkbox", "id": "show_batch", "label": "Show \"Batch of N\" eyebrow", "default": false }
   ]
 }

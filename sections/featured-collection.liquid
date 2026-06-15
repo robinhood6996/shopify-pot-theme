@@ -37,12 +37,18 @@
       <h2 class="display">{{ section.settings.heading }}</h2>
     {%- endif -%}
     {%- if section.settings.view_all_label != blank -%}
-      <a href="{{ section.settings.view_all_link | default: routes.collections_url }}" class="btn btn-ghost">{{ section.settings.view_all_label }}</a>
+      <a href="{{ section.settings.view_all_link | default: routes.collections_url }}" class="btn btn-ghost">
+        {{- section.settings.view_all_label -}}
+      </a>
     {%- endif -%}
   </div>
 
   <div class="products-grid">
     {%- assign coll = section.settings.collection -%}
+    {%- if coll == blank -%}
+      {%- assign coll = collections.all -%}
+    {%- endif -%}
+
     {%- if coll != blank and coll.products.size > 0 -%}
       {%- for product in coll.products limit: section.settings.products_to_show -%}
         {% render 'product-card', product: product, show_quick_add: true %}
@@ -65,10 +71,13 @@
       "type": "range",
       "id": "products_to_show",
       "label": "Products to show",
-      "min": 2, "max": 8, "step": 1, "default": 4
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4
     },
     { "type": "text", "id": "view_all_label", "label": "View-all label", "default": "View all new arrivals" },
-    { "type": "url",  "id": "view_all_link",  "label": "View-all link" }
+    { "type": "url", "id": "view_all_link", "label": "View-all link" }
   ],
   "presets": [{ "name": "Featured collection", "category": "Collection" }]
 }

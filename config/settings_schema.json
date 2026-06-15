@@ -1,9 +1,9 @@
 [
   {
     "name": "theme_info",
-    "theme_name": "Kiln Clay",
+    "theme_name": "Kiln Klay",
     "theme_version": "1.0.0",
-    "theme_author": "Kiln & Clay",
+    "theme_author": "Algohat",
     "theme_documentation_url": "https://kilnandclay.co.uk",
     "theme_support_url": "https://kilnandclay.co.uk/pages/contact"
   },
@@ -41,22 +41,72 @@
         "type": "header",
         "content": "Surface"
       },
-      { "type": "color", "id": "colour_paper",     "label": "Paper (page background)", "default": "#FBF7EE" },
-      { "type": "color", "id": "colour_cream",     "label": "Cream (subtle fills)",     "default": "#F4EDE0" },
-      { "type": "color", "id": "colour_cream_deep","label": "Cream Deep (mailer)",      "default": "#EBE2D1" },
+      {
+        "type": "color",
+        "id": "colour_paper",
+        "label": "Paper (page background)",
+        "default": "#FBF7EE"
+      },
+      {
+        "type": "color",
+        "id": "colour_cream",
+        "label": "Cream (subtle fills)",
+        "default": "#F4EDE0"
+      },
+      {
+        "type": "color",
+        "id": "colour_cream_deep",
+        "label": "Cream Deep (mailer)",
+        "default": "#EBE2D1"
+      },
 
       { "type": "header", "content": "Type" },
-      { "type": "color", "id": "colour_ink",       "label": "Ink (primary text)",       "default": "#1A140E" },
-      { "type": "color", "id": "colour_ink_soft",  "label": "Ink Soft (secondary)",     "default": "#4A3F33" },
-      { "type": "color", "id": "colour_muted",     "label": "Muted (tertiary)",         "default": "#847566" },
+      {
+        "type": "color",
+        "id": "colour_ink",
+        "label": "Ink (primary text)",
+        "default": "#1A140E"
+      },
+      {
+        "type": "color",
+        "id": "colour_ink_soft",
+        "label": "Ink Soft (secondary)",
+        "default": "#4A3F33"
+      },
+      {
+        "type": "color",
+        "id": "colour_muted",
+        "label": "Muted (tertiary)",
+        "default": "#847566"
+      },
 
       { "type": "header", "content": "Lines" },
-      { "type": "color", "id": "colour_line",      "label": "Line (borders)",           "default": "#DCD0BC" },
-      { "type": "color", "id": "colour_line_soft", "label": "Line Soft (subtle rules)", "default": "#ECE3D2" },
+      {
+        "type": "color",
+        "id": "colour_line",
+        "label": "Line (borders)",
+        "default": "#DCD0BC"
+      },
+      {
+        "type": "color",
+        "id": "colour_line_soft",
+        "label": "Line Soft (subtle rules)",
+        "default": "#ECE3D2"
+      },
 
       { "type": "header", "content": "Accent" },
-      { "type": "color", "id": "colour_clay",      "label": "Clay (primary accent)",    "default": "#B25A38" },
-      { "type": "color", "id": "colour_clay_deep", "label": "Clay Deep (hover)",        "default": "#8E4426" }
+      {
+        "type": "color",
+        "id": "colour_clay",
+        "label": "Clay (primary accent)",
+        "default": "#B25A38"
+      },
+      {
+        "type": "color",
+        "id": "colour_clay_deep",
+        "label": "Clay Deep (hover)",
+        "default": "#8E4426"
+      }
     ]
   },
 
@@ -90,7 +140,7 @@
         "label": "Italic emphasis colour in headlines",
         "options": [
           { "value": "clay", "label": "Clay (recommended)" },
-          { "value": "ink",  "label": "Ink (more reserved)" }
+          { "value": "ink", "label": "Ink (more reserved)" }
         ],
         "default": "clay"
       }
@@ -147,11 +197,11 @@
         "id": "express_payment",
         "label": "Express checkout button",
         "options": [
-          { "value": "paypal",     "label": "PayPal" },
-          { "value": "shop_pay",   "label": "Shop Pay" },
-          { "value": "apple_pay",  "label": "Apple Pay" },
-          { "value": "all",        "label": "All available" },
-          { "value": "none",       "label": "None" }
+          { "value": "paypal", "label": "PayPal" },
+          { "value": "shop_pay", "label": "Shop Pay" },
+          { "value": "apple_pay", "label": "Apple Pay" },
+          { "value": "all", "label": "All available" },
+          { "value": "none", "label": "None" }
         ],
         "default": "paypal"
       }
@@ -191,9 +241,9 @@
   {
     "name": "Social",
     "settings": [
-      { "type": "text", "id": "social_instagram",  "label": "Instagram URL" },
-      { "type": "text", "id": "social_pinterest",  "label": "Pinterest URL" },
-      { "type": "text", "id": "social_substack",   "label": "Substack URL" },
+      { "type": "text", "id": "social_instagram", "label": "Instagram URL" },
+      { "type": "text", "id": "social_pinterest", "label": "Pinterest URL" },
+      { "type": "text", "id": "social_substack", "label": "Substack URL" },
       { "type": "text", "id": "social_trustpilot", "label": "Trustpilot URL" }
     ]
   },
